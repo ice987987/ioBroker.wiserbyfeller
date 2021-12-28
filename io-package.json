@@ -1,0 +1,110 @@
+{
+	"common": {
+		"name": "wiserbyfeller",
+		"version": "0.0.1",
+		"news": {
+			"0.0.1": {
+				"en": "initial release",
+				"de": "Erstveröffentlichung",
+				"ru": "Начальная версия",
+				"pt": "lançamento inicial",
+				"nl": "Eerste uitgave",
+				"fr": "Première version",
+				"it": "Versione iniziale",
+				"es": "Versión inicial",
+				"pl": "Pierwsze wydanie",
+				"zh-cn": "首次出版"
+			}
+		},
+		"title": "Wiser by Feller",
+		"titleLang": {
+			"en": "Wiser by Feller",
+			"de": "Wiser by Feller",
+			"ru": "Wiser by Feller",
+			"pt": "Wiser by Feller",
+			"nl": "Wiser by Feller",
+			"fr": "Wiser by Feller",
+			"it": "Wiser by Feller",
+			"es": "Wiser by Feller",
+			"pl": "Wiser by Feller",
+			"zh-cn": "Wiser by Feller"
+		},
+		"desc": {
+			"en": "This Adapter enables you to manage all your \"Wiser by Feller\" system devices.",
+			"de": "Mit diesem Adapter können Sie alle Ihre \"Wiser by Feller\" Systemgeräte verwalten.",
+			"ru": "Этот адаптер позволяет управлять всеми устройствами системы \"Wiser by Feller\".",
+			"pt": "Este adaptador permite que você gerencie todos os seus dispositivos do sistema \"Wiser by Feller\".",
+			"nl": "Met deze adapter kunt u al uw \"Wiser by Feller\" systeemapparaten beheren.",
+			"fr": "Cet adaptateur vous permet de gérer tous vos périphériques système \"Wiser by Feller\".",
+			"it": "Questo adattatore ti consente di gestire tutti i tuoi dispositivi di sistema \"Wiser by Feller\".",
+			"es": "Este adaptador le permite administrar todos sus dispositivos del sistema \"Wiser by Feller\".",
+			"pl": "Ten adapter umożliwia zarządzanie wszystkimi urządzeniami systemu \"Wiser by Feller\".",
+			"zh-cn": "此适配器使您能够管理所有 \"Wiser by Feller\" 系统设备。"
+		},
+		"authors": [
+			"ice987987 <mathias.frei@gmail.com>"
+		],
+		"keywords": [
+			"Wiser by Feller",
+			"Feller",
+			"switch",
+			"blinds",
+			"ioBroker",
+			"Homeautomatisation",
+			"smarthome"
+		],
+		"license": "MIT",
+		"platform": "Javascript/Node.js",
+		"main": "main.js",
+		"icon": "wiserbyfeller.png",
+		"enabled": true,
+		"extIcon": "https://raw.githubusercontent.com/ice987987/ioBroker.wiserbyfeller/main/admin/wiserbyfeller.png",
+		"readme": "https://github.com/ice987987/ioBroker.wiserbyfeller/blob/main/README.md",
+		"loglevel": "info",
+		"mode": "daemon",
+		"type": "household",
+		"compact": true,
+		"connectionType": "local",
+		"dataSource": "poll",
+		"materialize": true,
+		"messagebox": true,
+		"localLinks": {
+			"_default": "http://%gatewayIP%"
+		},
+		"dependencies": [
+			{
+				"js-controller": ">=3.0.0"
+			}
+		]
+	},
+	"native": {
+		"gatewayIP": "",
+		"username": "",
+		"authToken": "",
+		"intervalTime": 10
+	},
+	"objects": [],
+	"instanceObjects": [
+		{
+			"_id": "info",
+			"type": "channel",
+			"common": {
+				"name": "Information"
+			},
+			"native": {}
+		},
+		{
+			"_id": "info.connection",
+			"type": "state",
+			"common": {
+				"role": "indicator.connected",
+				"name": "Device or service connected",
+				"type": "boolean",
+				"read": true,
+				"write": false,
+				"def": false
+			},
+			"native": {}
+		}
+	]
+}
