@@ -235,12 +235,16 @@ class Wiserbyfeller extends utils.Adapter {
 
 				//get device type
 				let devicetypeName = '';
+				let deviceIcon = '';
 				if (allLoadsAllLoadsStates[i].type === 'onoff') {
-					devicetypeName = 'Wiser switchable light';
+					devicetypeName = 'WiserByFeller switchable light';
+					deviceIcon = 'icons/icon_wiserbyfeller_switchable_light_2ch.png';
 				} else if (allLoadsAllLoadsStates[i].type === 'dim') {
-					devicetypeName = 'Wiser LED-universaldimmer';
+					devicetypeName = 'WiserByFeller LED-universaldimmer';
+					deviceIcon = 'icons/icon_wiserbyfeller_led_universaldimmer_2ch.png';
 				} else if (allLoadsAllLoadsStates[i].type === 'motor') {
-					devicetypeName = 'Wiser blind switch';
+					devicetypeName = 'WiserByFeller blind switch';
+					deviceIcon = 'icons/icon_wiserbyfeller_led_blindswitch_2ch.png';
 				}
 
 				//create device
@@ -248,14 +252,15 @@ class Wiserbyfeller extends utils.Adapter {
 					type: 'device',
 					common: {
 						name: devicetypeName,
+						icon: deviceIcon
 					},
 					native: {}
 				});
 				await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.type', {
 					type: 'state',
 					common: {
-						name: 'type',
-						desc: 'type',
+						name: 'Device type',
+						desc: 'Device type',
 						type: 'string',
 						role: 'value',
 						read: true,
@@ -266,8 +271,8 @@ class Wiserbyfeller extends utils.Adapter {
 				await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.device', {
 					type: 'state',
 					common: {
-						name: 'device',
-						desc: 'device',
+						name: 'Device ID',
+						desc: 'Device ID',
 						type: 'string',
 						role: 'value',
 						read: true,
@@ -302,6 +307,7 @@ class Wiserbyfeller extends utils.Adapter {
 						common: {
 							name: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id,
 							desc: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id,
+	
 						},
 						native: {}
 					});
@@ -316,8 +322,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.bri', {
 						type: 'state',
 						common: {
-							name: 'power',
-							desc: 'power',
+							name: 'Power on/off',
+							desc: 'Power on/off',
 							type: 'number',
 							role: 'switch',
 							read: true,
@@ -332,8 +338,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.id', {
 						type: 'state',
 						common: {
-							name: 'id',
-							desc: 'id',
+							name: 'Device ID',
+							desc: 'Device ID',
 							type: 'number',
 							role: 'value',
 							read: true,
@@ -344,8 +350,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.channel', {
 						type: 'state',
 						common: {
-							name: 'channel',
-							desc: 'channel',
+							name: 'Device Channel',
+							desc: 'Device Channel',
 							type: 'number',
 							role: 'value',
 							read: true,
@@ -356,8 +362,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.unused', {
 						type: 'state',
 						common: {
-							name: 'unused',
-							desc: 'unused',
+							name: 'Unused',
+							desc: 'Unused',
 							type: 'boolean',
 							role: 'value',
 							read: true,
@@ -369,8 +375,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.name', {
 						type: 'state',
 						common: {
-							name: 'name',
-							desc: 'name',
+							name: 'Device Name',
+							desc: 'Device Name',
 							type: 'string',
 							role: 'value',
 							read: true,
@@ -382,8 +388,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.room', {
 						type: 'state',
 						common: {
-							name: 'room',
-							desc: 'room',
+							name: 'Device Room',
+							desc: 'Device Room',
 							type: 'number',
 							role: 'value',
 							read: true,
@@ -412,7 +418,7 @@ class Wiserbyfeller extends utils.Adapter {
 						type: 'channel',
 						common: {
 							name: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id,
-							desc: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id,
+							desc: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id
 						},
 						native: {}
 					});
@@ -427,8 +433,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.bri', {
 						type: 'state',
 						common: {
-							name: 'bri',
-							desc: 'bri',
+							name: 'Brightness',
+							desc: 'Brightness',
 							type: 'number',
 							role: 'level.dimmer',
 							min: 0,
@@ -510,8 +516,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.id', {
 						type: 'state',
 						common: {
-							name: 'id',
-							desc: 'id',
+							name: 'Device ID',
+							desc: 'Device ID',
 							type: 'number',
 							role: 'value',
 							read: true,
@@ -522,8 +528,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.channel', {
 						type: 'state',
 						common: {
-							name: 'channel',
-							desc: 'channel',
+							name: 'Device Channel',
+							desc: 'Device Channel',
 							type: 'number',
 							role: 'value',
 							read: true,
@@ -534,8 +540,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.unused', {
 						type: 'state',
 						common: {
-							name: 'unused',
-							desc: 'unused',
+							name: 'Unused',
+							desc: 'Unused',
 							type: 'boolean',
 							role: 'value',
 							read: true,
@@ -547,8 +553,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.name', {
 						type: 'state',
 						common: {
-							name: 'name',
-							desc: 'name',
+							name: 'Device Name',
+							desc: 'Device Name',
 							type: 'string',
 							role: 'value',
 							read: true,
@@ -560,8 +566,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.room', {
 						type: 'state',
 						common: {
-							name: 'room',
-							desc: 'room',
+							name: 'Device Room',
+							desc: 'Device Room',
 							type: 'number',
 							role: 'value',
 							read: true,
@@ -589,7 +595,7 @@ class Wiserbyfeller extends utils.Adapter {
 						type: 'channel',
 						common: {
 							name: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id,
-							desc: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id,
+							desc: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id
 						},
 						native: {}
 					});
@@ -604,8 +610,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.level', {
 						type: 'state',
 						common: {
-							name: 'level',
-							desc: 'level',
+							name: 'Blind level',
+							desc: 'Blind level',
 							type: 'number',
 							role: 'level.blind',
 							min: 0,
@@ -618,8 +624,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.tilt', {
 						type: 'state',
 						common: {
-							name: 'tilt',
-							desc: 'tilt',
+							name: 'Blind tilt',
+							desc: 'Blind tilt',
 							type: 'number',
 							role: 'level.tilt',
 							min: 0,
@@ -648,8 +654,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.leveltilt', {
 						type: 'state',
 						common: {
-							name: 'leveltilt',
-							desc: 'leveltilt',
+							name: 'Blind leveltilt',
+							desc: 'Blind leveltilt',
 							type: 'string',
 							role: 'value',
 							read: true,
@@ -753,8 +759,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.id', {
 						type: 'state',
 						common: {
-							name: 'id',
-							desc: 'id',
+							name: 'Device ID',
+							desc: 'Device ID',
 							type: 'number',
 							role: 'value',
 							read: true,
@@ -765,8 +771,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.channel', {
 						type: 'state',
 						common: {
-							name: 'channel',
-							desc: 'channel',
+							name: 'Device Channel',
+							desc: 'Device Channel',
 							type: 'number',
 							role: 'value',
 							read: true,
@@ -777,8 +783,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.unused', {
 						type: 'state',
 						common: {
-							name: 'unused',
-							desc: 'unused',
+							name: 'Unused',
+							desc: 'Unused',
 							type: 'boolean',
 							role: 'value',
 							read: true,
@@ -790,8 +796,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.name', {
 						type: 'state',
 						common: {
-							name: 'name',
-							desc: 'name',
+							name: 'Device Name',
+							desc: 'Device Name',
 							type: 'string',
 							role: 'value',
 							read: true,
@@ -803,8 +809,8 @@ class Wiserbyfeller extends utils.Adapter {
 					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.room', {
 						type: 'state',
 						common: {
-							name: 'room',
-							desc: 'room',
+							name: 'Device Room',
+							desc: 'Device Room',
 							type: 'number',
 							role: 'value',
 							read: true,
