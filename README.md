@@ -33,11 +33,13 @@ This Adapter enables you to manage all your Wiser-by-Feller system devices.
 Trigger changes on states in folder `ACTONS`.
 
 **Wiser switchable light:**
+
 To turn on or off a load set the attribute `bri` (brightness) to the following values:
 * Turn off set the `bri` attribute to `0`
 * Turn on set the `bri` attribute to `10000`
 
 **Wiser blind switch:**
+
 On a motor e.g. shutter/blind you can set the target level between 0% and 100% (0 - 10000) and a tilt value.
 * To set the shutter in open position set the `level` attribute to `0`
 * To set the shutter in close position set the `level` attribute to `10000`
@@ -46,6 +48,7 @@ On a motor e.g. shutter/blind you can set the target level between 0% and 100% (
 * To control the position and the tilt attribute, set the `leveltilt` attribute to value `{"level": 3000, "tilt": 3}`
 
 **Wiser LED-universaldimmer**
+
 On a dimmable light you can set the target brightness between 0% and 100% (0 - 10000).
 * Turn off set the `bri` attribute to `0`
 * To dim set the `bri` attribute between `1` and `10000` (e.g. set `bri` to 5000, means 50% of brightness)
