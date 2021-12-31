@@ -55,6 +55,10 @@ On a dimmable light you can set the target brightness between 0% and 100% (0 - 1
 
 ## Changelog
 
+### __WORK IN PROGRESS__
+* (ice987987) description of several datapoints renamed
+* (ice987987) icons added for main datapoints
+
 ### v0.0.1 (28.12.2021)
 * (ice987978) initial release
 
