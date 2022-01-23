@@ -78,6 +78,7 @@ Procedure:
 * (ice987987) description of several datapoints renamed
 * (ice987987) icons added for main datapoints
 * (ice987987) update year
+* (ice987987) move DP rssi in info-folder
 
 ### v0.0.1 (28.12.2021)
 * (ice987978) initial release

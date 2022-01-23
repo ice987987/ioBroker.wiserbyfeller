@@ -230,6 +230,22 @@ class Wiserbyfeller extends utils.Adapter {
 
 		this.log.debug('start objects creation for ' + allLoadsAllLoadsStates.length + ' device' + (allLoadsAllLoadsStates.length > 1 ? 's' : '') + ' ...');
 
+		await this.setObjectNotExistsAsync('info.rssi', {
+			type: 'state',
+			common: {
+				name: 'Received Signal Strength Indication of the Gateway device.',
+				desc: 'Received Signal Strength Indication of the Gateway device',
+				type: 'number',
+				role: 'value',
+				min: -100,
+				max: -1,
+				unit: 'dBm',
+				read: true,
+				write: false
+			},
+			native: {}
+		});
+
 		if (allLoadsAllLoadsStates.length !== 0) {
 			for (let i = 0; i < allLoadsAllLoadsStates.length; i++) {
 
@@ -281,24 +297,6 @@ class Wiserbyfeller extends utils.Adapter {
 					native: {}
 				});
 
-				if (i === 0) {
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.rssi', {
-						type: 'state',
-						common: {
-							name: 'Received Signal Strength Indication of the Gateway device.',
-							desc: 'Received Signal Strength Indication of the Gateway device',
-							type: 'number',
-							role: 'value',
-							min: -100,
-							max: -1,
-							unit: 'dBm',
-							read: true,
-							write: false
-						},
-						native: {}
-					});
-				}
-
 				//#3401 1-channel pressure switch / #3402 2-channel pressure switch
 				if (allLoadsAllLoadsStates[i].type === 'onoff') {
 					//create channel
@@ -307,7 +305,6 @@ class Wiserbyfeller extends utils.Adapter {
 						common: {
 							name: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id,
 							desc: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id,
-	
 						},
 						native: {}
 					});
@@ -910,7 +907,7 @@ class Wiserbyfeller extends utils.Adapter {
 	}
 
 	async fillRssi(allLoads, rssi) {
-		if (allLoads[0].device !== null) { this.setState(allLoads[0].device + '.rssi', {val: rssi.rssi, ack: true}); }
+		if (allLoads[0].device !== null) { this.setState('info.rssi', {val: rssi.rssi, ack: true}); }
 	}
 
 	/**
@@ -939,7 +936,7 @@ class Wiserbyfeller extends utils.Adapter {
 	async onStateChange(id, state) {
 
 		//for (let i = 0; i < Object.keys(loads.data).length; i++)
-		if (state !== null && state !== undefined) {
+		if (state !== null && state !== undefined && state.val !== null && state.val !== undefined) {
 			if (state.ack === false) {
 
 				this.log.debug('id: ' + id + '; state: ' + JSON.stringify(state));
