@@ -53,11 +53,31 @@ On a dimmable light you can set the target brightness between 0% and 100% (0 - 1
 * Turn off set the `bri` attribute to `0`
 * To dim set the `bri` attribute between `1` and `10000` (e.g. set `bri` to 5000, means 50% of brightness)
 
+<!-- 
+**The Embedded Web Interface**
+Еven without the mobile app, Wiser-by-Feller WLAN device can be set and controlled through a browser and WiFi connection of a mobile phone, tablet or PC (please make sure, that the device is not connetced to the cloud service -> see reset guideline in the manual).
+
+Procedure:
+1. Install Wiser-by-Feller WLAN device
+2. After first connection to power, Wiser-by-Feller WLAN device has created an own WiFi network, with name (SSID) such as `wiser-000xxxxx`. Connect to it with your phone, tablet or PC and enter passwort, provided together with the device (sticker).
+3. Type `192.168.0.1` in your browser
+4. Fill in `New Registration` and press the button on the device to continue
+5. Log in
+6. Go to `settings` -> `Network settings` -> `Add new WLAN`
+7. Enter your credentials and press button `Add WLAN`
+8. Press button `Reboot Now!`
+9. Log out and discconnect your phone, tablet or PC from the Wiser-by-Feller WLAN device
+10. Get IP-Address of Wiser-by-Feller WLAN device in your router
+11. Enter `IP-Adress` of Wiser-by-Feller WLAN device in settings of the Instance `Gateway-IP`
+12. Enter `username` of Wiser-by-Feller WLAN device in settings of the Instance `username`
+-->
+
 ## Changelog
 
 ### __WORK IN PROGRESS__
 * (ice987987) description of several datapoints renamed
 * (ice987987) icons added for main datapoints
+* (ice987987) update year
 
 ### v0.0.1 (28.12.2021)
 * (ice987978) initial release
@@ -65,7 +85,7 @@ On a dimmable light you can set the target brightness between 0% and 100% (0 - 1
 ## License
 MIT License
 
-Copyright (c) 2021 ice987987 <mathias.frei@gmail.com>
+Copyright (c) 2021-2022 ice987987 <mathias.frei@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
