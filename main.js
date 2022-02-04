@@ -113,7 +113,7 @@ class Wiserbyfeller extends utils.Adapter {
 
 		await axios({
 			method: 'GET',
-			baseURL: 'http://' + gatewayIP + '/api/loads',
+			url: 'http://' + gatewayIP + '/api/loads',
 			headers: {
 				'Authorization': 'Bearer ' + authToken + '\''
 			},
@@ -151,7 +151,7 @@ class Wiserbyfeller extends utils.Adapter {
 
 		await axios({
 			method: 'GET',
-			baseURL: 'http://' + gatewayIP + '/api/loads/state',
+			url: 'http://' + gatewayIP + '/api/loads/state',
 			headers: {
 				'Authorization': 'Bearer ' + authToken + '\''
 			},
@@ -189,7 +189,7 @@ class Wiserbyfeller extends utils.Adapter {
 
 		await axios({
 			method: 'GET',
-			baseURL: 'http://' + gatewayIP + '/api/net/rssi',
+			url: 'http://' + gatewayIP + '/api/net/rssi',
 			headers: {
 				'Authorization': 'Bearer ' + authToken + '\''
 			},
@@ -979,7 +979,7 @@ class Wiserbyfeller extends utils.Adapter {
 
 				axios({
 					method: 'PUT',
-					baseURL: 'http://' + this.config.gatewayIP + '/api/loads/' + loadID + '/target_state',
+					url: 'http://' + this.config.gatewayIP + '/api/loads/' + loadID + '/target_state',
 					headers: {
 						'Authorization': 'Bearer ' + this.config.authToken + '\'',
 						'Content-Type': 'application/json; charset=UTF-8'
@@ -1052,7 +1052,7 @@ class Wiserbyfeller extends utils.Adapter {
 
 				axios({
 					method: 'POST',
-					baseURL: 'http://' + obj.message.gatewayIP + '/api/account/claim',
+					url: 'http://' + obj.message.gatewayIP + '/api/account/claim',
 					headers: {
 						'Content-Type': 'application/json'
 					},
