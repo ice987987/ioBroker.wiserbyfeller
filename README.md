@@ -4,12 +4,15 @@
 [![NPM version](https://img.shields.io/npm/v/iobroker.wiserbyfeller.svg)](https://www.npmjs.com/package/iobroker.wiserbyfeller)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.wiserbyfeller.svg)](https://www.npmjs.com/package/iobroker.wiserbyfeller)
 ![Number of Installations](https://iobroker.live/badges/wiserbyfeller-installed.svg)
-![Current version in stable repository](https://iobroker.live/badges/wiserbyfeller-stable.svg)
-[![Dependency Status](https://img.shields.io/david/ice987987/iobroker.wiserbyfeller.svg)](https://david-dm.org/ice987987/iobroker.wiserbyfeller)
+<!-- ![Current version in stable repository](https://iobroker.live/badges/wiserbyfeller-stable.svg) -->
+![Current version in stable repository](https://img.shields.io/badge/stable-not%20published-%23264777)
+<!-- [![Dependency Status](https://img.shields.io/david/ice987987/iobroker.wiserbyfeller.svg)](https://david-dm.org/ice987987/iobroker.wiserbyfeller) -->
 
 [![NPM](https://nodei.co/npm/iobroker.wiserbyfeller.png?downloads=true)](https://nodei.co/npm/iobroker.wiserbyfeller/)
 
-**Tests:** ![Test and Release](https://github.com/ice987987/ioBroker.wiserbyfeller/workflows/Test%20and%20Release/badge.svg)
+![Test and Release](https://github.com/ice987987/ioBroker.wiserbyfeller/workflows/Test%20and%20Release/badge.svg)
+
+[![Donate](https://img.shields.io/badge/donate-paypal-blue?style=flat)](https://paypal.me/ice987987)
 
 ## wiserbyfeller adapter for ioBroker
 
@@ -40,18 +43,18 @@ To turn on or off a load set the attribute `bri` (brightness) to the following v
 
 **Wiser blind switch:**
 
-On a motor e.g. shutter/blind you can set the target level between 0% and 100% (0 - 10000) and a tilt value.
+On a motor e.g. shutter/blind you can set the target level between 0% and 100% (`0` - `10000`) and a tilt value.
 * To set the shutter in open position set the `level` attribute to `0`
 * To set the shutter in close position set the `level` attribute to `10000`
-* To control the shutter set the `level` attribute between `1` and `10000` (e.g. set `level` to 5000, means set the shutter/blind to position 50%)
+* To control the shutter set the `level` attribute between `1` and `10000` (e.g. set `level` to `5000`, means set the shutter/blind to position 50%)
 * To control slats of a shutter (number of tilt) set the `tilt` attribute to a value `0` - `9`. Finally it's the motor running time, because we don't know the slat position in degrees.
 * To control the position and the tilt attribute, set the `leveltilt` attribute to value `{"level": 3000, "tilt": 3}`
 
 **Wiser LED-universaldimmer**
 
-On a dimmable light you can set the target brightness between 0% and 100% (0 - 10000).
+On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
 * Turn off set the `bri` attribute to `0`
-* To dim set the `bri` attribute between `1` and `10000` (e.g. set `bri` to 5000, means 50% of brightness)
+* To dim set the `bri` attribute between `1` and `10000` (e.g. set `bri` to `5000`, means 50% of brightness)
 
 <!-- 
 **The Embedded Web Interface**
@@ -75,10 +78,12 @@ Procedure:
 ## Changelog
 
 ### __WORK IN PROGRESS__
-* (ice987987) description of several datapoints renamed
-* (ice987987) icons added for main datapoints
+* (ice987987) description of several datapoints updated
+* (ice987987) icons for main datapoints added
 * (ice987987) update year
-* (ice987987) move DP rssi in info-folder
+* (ice987987) move DP rssi into info-folder
+* (ice987987) update readme.md
+* (ice987987) update dependencies
 
 ### v0.0.1 (28.12.2021)
 * (ice987978) initial release
