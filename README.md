@@ -4,8 +4,8 @@
 [![NPM version](https://img.shields.io/npm/v/iobroker.wiserbyfeller.svg)](https://www.npmjs.com/package/iobroker.wiserbyfeller)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.wiserbyfeller.svg)](https://www.npmjs.com/package/iobroker.wiserbyfeller)
 ![Number of Installations](https://iobroker.live/badges/wiserbyfeller-installed.svg)
-<!-- ![Current version in stable repository](https://iobroker.live/badges/wiserbyfeller-stable.svg) -->
 ![Current version in stable repository](https://img.shields.io/badge/stable-not%20published-%23264777)
+<!-- ![Current version in stable repository](https://iobroker.live/badges/wiserbyfeller-stable.svg) -->
 <!-- [![Dependency Status](https://img.shields.io/david/ice987987/iobroker.wiserbyfeller.svg)](https://david-dm.org/ice987987/iobroker.wiserbyfeller) -->
 
 [![NPM](https://nodei.co/npm/iobroker.wiserbyfeller.png?downloads=true)](https://nodei.co/npm/iobroker.wiserbyfeller/)
