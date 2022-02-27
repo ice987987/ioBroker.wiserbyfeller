@@ -42,16 +42,12 @@
 			"zh-cn": "此适配器使您能够管理所有 \"Wiser by Feller\" 系统设备。"
 		},
 		"authors": [
-			"ice987987 <mathias.frei@gmail.com>"
+			"ice987987 <mathias.frei1@gmail.com>"
 		],
 		"keywords": [
-			"Wiser by Feller",
-			"Feller",
-			"switch",
-			"blinds",
-			"ioBroker",
-			"Homeautomatisation",
-			"smarthome"
+			"smarthome",
+			"wiserbyfeller",
+			"ioBroker"
 		],
 		"license": "MIT",
 		"platform": "Javascript/Node.js",

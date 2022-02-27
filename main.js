@@ -10,9 +10,10 @@ const utils = require('@iobroker/adapter-core');
 
 // Load your modules here, e.g.:
 const axios = require('axios').default;
+const WebSocket = require('ws');
 
 // variables
-let statesUpdate = true;
+//let statesUpdate = true;
 
 class Wiserbyfeller extends utils.Adapter {
 
@@ -28,8 +29,13 @@ class Wiserbyfeller extends utils.Adapter {
 		this.on('stateChange', this.onStateChange.bind(this));
 		this.on('message', this.onMessage.bind(this));
 		this.on('unload', this.onUnload.bind(this));
+
+		this.allLoads = {};
+
 		this.updateInterval = null;
-		this.updateInterval2 = null;
+
+		this.ping = null;
+		this.pingTimeout = null;
 	}
 
 	/**
@@ -43,32 +49,30 @@ class Wiserbyfeller extends utils.Adapter {
 		this.setState('info.connection', false, true);
 
 		// The adapters config (in the instance object everything under the attribute "native") is accessible via this.config:
-		this.log.debug('config.gatewayIP: ' + this.config.gatewayIP);
-		this.log.debug('config.username: ' + this.config.username);
-		this.log.debug('config.authToken: ' + this.config.authToken);
-		this.log.debug('config.interval: ' + this.config.intervalTime);
+		this.log.debug(`config.gatewayIP: ${this.config.gatewayIP}`);
+		this.log.debug(`config.username: ${this.config.username}`);
+		this.log.debug(`config.authToken: ${this.config.authToken}`);
 
 		//check if gatewayIP has a valid IP
 		//authtoken is like "60650cf4-5d26-4294-b1f2-6c06adc9d0d8"
 		//username must be at least 4 characters only a-zA-Z0-9
-		//intervalTime Number between 5 and 300
-		if ((/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/).test(this.config.gatewayIP) && (/[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/).test(this.config.authToken) && (/[a-zA-Z0-9]{4,}$/).test(this.config.username) && Number(this.config.intervalTime) >= 5 && Number(this.config.intervalTime) <= 300) {
+		if ((/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/).test(this.config.gatewayIP) && (/[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/).test(this.config.authToken) && (/[a-zA-Z0-9]{4,}$/).test(this.config.username)) {
 
 			try {
 				this.log.info('Trying to connect Wiser Gateway [IP: ' + this.config.gatewayIP + '].');
 
 				//Get all loads with all their properties
-				await this.getAllLoads(this.config.gatewayIP, this.config.authToken);
+				await this.getAllLoads();
 
 				this.setState('info.connection', true, true);
 				this.log.info('Wiser Gateway [IP: ' + this.config.gatewayIP + '] connected.');
 
 				//Get all loads state
-				await this.getAllLoadsStates(this.config.gatewayIP, this.config.authToken);
+				//await this.getAllLoadsStates(this.config.gatewayIP, this.config.authToken);
 
 				//create objects
-				await this.createObjects(this.allLoads, this.allLoadsStates);
-
+				await this.createObjects();
+/*
 				//fillAllLoads and fillAllStates
 				await this.fillAllLoads(this.allLoads);
 				await this.fillAllStates(this.allLoads, this.allLoadsStates);
@@ -99,30 +103,88 @@ class Wiserbyfeller extends utils.Adapter {
 					}
 				}, this.config.intervalTime * 5 * 1000);
 
-			} catch(error) {
+				//open WebSocket
+				await this.connectToWS();
+*/
+			} catch (error) {
 				this.log.error(error);
 				//this.setState('info.connection', false, true);
 			}
 		} else {
-			this.log.error('Wiser Gateway-IP and/or "authentification token" and/or "update interval" not set and/or out of range. (ERR_#001)');
+			this.log.error('Wiser Gateway-IP and/or "authentification token" not set and/or not valid. (ERR_#001)');
 		}
 	}
 
+	async connectToWS() {
+
+		if (this.wss) {
+			this.wss.close();
+		}
+
+		this.wss = new WebSocket('ws://' + this.config.gatewayIP + '/api', {
+			headers: {
+				'Authorization': 'Bearer ' + this.config.authToken + '\''
+			}
+		});
+
+		//on connect
+		this.wss.on('open', () => {
+			//this.log.debug('wss open: Connection established');
+			this.log.info('Connection to "Husqvarna WebSocket" established. Ready to get status events...');
+
+			this.wss.send(JSON.stringify({
+				command: 'dump_loads'
+			}));
+		});
+
+		this.wss.on('message', async (message) => {
+			this.log.debug('message: ' + message);
+		});
+
+		this.wss.on('close', (data) => {
+/*
+			if (data.wasClean) {
+				this.log.debug(`[close] Connection closed cleanly, code=${data.code} reason=${data.reason}`);
+			}
+*/
+			this.log.debug('close data: ' + data);
+			this.log.debug('close data.code: ' + data.code);
+			this.log.debug('close data.reason: ' + data.reason);
+
+			if (data === 1006) {
+				this.autoRestart();
+			}
+
+		});
+
+		this.wss.on('error', (error) => {
+			this.log.error('websocket error: ' + error);
+			this.log.error('websocket error.message: ' + error.message);
+		});
+	}
+
+	async autoRestart() {
+		this.log.debug('Websocked connection terminated. Start again in 5 seconds...');
+		this.autoRestartTimeout = setTimeout(() => {
+			this.connectToWS();
+		}, 5000); //min. 5s = 5000ms
+	}
+
+
 	//Get all loads with all their properties: https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/tool_curl.md#get-all-loads AND https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/api_loads.md#get-apiloads
-	async getAllLoads(gatewayIP, authToken) {
+	async getAllLoads() {
 
 		await axios({
 			method: 'GET',
-			url: 'http://' + gatewayIP + '/api/loads',
+			url: 'http://' + this.config.gatewayIP + '/api/loads',
 			headers: {
-				'Authorization': 'Bearer ' + authToken + '\''
-			},
-			timeout: this.config.intervalTime * 1000 * 1.5
+				'Authorization': 'Bearer ' + this.config.authToken + '\''
+			}
 		})
 			.then((response) => {
 				this.log.debug('response.data: ' + JSON.stringify(response.data));
 				this.log.debug('response.status: ' + response.status);
-				//this.log.debug('response.statusText: ' + response.statusText);
+				this.log.debug('response.statusText: ' + response.statusText);
 				this.log.debug('response.headers: ' + JSON.stringify(response.headers));
 				this.log.debug('response.config: ' + JSON.stringify(response.config));
 
@@ -131,9 +193,10 @@ class Wiserbyfeller extends utils.Adapter {
 			.catch((error) => {
 				if (error.response) {
 					// The request was made and the server responded with a status code that falls out of the range of 2xx
-					this.log.debug('error data: ' + error.response.data);
-					this.log.debug('error status: ' + error.response.status);
-					this.log.debug('error headers: ' + error.response.headers);
+					this.log.debug('error.response.data: ' + error.response.data);
+					this.log.debug('error.response.status: ' + error.response.status);
+					this.log.debug('error.response.statusText: ' + error.response.statusText);
+					this.log.debug('error.response.headers: ' + JSON.stringify(error.response.headers));
 				} else if (error.request) {
 					// The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
 					this.log.debug('error request: ' + error);
@@ -146,6 +209,7 @@ class Wiserbyfeller extends utils.Adapter {
 			});
 	}
 
+/*
 	//Get all loads state
 	async getAllLoadsStates(gatewayIP, authToken) {
 
@@ -183,7 +247,8 @@ class Wiserbyfeller extends utils.Adapter {
 				throw new Error ('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#003)');
 			});
 	}
-
+*/
+/*
 	//Get RSSI
 	async getRssi(gatewayIP, authToken) {
 
@@ -221,14 +286,13 @@ class Wiserbyfeller extends utils.Adapter {
 				throw new Error ('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#004)');
 			});
 	}
+*/
 
 	//https://github.com/ioBroker/ioBroker/blob/master/doc/STATE_ROLES.md
-	async createObjects(allLoads, allLoadsStates) {
+	async createObjects() {
 
-		const allLoadsAllLoadsStates = allLoads.map(a => Object.assign(a, allLoadsStates.find(b => b.id === a.id)));
-		this.log.debug('createObjects(): allLoadsAllLoadsStates: ' + JSON.stringify(allLoadsAllLoadsStates));
-
-		this.log.debug('start objects creation for ' + allLoadsAllLoadsStates.length + ' device' + (allLoadsAllLoadsStates.length > 1 ? 's' : '') + ' ...');
+		this.log.debug('createObjects(): this.allLoads: ' + JSON.stringify(this.allLoads));
+		this.log.debug('start objects creation for ' + this.allLoads.length + ' device' + (this.allLoads.length > 1 ? 's' : '') + ' ...');
 
 		await this.setObjectNotExistsAsync('info.rssi', {
 			type: 'state',
@@ -246,25 +310,25 @@ class Wiserbyfeller extends utils.Adapter {
 			native: {}
 		});
 
-		if (allLoadsAllLoadsStates.length !== 0) {
-			for (let i = 0; i < allLoadsAllLoadsStates.length; i++) {
+		if (this.allLoads.length !== 0) {
+			for (let i = 0; i < this.allLoads.length; i++) {
 
 				//get device type
 				let devicetypeName = '';
 				let deviceIcon = '';
-				if (allLoadsAllLoadsStates[i].type === 'onoff') {
+				if (this.allLoads[i].type === 'onoff') {
 					devicetypeName = 'WiserByFeller switchable light';
 					deviceIcon = 'icons/icon_wiserbyfeller_switchable_light_2ch.png';
-				} else if (allLoadsAllLoadsStates[i].type === 'dim') {
+				} else if (this.allLoads[i].type === 'dim') {
 					devicetypeName = 'WiserByFeller LED-universaldimmer';
 					deviceIcon = 'icons/icon_wiserbyfeller_led_universaldimmer_2ch.png';
-				} else if (allLoadsAllLoadsStates[i].type === 'motor') {
+				} else if (this.allLoads[i].type === 'motor') {
 					devicetypeName = 'WiserByFeller blind switch';
 					deviceIcon = 'icons/icon_wiserbyfeller_led_blindswitch_2ch.png';
 				}
 
 				//create device
-				await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device, {
+				await this.setObjectNotExistsAsync(this.allLoads[i].device, {
 					type: 'device',
 					common: {
 						name: devicetypeName,
@@ -272,7 +336,7 @@ class Wiserbyfeller extends utils.Adapter {
 					},
 					native: {}
 				});
-				await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.type', {
+				await this.setObjectNotExistsAsync(this.allLoads[i].device + '.type', {
 					type: 'state',
 					common: {
 						name: 'Device type',
@@ -284,7 +348,7 @@ class Wiserbyfeller extends utils.Adapter {
 					},
 					native: {}
 				});
-				await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.device', {
+				await this.setObjectNotExistsAsync(this.allLoads[i].device + '.device', {
 					type: 'state',
 					common: {
 						name: 'Device ID',
@@ -298,17 +362,17 @@ class Wiserbyfeller extends utils.Adapter {
 				});
 
 				//#3401 1-channel pressure switch / #3402 2-channel pressure switch
-				if (allLoadsAllLoadsStates[i].type === 'onoff') {
+				if (this.allLoads[i].type === 'onoff') {
 					//create channel
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id, {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id, {
 						type: 'channel',
 						common: {
-							name: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id,
-							desc: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id,
+							name: devicetypeName + ' DeviceID: ' + this.allLoads[i].id,
+							desc: devicetypeName + ' DeviceID: ' + this.allLoads[i].id,
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS', {
 						type: 'channel',
 						common: {
 							name: 'ACTIONS',
@@ -316,7 +380,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.bri', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.bri', {
 						type: 'state',
 						common: {
 							name: 'Power on/off',
@@ -332,7 +396,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.id', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.id', {
 						type: 'state',
 						common: {
 							name: 'Device ID',
@@ -344,7 +408,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.channel', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.channel', {
 						type: 'state',
 						common: {
 							name: 'Device Channel',
@@ -356,7 +420,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.unused', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.unused', {
 						type: 'state',
 						common: {
 							name: 'Unused',
@@ -369,7 +433,7 @@ class Wiserbyfeller extends utils.Adapter {
 						native: {}
 					});
 					//not found in https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/api_loads.md#get-apiloads
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.name', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.name', {
 						type: 'state',
 						common: {
 							name: 'Device Name',
@@ -382,7 +446,7 @@ class Wiserbyfeller extends utils.Adapter {
 						native: {}
 					});
 					//not found in https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/api_loads.md#get-apiloads
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.room', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.room', {
 						type: 'state',
 						common: {
 							name: 'Device Room',
@@ -394,7 +458,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.kind', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.kind', {
 						type: 'state',
 						common: {
 							name: 'kind',
@@ -409,17 +473,17 @@ class Wiserbyfeller extends utils.Adapter {
 				}
 
 				//#3406 1-channel LED-universaldimmer / #3407 2-channel LED-universaldimmer
-				else if (allLoadsAllLoadsStates[i].type === 'dim') {
+				else if (this.allLoads[i].type === 'dim') {
 					//create channel
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id, {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id, {
 						type: 'channel',
 						common: {
-							name: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id,
-							desc: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id
+							name: devicetypeName + ' DeviceID: ' + this.allLoads[i].id,
+							desc: devicetypeName + ' DeviceID: ' + this.allLoads[i].id
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS', {
 						type: 'channel',
 						common: {
 							name: 'ACTIONS',
@@ -427,7 +491,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.bri', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.bri', {
 						type: 'state',
 						common: {
 							name: 'Brightness',
@@ -442,7 +506,7 @@ class Wiserbyfeller extends utils.Adapter {
 						native: {}
 					});
 					//create channel
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags', {
 						type: 'channel',
 						common: {
 							name: 'flags',
@@ -450,7 +514,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.over_current', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags.over_current', {
 						type: 'state',
 						common: {
 							name: 'over_current',
@@ -462,7 +526,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.fading', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags.fading', {
 						type: 'state',
 						common: {
 							name: 'fading',
@@ -474,7 +538,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.noise', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags.noise', {
 						type: 'state',
 						common: {
 							name: 'noise',
@@ -486,7 +550,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.direction', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags.direction', {
 						type: 'state',
 						common: {
 							name: 'direction',
@@ -498,7 +562,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.over_temperature', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags.over_temperature', {
 						type: 'state',
 						common: {
 							name: 'over_temperature',
@@ -510,7 +574,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.id', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.id', {
 						type: 'state',
 						common: {
 							name: 'Device ID',
@@ -522,7 +586,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.channel', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.channel', {
 						type: 'state',
 						common: {
 							name: 'Device Channel',
@@ -534,7 +598,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.unused', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.unused', {
 						type: 'state',
 						common: {
 							name: 'Unused',
@@ -547,7 +611,7 @@ class Wiserbyfeller extends utils.Adapter {
 						native: {}
 					});
 					//not found in https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/api_loads.md#get-apiloads
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.name', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.name', {
 						type: 'state',
 						common: {
 							name: 'Device Name',
@@ -560,7 +624,7 @@ class Wiserbyfeller extends utils.Adapter {
 						native: {}
 					});
 					//not found in https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/api_loads.md#get-apiloads
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.room', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.room', {
 						type: 'state',
 						common: {
 							name: 'Device Room',
@@ -572,7 +636,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.kind', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.kind', {
 						type: 'state',
 						common: {
 							name: 'kind',
@@ -586,17 +650,17 @@ class Wiserbyfeller extends utils.Adapter {
 					});
 
 				//#3404 1-channel blind switch / #3405 2-channel blind switch
-				} else if (allLoadsAllLoadsStates[i].type === 'motor') {
+				} else if (this.allLoads[i].type === 'motor') {
 					//create channel
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id, {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id, {
 						type: 'channel',
 						common: {
-							name: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id,
-							desc: devicetypeName + ' DeviceID: ' + allLoadsAllLoadsStates[i].id
+							name: devicetypeName + ' DeviceID: ' + this.allLoads[i].id,
+							desc: devicetypeName + ' DeviceID: ' + this.allLoads[i].id
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS', {
 						type: 'channel',
 						common: {
 							name: 'ACTIONS',
@@ -604,7 +668,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.level', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.level', {
 						type: 'state',
 						common: {
 							name: 'Blind level',
@@ -618,7 +682,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.tilt', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.tilt', {
 						type: 'state',
 						common: {
 							name: 'Blind tilt',
@@ -648,7 +712,7 @@ class Wiserbyfeller extends utils.Adapter {
 						native: {}
 					});
 					*/
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.leveltilt', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.leveltilt', {
 						type: 'state',
 						common: {
 							name: 'Blind leveltilt',
@@ -661,7 +725,7 @@ class Wiserbyfeller extends utils.Adapter {
 						native: {}
 					});
 					//create channel
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags', {
 						type: 'channel',
 						common: {
 							name: 'flags',
@@ -669,7 +733,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.direction', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags.direction', {
 						type: 'state',
 						common: {
 							name: 'direction',
@@ -681,7 +745,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.learning', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags.learning', {
 						type: 'state',
 						common: {
 							name: 'learning',
@@ -693,7 +757,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.moving', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags.moving', {
 						type: 'state',
 						common: {
 							name: 'moving',
@@ -705,7 +769,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.under_current', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags.under_current', {
 						type: 'state',
 						common: {
 							name: 'under_current',
@@ -717,7 +781,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.over_current', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags.over_current', {
 						type: 'state',
 						common: {
 							name: 'over_current',
@@ -729,7 +793,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.timeout', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags.timeout', {
 						type: 'state',
 						common: {
 							name: 'timeout',
@@ -741,7 +805,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.locked', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.flags.locked', {
 						type: 'state',
 						common: {
 							name: 'locked',
@@ -753,7 +817,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.id', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.id', {
 						type: 'state',
 						common: {
 							name: 'Device ID',
@@ -765,7 +829,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.channel', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.channel', {
 						type: 'state',
 						common: {
 							name: 'Device Channel',
@@ -777,7 +841,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.unused', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.unused', {
 						type: 'state',
 						common: {
 							name: 'Unused',
@@ -790,7 +854,7 @@ class Wiserbyfeller extends utils.Adapter {
 						native: {}
 					});
 					//not found in https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/api_loads.md#get-apiloads
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.name', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.name', {
 						type: 'state',
 						common: {
 							name: 'Device Name',
@@ -803,7 +867,7 @@ class Wiserbyfeller extends utils.Adapter {
 						native: {}
 					});
 					//not found in https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/api_loads.md#get-apiloads
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.room', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.room', {
 						type: 'state',
 						common: {
 							name: 'Device Room',
@@ -815,7 +879,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.kind', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.kind', {
 						type: 'state',
 						common: {
 							name: 'kind',
@@ -828,14 +892,14 @@ class Wiserbyfeller extends utils.Adapter {
 						native: {}
 					});
 				}
-				this.subscribeStates(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.*');
+				this.subscribeStates(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.*');
 			}
 			this.log.debug('Objects created ...');
 		} else {
 			throw new Error ('No Objects found, no Objects created. Check installation.');
 		}
 	}
-
+/*
 	async fillAllLoads(allLoads) {
 
 		if (allLoads.length !== 0) {
@@ -857,7 +921,8 @@ class Wiserbyfeller extends utils.Adapter {
 			this.log.debug('No "allLoads" found. Nothing updated...');
 		}
 	}
-
+*/
+/*
 	async fillAllStates(allLoads, allLoadsStates) {
 
 		const allLoadsAllLoadsStates = allLoads.map(a => Object.assign(a, allLoadsStates.find(b => b.id === a.id)));
@@ -909,7 +974,7 @@ class Wiserbyfeller extends utils.Adapter {
 	async fillRssi(allLoads, rssi) {
 		if (allLoads[0].device !== null) { this.setState('info.rssi', {val: rssi.rssi, ack: true}); }
 	}
-
+*/
 	/**
 	 * Is called when adapter shuts down - callback has to be called under any circumstances!
 	 * @param {() => void} callback

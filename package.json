@@ -4,15 +4,14 @@
   "description": "This Adapter enables you to manage all your Wiser-by-Feller system devices.",
   "author": {
     "name": "ice987987",
-    "email": "mathias.frei@gmail.com"
+    "email": "mathias.frei1@gmail.com"
   },
   "homepage": "https://github.com/ice987987/ioBroker.wiserbyfeller",
   "license": "MIT",
   "keywords": [
-    "Wiser by Feller",
-    "Feller",
-    "Homeautomatisation",
-    "ioBroker"
+		"smarthome",
+		"wiserbyfeller",
+		"ioBroker"
   ],
   "repository": {
     "type": "git",
@@ -20,7 +19,8 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.5.1",
-    "axios": "^0.25.0"
+    "axios": "^0.25.0",
+    "ws": "^8.5.0"
   },
   "devDependencies": {
     "@iobroker/testing": "^2.5.4",

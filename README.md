@@ -91,7 +91,7 @@ Procedure:
 ## License
 MIT License
 
-Copyright (c) 2021-2022 ice987987 <mathias.frei@gmail.com>
+Copyright (c) 2021-2022 ice987987 <mathias.frei1@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

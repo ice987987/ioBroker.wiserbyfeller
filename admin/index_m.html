@@ -41,8 +41,7 @@
 					// if something changed, enable save buttons when all fields are filled
 					if ($("#gatewayIP").val() &&	// gatewayIP must be set
 						$("#username").val() &&		// username must be set
-						$("#authToken").val() &&	// authToken must be set
-						$("#intervalTime").val())	// intervalTime must be set
+						$("#authToken").val())		// authToken must be set
 					{
 						onChange(true);
 					} else {
@@ -55,7 +54,6 @@
 				$("#gatewayIP").val(settings["gatewayIP"]);
 				$("#username").val(settings["username"]);
 				$("#authToken").val(settings["authToken"]);
-				$("#intervalTime").val(settings["intervalTime"]);
 
 				$("#getAuthToken").click(function() {
 					// Check if adapter is running
@@ -99,7 +97,6 @@
 				obj["gatewayIP"] = $("#gatewayIP").val();
 				obj["username"] = $("#username").val();
 				obj["authToken"] = $("#authToken").val();
-				obj["intervalTime"] = $("#intervalTime").val();
 				callback(obj);
 			}
 
@@ -161,21 +158,6 @@
 					<span class="translate">AuthTokenHint</span>
 					<p><a class="waves-effect waves-light btn" id="getAuthToken" disabled><span class="translate">ButtonGetAuthToken</span></a></p>
 					<span id="getAuthTokenHint"></span>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="input-field col s4 l4">
-					<input
-						id="intervalTime"
-						type="number"
-						min="5"
-						max="300"
-						class="value validate"
-						required
-					>
-					<label for="intervalTime" class="translate">intervalTime</label>
-					<span class="translate">intervallTimeHint</span>
 				</div>
 			</div>
 
