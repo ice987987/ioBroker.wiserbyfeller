@@ -27,8 +27,7 @@
 				"pl": "opis kilku zaktualizowanych punktów danych\nicons dla głównych punktów danych dodanych\nzaktualizuj rok\nprzenieś DP rssi do folderu informacyjnego\naktualizuj readme.md\nzaktualizuj zależności",
 				"zh-cn": "更新了几个数据点的描述\n加了主要数据点的图标\n更新年份\n将 DP rssi 移动到信息文件夹\n更新 readme.md\n更新依赖项"
 			}
-		}
-	},
+		},
 		"title": "Wiser by Feller",
 		"titleLang": {
 			"en": "Wiser by Feller",
@@ -55,12 +54,16 @@
 			"zh-cn": "此适配器使您能够管理所有 \"Wiser by Feller\" 系统设备。"
 		},
 		"authors": [
-			"ice987987 <mathias.frei1@gmail.com>"
+			"ice987987 <mathias.frei@gmail.com>"
 		],
 		"keywords": [
-			"smarthome",
-			"iobroker",
-			"wiserbyfeller"
+			"Wiser by Feller",
+			"Feller",
+			"switch",
+			"blinds",
+			"ioBroker",
+			"Homeautomatisation",
+			"smarthome"
 		],
 		"license": "MIT",
 		"platform": "Javascript/Node.js",
