@@ -5,10 +5,9 @@
 	"title": "Wiser by Feller",
 	"description": "This Adapter enables you to manage all your Wiser-by-Feller system devices.",
 	"keywords": [
-		"Wiser by Feller",
-		"Feller",
-		"Homeautomatisation",
-		"ioBroker"
+		"smarthome",
+		"iobroker",
+		"wiserbyfeller"
 	],
 	"expert": "yes",
 	"features": [
@@ -33,7 +32,7 @@
 	"es6class": "yes",
 	"authorName": "ice987",
 	"authorGithub": "ice987987",
-	"authorEmail": "mathias.frei@gmail.com",
+	"authorEmail": "mathias.frei1@gmail.com",
 	"gitRemoteProtocol": "HTTPS",
 	"gitCommit": "yes",
 	"defaultBranch": "main",

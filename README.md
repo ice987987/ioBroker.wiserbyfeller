@@ -20,8 +20,8 @@ This Adapter enables you to manage all your Wiser-by-Feller system devices.
 
 ## Installation requirements
 
-* Node >=12.x is required
-* js-controller >=3.x is required
+* Node >=12.0 is required
+* js-controller >=3.0 is required
 * Installed Wiser by Feller devices are required. More information can be found here: [Wiser by Feller](https://wiser.feller.ch/de/professionals).
 
 ## Supported Devices
@@ -76,8 +76,9 @@ Procedure:
 -->
 
 ## Changelog
+<!-- ### __WORK IN PROGRESS__ -->
 
-### __WORK IN PROGRESS__
+### v0.0.2 (27.02.2022)
 * (ice987987) description of several datapoints updated
 * (ice987987) icons for main datapoints added
 * (ice987987) update year
@@ -91,7 +92,7 @@ Procedure:
 ## License
 MIT License
 
-Copyright (c) 2021-2022 ice987987 <mathias.frei@gmail.com>
+Copyright (c) 2021-2022 ice987987 <mathias.frei1@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
