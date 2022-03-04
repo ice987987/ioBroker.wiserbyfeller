@@ -20,8 +20,8 @@ This Adapter enables you to manage all your Wiser-by-Feller system devices.
 
 ## Installation requirements
 
-* Node >=12.x is required
-* js-controller >=3.x is required
+* Node >=12.0 is required
+* js-controller >=3.0 is required
 * Installed Wiser by Feller devices are required. More information can be found here: [Wiser by Feller](https://wiser.feller.ch/de/professionals).
 
 ## Supported Devices
@@ -37,24 +37,24 @@ Trigger changes on states in folder `ACTONS`.
 
 **Wiser switchable light:**
 
-To turn on or off a load set the attribute `bri` (brightness) to the following values:
-* Turn off set the `bri` attribute to `0`
-* Turn on set the `bri` attribute to `10000`
+To turn on or off a load set the attribute `BRI` (brightness) to the following values:
+* Turn off set the `.ACTIONS.BRI` attribute to `off`
+* Turn on set the `.ACTIONS.BRI` attribute to `on`
 
 **Wiser blind switch:**
 
 On a motor e.g. shutter/blind you can set the target level between 0% and 100% (`0` - `10000`) and a tilt value.
-* To set the shutter in open position set the `level` attribute to `0`
-* To set the shutter in close position set the `level` attribute to `10000`
-* To control the shutter set the `level` attribute between `1` and `10000` (e.g. set `level` to `5000`, means set the shutter/blind to position 50%)
-* To control slats of a shutter (number of tilt) set the `tilt` attribute to a value `0` - `9`. Finally it's the motor running time, because we don't know the slat position in degrees.
-* To control the position and the tilt attribute, set the `leveltilt` attribute to value `{"level": 3000, "tilt": 3}`
+* To set the shutter in open position set the `.ACTIONS.LEVEL` attribute to `0`
+* To set the shutter in close position set the `.ACTIONS.LEVEL` attribute to `10000`
+* To control the shutter set the `.ACTIONS.LEVEL` attribute between `1` and `10000` (e.g. set `.ACTIONS.LEVEL` to `5000`, means set the shutter/blind to position 50%)
+* To control slats of a shutter (number of tilt) set the `.ACTIONS.TILT` attribute to a value `0` - `9`. Finally it's the motor running time, because we don't know the slat position in degrees.
+* To control the position and the tilt attribute together, set the `.ACTIONS.leveltilt.SET` attribute to value `true`. The shutter/blind will move to the position of the two values `.ACTIONS.leveltilt.level` and `.ACTIONS.leveltilt.tilt`
 
 **Wiser LED-universaldimmer**
 
 On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
-* Turn off set the `bri` attribute to `0`
-* To dim set the `bri` attribute between `1` and `10000` (e.g. set `bri` to `5000`, means 50% of brightness)
+* Turn off set the `.ACTIONS.BRI` attribute to `0`
+* To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 
 <!-- 
 **The Embedded Web Interface**
@@ -78,6 +78,11 @@ Procedure:
 ## Changelog
 
 ### __WORK IN PROGRESS__
+* (ice987987) implement WebSocket connection to get values of the devices
+* (ice987987) all subscribed states are bold
+* (ice987987) new way to set leveltilt values
+
+### v0.0.2 (27.02.2022)
 * (ice987987) description of several datapoints updated
 * (ice987987) icons for main datapoints added
 * (ice987987) update year

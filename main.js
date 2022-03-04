@@ -30,12 +30,10 @@ class Wiserbyfeller extends utils.Adapter {
 		this.on('message', this.onMessage.bind(this));
 		this.on('unload', this.onUnload.bind(this));
 
-		this.allLoads = {};
+		this.allLoads = null;
+		this.rssi = null;
 
 		this.updateInterval = null;
-
-		this.ping = null;
-		this.pingTimeout = null;
 	}
 
 	/**
@@ -59,7 +57,7 @@ class Wiserbyfeller extends utils.Adapter {
 		if ((/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/).test(this.config.gatewayIP) && (/[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/).test(this.config.authToken) && (/[a-zA-Z0-9]{4,}$/).test(this.config.username)) {
 
 			try {
-				this.log.info('Trying to connect Wiser Gateway [IP: ' + this.config.gatewayIP + '].');
+				this.log.info('Trying to connect Wiser Gateway [IP: ' + this.config.gatewayIP + ']...');
 
 				//Get all loads with all their properties
 				await this.getAllLoads();
@@ -67,51 +65,32 @@ class Wiserbyfeller extends utils.Adapter {
 				this.setState('info.connection', true, true);
 				this.log.info('Wiser Gateway [IP: ' + this.config.gatewayIP + '] connected.');
 
-				//Get all loads state
-				//await this.getAllLoadsStates(this.config.gatewayIP, this.config.authToken);
-
 				//create objects
 				await this.createObjects();
-/*
+
 				//fillAllLoads and fillAllStates
 				await this.fillAllLoads(this.allLoads);
-				await this.fillAllStates(this.allLoads, this.allLoadsStates);
-				await this.getRssi(this.config.gatewayIP, this.config.authToken);
-				await this.fillRssi(this.allLoads, this.rssi);
 
-				//start polling
-				this.log.info('Starting polltimer with a ' + this.config.intervalTime + ' seconds interval.');
+				//RSSI
+				await this.getRssi();
+
 				this.updateInterval = setInterval(async () => {
 					try {
-						await this.getAllLoadsStates(this.config.gatewayIP, this.config.authToken);
-						await this.fillAllStates(this.allLoads, this.allLoadsStates);
-						this.setState('info.connection', true, true);
+						await this.getRssi();
 					} catch(error) {
-						// Reset the connection indicator
-						this.setState('info.connection', false, true);
 						this.log.error(error);
 					}
-				}, this.config.intervalTime * 1000);
-
-				this.updateInterval2 = setInterval(async () => {
-					try {
-						await this.getRssi(this.config.gatewayIP, this.config.authToken);
-						await this.fillRssi(this.allLoads, this.rssi);
-					} catch(error) {
-						// Reset the connection indicator
-						this.log.error(error);
-					}
-				}, this.config.intervalTime * 5 * 1000);
+				}, 5 * 60 * 1000); //5min = 300000ms
 
 				//open WebSocket
 				await this.connectToWS();
-*/
+
 			} catch (error) {
 				this.log.error(error);
 				//this.setState('info.connection', false, true);
 			}
 		} else {
-			this.log.error('Wiser Gateway-IP and/or "authentification token" not set and/or not valid. (ERR_#001)');
+			this.log.error('Wiser Gateway-IP and/or username and/or "authentification token" not set and/or not valid. (ERR_#001)');
 		}
 	}
 
@@ -130,26 +109,66 @@ class Wiserbyfeller extends utils.Adapter {
 		//on connect
 		this.wss.on('open', () => {
 			//this.log.debug('wss open: Connection established');
-			this.log.info('Connection to "Husqvarna WebSocket" established. Ready to get status events...');
+			this.log.info('Connection to "Wiser Gateway WebSocket" established. Ready to get status events...');
 
+			//get all loads https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/websocket.md#get-all-load-states
 			this.wss.send(JSON.stringify({
 				command: 'dump_loads'
 			}));
 		});
 
 		this.wss.on('message', async (message) => {
-			this.log.debug('message: ' + message);
+			this.log.debug('[wss.on - message]: ' + message);
+
+			//save all loads
+			try {
+				const jsonMessage = JSON.parse(message);
+				//const allLoads = JSON.parse(this.allLoads);
+				//this.log.debug('[wss.on - message]: jsonMessage: ' + JSON.stringify(jsonMessage));
+				//this.log.debug('[wss.on - message]: jsonMessage.load.id: ' + jsonMessage.load.id);
+				//this.log.debug('[wss.on - message]: allLoads: ' + JSON.stringify(this.allLoads));
+
+				//this.log.debug('[wss.on - message]: '+ this.allLoads.find(fruit => fruit.id === jsonMessage.load.id).device);
+				const allLoads_device = this.allLoads.find(fruit => fruit.id === jsonMessage.load.id).device;
+				const allLoads_type = this.allLoads.find(fruit => fruit.id === jsonMessage.load.id).type;
+
+				if (allLoads_type === 'onoff') {
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.ACTIONS.BRI', {val: jsonMessage.load.state.bri, ack: true});
+				} else if (allLoads_type === 'dim') {
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.ACTIONS.BRI', {val: jsonMessage.load.state.bri, ack: true});
+
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.flags.over_current', {val: jsonMessage.load.state.flags.over_current, ack: true});
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.flags.fading', {val: jsonMessage.load.state.flags.fading, ack: true});
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.flags.noise', {val: jsonMessage.load.state.flags.noise, ack: true});
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.flags.direction', {val: jsonMessage.load.state.flags.direction, ack: true});
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.flags.over_temperature', {val: jsonMessage.load.state.flags.over_temperature, ack: true});
+				} else if (allLoads_type === 'motor') {
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.ACTIONS.LEVEL', {val: jsonMessage.load.state.level, ack: true});
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.ACTIONS.TILT', {val: jsonMessage.load.state.tilt, ack: true});
+
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.flags.direction', {val: jsonMessage.load.state.flags.direction, ack: true});
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.flags.learning', {val: jsonMessage.load.state.flags.learning, ack: true});
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.flags.moving', {val: jsonMessage.load.state.flags.moving, ack: true});
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.flags.under_current', {val: jsonMessage.load.state.flags.under_current, ack: true});
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.flags.over_current', {val: jsonMessage.load.state.flags.over_current, ack: true});
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.flags.timeout', {val: jsonMessage.load.state.flags.timeout, ack: true});
+					this.setState(allLoads_device + '.' + allLoads_device + '_' + jsonMessage.load.id + '.flags.locked', {val: jsonMessage.load.state.flags.locked, ack: true});
+				} else {
+					this.log.info('[wss.on - message]: Unknown device. Nothing Set. (ERR_#005)');
+				}
+
+			} catch (error) {
+				// do nothing
+			}
 		});
 
 		this.wss.on('close', (data) => {
-/*
-			if (data.wasClean) {
-				this.log.debug(`[close] Connection closed cleanly, code=${data.code} reason=${data.reason}`);
-			}
-*/
-			this.log.debug('close data: ' + data);
-			this.log.debug('close data.code: ' + data.code);
-			this.log.debug('close data.reason: ' + data.reason);
+
+			this.log.debug('[wss.on - close]: this.wss.readyState: ' + this.wss.readyState); //value: 3
+			this.log.debug('[wss.on - close]: data: ' + data); // value: 1001
+			this.log.debug('[wss.on - close]: data.code: ' + data.code); //tbd
+			this.log.debug('[wss.on - close]: data.reason: ' + data.reason); //tbd
+			this.log.debug('[wss.on - close]: data.wasClean: ' + data.wasClean); //tbd
 
 			if (data === 1006) {
 				this.autoRestart();
@@ -158,18 +177,17 @@ class Wiserbyfeller extends utils.Adapter {
 		});
 
 		this.wss.on('error', (error) => {
-			this.log.error('websocket error: ' + error);
-			this.log.error('websocket error.message: ' + error.message);
+			this.log.debug('[wss.on - error]: error: ' + error); //tbd
+			this.log.error('[wss.on - error]: error.message: ' + error.message); //tbd
 		});
 	}
 
 	async autoRestart() {
-		this.log.debug('Websocked connection terminated. Start again in 5 seconds...');
+		this.log.debug('[autoRestart()]: WebSocket connection terminated by "Wiser Gateway". Reconnect again in 5 seconds...');
 		this.autoRestartTimeout = setTimeout(() => {
 			this.connectToWS();
-		}, 5000); //min. 5s = 5000ms
+		}, 5 * 1000); //min. 5s = 5000ms
 	}
-
 
 	//Get all loads with all their properties: https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/tool_curl.md#get-all-loads AND https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/api_loads.md#get-apiloads
 	async getAllLoads() {
@@ -182,83 +200,42 @@ class Wiserbyfeller extends utils.Adapter {
 			}
 		})
 			.then((response) => {
-				this.log.debug('response.data: ' + JSON.stringify(response.data));
-				this.log.debug('response.status: ' + response.status);
-				this.log.debug('response.statusText: ' + response.statusText);
-				this.log.debug('response.headers: ' + JSON.stringify(response.headers));
-				this.log.debug('response.config: ' + JSON.stringify(response.config));
+				this.log.debug('[getAllLoads()] response.data: ' + JSON.stringify(response.data));
+				this.log.debug('[getAllLoads()] response.status: ' + response.status);
+				//this.log.debug('[getAllLoads()] response.statusText: ' + response.statusText); //empty
+				this.log.debug('[getAllLoads()] response.headers: ' + JSON.stringify(response.headers));
+				this.log.debug('[getAllLoads()] response.config: ' + JSON.stringify(response.config));
 
 				this.allLoads = response.data.data;
 			})
 			.catch((error) => {
 				if (error.response) {
 					// The request was made and the server responded with a status code that falls out of the range of 2xx
-					this.log.debug('error.response.data: ' + error.response.data);
-					this.log.debug('error.response.status: ' + error.response.status);
-					this.log.debug('error.response.statusText: ' + error.response.statusText);
-					this.log.debug('error.response.headers: ' + JSON.stringify(error.response.headers));
+					this.log.debug('[getAllLoads()] error.response.data: ' + error.response.data);
+					this.log.debug('[getAllLoads()] error.response.status: ' + error.response.status);
+					this.log.debug('[getAllLoads()] error.response.statusText: ' + error.response.statusText);
+					this.log.debug('[getAllLoads()] error.response.headers: ' + JSON.stringify(error.response.headers));
 				} else if (error.request) {
 					// The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
-					this.log.debug('error request: ' + error);
+					this.log.debug('[getAllLoads()] error request: ' + error);
 				} else {
 					// Something happened in setting up the request that triggered an Error
-					this.log.debug('error message: ' + error.message);
+					this.log.debug('[getAllLoads()] error message: ' + error.message);
 				}
-				this.log.debug('error.config: ' + JSON.stringify(error.config));
+				this.log.debug('[getAllLoads()] error.config: ' + JSON.stringify(error.config));
 				throw new Error ('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#002)');
 			});
 	}
 
-/*
-	//Get all loads state
-	async getAllLoadsStates(gatewayIP, authToken) {
-
-		await axios({
-			method: 'GET',
-			url: 'http://' + gatewayIP + '/api/loads/state',
-			headers: {
-				'Authorization': 'Bearer ' + authToken + '\''
-			},
-			timeout: this.config.intervalTime * 1000 * 1.5
-		})
-			.then((response) => {
-				this.log.debug('response.data: ' + JSON.stringify(response.data));
-				this.log.debug('response.status: ' + response.status);
-				//this.log.debug('response.statusText: ' + response.statusText);
-				this.log.debug('response.headers: ' + JSON.stringify(response.headers));
-				this.log.debug('response.config: ' + JSON.stringify(response.config));
-
-				this.allLoadsStates = response.data.data;
-			})
-			.catch((error) => {
-				if (error.response) {
-					// The request was made and the server responded with a status code that falls out of the range of 2xx
-					this.log.debug('error data: ' + error.response.data);
-					this.log.debug('error status: ' + error.response.status);
-					this.log.debug('error headers: ' + error.response.headers);
-				} else if (error.request) {
-					// The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
-					this.log.debug('error request: ' + error);
-				} else {
-					// Something happened in setting up the request that triggered an Error
-					this.log.debug('error message: ' + error.message);
-				}
-				this.log.debug('error.config: ' + JSON.stringify(error.config));
-				throw new Error ('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#003)');
-			});
-	}
-*/
-/*
 	//Get RSSI
-	async getRssi(gatewayIP, authToken) {
+	async getRssi() {
 
 		await axios({
 			method: 'GET',
-			url: 'http://' + gatewayIP + '/api/net/rssi',
+			url: 'http://' + this.config.gatewayIP + '/api/net/rssi',
 			headers: {
-				'Authorization': 'Bearer ' + authToken + '\''
-			},
-			timeout: this.config.intervalTime * 1000 * 1.5
+				'Authorization': 'Bearer ' + this.config.authToken + '\''
+			}
 		})
 			.then((response) => {
 				this.log.debug('response.data: ' + JSON.stringify(response.data));
@@ -267,7 +244,7 @@ class Wiserbyfeller extends utils.Adapter {
 				this.log.debug('response.headers: ' + JSON.stringify(response.headers));
 				this.log.debug('response.config: ' + JSON.stringify(response.config));
 
-				this.rssi = response.data.data;
+				this.setState('info.rssi', {val: response.data.data.rssi, ack: true});
 			})
 			.catch((error) => {
 				if (error.response) {
@@ -286,13 +263,12 @@ class Wiserbyfeller extends utils.Adapter {
 				throw new Error ('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#004)');
 			});
 	}
-*/
 
 	//https://github.com/ioBroker/ioBroker/blob/master/doc/STATE_ROLES.md
 	async createObjects() {
+		//this.log.debug('createObjects(): this.allLoads: ' + JSON.stringify(this.allLoads));
 
-		this.log.debug('createObjects(): this.allLoads: ' + JSON.stringify(this.allLoads));
-		this.log.debug('start objects creation for ' + this.allLoads.length + ' device' + (this.allLoads.length > 1 ? 's' : '') + ' ...');
+		this.log.debug('[createObjects()] start objects creation for ' + this.allLoads.length + ' device' + (this.allLoads.length > 1 ? 's' : '') + '...');
 
 		await this.setObjectNotExistsAsync('info.rssi', {
 			type: 'state',
@@ -380,7 +356,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.bri', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.BRI', {
 						type: 'state',
 						common: {
 							name: 'Power on/off',
@@ -491,7 +467,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.bri', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.BRI', {
 						type: 'state',
 						common: {
 							name: 'Brightness',
@@ -668,7 +644,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.level', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.LEVEL', {
 						type: 'state',
 						common: {
 							name: 'Blind level',
@@ -682,7 +658,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {}
 					});
-					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.tilt', {
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.TILT', {
 						type: 'state',
 						common: {
 							name: 'Blind tilt',
@@ -713,12 +689,49 @@ class Wiserbyfeller extends utils.Adapter {
 					});
 					*/
 					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.leveltilt', {
+						type: 'channel',
+						common: {
+							name: 'Set blind with level and tilt',
+							desc: 'Set blind with level and tilt'
+						},
+						native: {}
+					});
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.leveltilt.level', {
 						type: 'state',
 						common: {
-							name: 'Blind leveltilt',
-							desc: 'Blind leveltilt',
-							type: 'string',
+							name: 'Blind level',
+							desc: 'Blind level',
+							type: 'number',
 							role: 'value',
+							min: 0,
+							max: 10000,
+							read: true,
+							write: true
+						},
+						native: {}
+					});
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.leveltilt.tilt', {
+						type: 'state',
+						common: {
+							name: 'Blind tilt',
+							desc: 'Blind tilt',
+							type: 'number',
+							role: 'value',
+							min: 0,
+							max: 9,
+							read: true,
+							write: true
+						},
+						native: {}
+					});
+					await this.setObjectNotExistsAsync(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.leveltilt.SET', {
+						type: 'state',
+						common: {
+							name: 'Set Blind',
+							desc: 'Set Blind',
+							type: 'boolean',
+							role: 'button',
+							def: false,
 							read: true,
 							write: true
 						},
@@ -892,89 +905,38 @@ class Wiserbyfeller extends utils.Adapter {
 						native: {}
 					});
 				}
-				this.subscribeStates(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.*');
+				this.subscribeStates(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.BRI');
+				this.subscribeStates(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.LEVEL');
+				this.subscribeStates(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.TILT');
+				this.subscribeStates(this.allLoads[i].device + '.' + this.allLoads[i].device + '_' + this.allLoads[i].id + '.ACTIONS.leveltilt.SET');
 			}
-			this.log.debug('Objects created ...');
+			this.log.debug('[createObjects()] Objects created.');
 		} else {
 			throw new Error ('No Objects found, no Objects created. Check installation.');
 		}
 	}
-/*
+
 	async fillAllLoads(allLoads) {
 
-		if (allLoads.length !== 0) {
-			this.log.debug('fillAllLoads(): starting filling in allLoads for ' + allLoads.length + ' device' + (allLoads.length > 1 ? 's' : '') + ' ...');
+		try {
+			this.log.debug('[fillAllLoads()]: starting filling in allLoads for ' + allLoads.length + ' device' + (allLoads.length > 1 ? 's' : '') + '...');
 			for (let i = 0; i < allLoads.length; i++) {
+				this.setState(allLoads[i].device + '.device', {val: allLoads[i].device, ack: true});
+				this.setState(allLoads[i].device + '.type', {val: allLoads[i].type, ack: true});
 
-				if (allLoads[i].device !== null) { this.setState(allLoads[i].device + '.device', {val: allLoads[i].device, ack: true}); }
-				if (allLoads[i].type !== null) { this.setState(allLoads[i].device + '.type', {val: allLoads[i].type, ack: true}); }
-
-				if (allLoads[i].id !== null) { this.setState(allLoads[i].device + '.' + allLoads[i].device + '_' + allLoads[i].id + '.id', {val: allLoads[i].id, ack: true}); }
-				if (allLoads[i].channel !== null) { this.setState(allLoads[i].device + '.' + allLoads[i].device + '_' + allLoads[i].id + '.channel', {val: allLoads[i].channel, ack: true}); }
-				if (allLoads[i].unused !== null) { this.setState(allLoads[i].device + '.' + allLoads[i].device + '_' + allLoads[i].id + '.unused', {val: allLoads[i].unused, ack: true}); }
-				if (allLoads[i].name !== null) { this.setState(allLoads[i].device + '.' + allLoads[i].device + '_' + allLoads[i].id + '.name', {val: allLoads[i].name, ack: true}); }
-				if (allLoads[i].room !== null) { this.setState(allLoads[i].device + '.' + allLoads[i].device + '_' + allLoads[i].id + '.room', {val: allLoads[i].room, ack: true}); }
-				if (allLoads[i].kind !== null) { this.setState(allLoads[i].device + '.' + allLoads[i].device + '_' + allLoads[i].id + '.room', {val: allLoads[i].kind, ack: true}); }
+				this.setState(allLoads[i].device + '.' + allLoads[i].device + '_' + allLoads[i].id + '.id', {val: allLoads[i].id, ack: true});
+				this.setState(allLoads[i].device + '.' + allLoads[i].device + '_' + allLoads[i].id + '.channel', {val: allLoads[i].channel, ack: true});
+				this.setState(allLoads[i].device + '.' + allLoads[i].device + '_' + allLoads[i].id + '.unused', {val: allLoads[i].unused, ack: true});
+				this.setState(allLoads[i].device + '.' + allLoads[i].device + '_' + allLoads[i].id + '.name', {val: allLoads[i].name, ack: true});
+				this.setState(allLoads[i].device + '.' + allLoads[i].device + '_' + allLoads[i].id + '.room', {val: allLoads[i].room, ack: true});
+				this.setState(allLoads[i].device + '.' + allLoads[i].device + '_' + allLoads[i].id + '.kind', {val: allLoads[i].kind, ack: true});
 			}
-			this.log.debug('allLoads filled in ...');
-		} else {
-			this.log.debug('No "allLoads" found. Nothing updated...');
-		}
-	}
-*/
-/*
-	async fillAllStates(allLoads, allLoadsStates) {
-
-		const allLoadsAllLoadsStates = allLoads.map(a => Object.assign(a, allLoadsStates.find(b => b.id === a.id)));
-		this.log.debug('fillInStates(): "fillAllStates": ' + JSON.stringify(allLoadsAllLoadsStates));
-
-		if (allLoadsAllLoadsStates.length !== 0) {
-			this.log.debug('starting "fillAllStates" for ' + allLoadsAllLoadsStates.length + ' device' + (allLoadsAllLoadsStates.length > 1 ? 's' : '') + ' ...');
-			for (let i = 0; i < allLoadsAllLoadsStates.length; i++) {
-				if (allLoadsAllLoadsStates[i].type === 'onoff') {
-					if (statesUpdate) {
-						if (allLoadsAllLoadsStates[i].state.bri !== undefined && allLoadsAllLoadsStates[i].state.bri !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.bri', {val: allLoadsAllLoadsStates[i].state.bri, ack: true}); }
-					}
-				} else if (allLoadsAllLoadsStates[i].type === 'dim') {
-					if (statesUpdate) {
-						if (allLoadsAllLoadsStates[i].state.bri !== undefined && allLoadsAllLoadsStates[i].state.bri !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.bri', {val: allLoadsAllLoadsStates[i].state.bri, ack: true}); }
-					}
-					if (allLoadsAllLoadsStates[i].state.flags !== null) {
-						if (allLoadsAllLoadsStates[i].state.flags.over_current !== undefined && allLoadsAllLoadsStates[i].state.flags.over_current !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.over_current', {val: allLoadsAllLoadsStates[i].state.flags.over_current, ack: true}); }
-						if (allLoadsAllLoadsStates[i].state.flags.fading !== undefined && allLoadsAllLoadsStates[i].state.flags.fading !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.fading', {val: allLoadsAllLoadsStates[i].state.flags.fading, ack: true}); }
-						if (allLoadsAllLoadsStates[i].state.flags.noise !== undefined && allLoadsAllLoadsStates[i].state.flags.noise !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.noise', {val: allLoadsAllLoadsStates[i].state.flags.noise, ack: true}); }
-						if (allLoadsAllLoadsStates[i].state.flags.direction !== undefined && allLoadsAllLoadsStates[i].state.flags.direction !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.direction', {val: allLoadsAllLoadsStates[i].state.flags.direction, ack: true}); }
-						if (allLoadsAllLoadsStates[i].state.flags.over_temperature !== undefined && allLoadsAllLoadsStates[i].state.flags.over_temperature !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.over_temperature', {val: allLoadsAllLoadsStates[i].state.flags.over_temperature, ack: true}); }
-					}
-				} else if (allLoadsAllLoadsStates[i].type === 'motor') {
-					if (statesUpdate) {
-						if (allLoadsAllLoadsStates[i].state.level !== undefined && allLoadsAllLoadsStates[i].state.level !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.level', {val: allLoadsAllLoadsStates[i].state.level, ack: true}); }
-						if (allLoadsAllLoadsStates[i].state.tilt !== undefined && allLoadsAllLoadsStates[i].state.tilt !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.tilt', {val: allLoadsAllLoadsStates[i].state.tilt, ack: true}); }
-						//if (allLoadsAllLoadsStates[i].state.moving !== undefined && allLoadsAllLoadsStates[i].state.moving !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.ACTIONS.moving', {val: allLoadsAllLoadsStates[i].state.moving, ack: true}); }
-					}
-					if (allLoadsAllLoadsStates[i].state.flags !== null) {
-						if (allLoadsAllLoadsStates[i].state.flags.direction !== undefined && allLoadsAllLoadsStates[i].state.flags.direction !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.direction', {val: allLoadsAllLoadsStates[i].state.flags.direction, ack: true}); }
-						if (allLoadsAllLoadsStates[i].state.flags.learning !== undefined && allLoadsAllLoadsStates[i].state.flags.learning !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.learning', {val: allLoadsAllLoadsStates[i].state.flags.learning, ack: true}); }
-						if (allLoadsAllLoadsStates[i].state.flags.moving !== undefined && allLoadsAllLoadsStates[i].state.flags.moving !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.moving', {val: allLoadsAllLoadsStates[i].state.flags.moving, ack: true}); }
-						if (allLoadsAllLoadsStates[i].state.flagsunder_current !== undefined && allLoadsAllLoadsStates[i].state.flags.under_current !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.under_current', {val: allLoadsAllLoadsStates[i].state.flags.under_current, ack: true}); }
-						if (allLoadsAllLoadsStates[i].state.flags.over_current !== undefined && allLoadsAllLoadsStates[i].state.flags.over_current !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.over_current', {val: allLoadsAllLoadsStates[i].state.flags.over_current, ack: true}); }
-						if (allLoadsAllLoadsStates[i].state.flags.timeout !== undefined && allLoadsAllLoadsStates[i].state.flags.timeout !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.timeout', {val: allLoadsAllLoadsStates[i].state.flags.timeout, ack: true}); }
-						if (allLoadsAllLoadsStates[i].state.flags.locked !== undefined && allLoadsAllLoadsStates[i].state.flags.locked !== null) { this.setState(allLoadsAllLoadsStates[i].device + '.' + allLoadsAllLoadsStates[i].device + '_' + allLoadsAllLoadsStates[i].id + '.flags.locked', {val: allLoadsAllLoadsStates[i].state.flags.locked, ack: true}); }
-					}
-				}
-			}
-			statesUpdate = true;
-
-			this.log.debug('"AllStates" filled in ...');
-		} else {
-			this.log.debug('No "AllStates" found. Nothing updated...');
+			this.log.debug('[fillAllLoads()]: allLoads filled in.');
+		} catch (error) {
+			// do nothing
 		}
 	}
 
-	async fillRssi(allLoads, rssi) {
-		if (allLoads[0].device !== null) { this.setState('info.rssi', {val: rssi.rssi, ack: true}); }
-	}
-*/
 	/**
 	 * Is called when adapter shuts down - callback has to be called under any circumstances!
 	 * @param {() => void} callback
@@ -984,7 +946,6 @@ class Wiserbyfeller extends utils.Adapter {
 			// Here you must clear all timeouts or intervals that may still be active
 			this.setState('info.connection', false, true);
 			this.updateInterval && clearInterval(this.updateInterval);
-			this.updateInterval2 && clearInterval(this.updateInterval2);
 			callback();
 			this.log.info('cleaned everything up... (#1)');
 		} catch (e) {
@@ -1030,12 +991,25 @@ class Wiserbyfeller extends utils.Adapter {
 						sendData = {bri : state.val};
 						break;
 					case 'motor':
-						if (load === 'level') {
+						if (load === 'LEVEL') {
 							sendData = {level: state.val};
-						} else if (load === 'tilt') {
+						} else if (load === 'TILT') {
 							sendData = {tilt: state.val};
 						} else if (load === 'leveltilt') {
-							sendData = state.val;
+							const idSplit = id.split('.');
+							const parentPath = idSplit.slice(0, idSplit.length - 1).join('.');
+							this.log.debug('parentPath: ' + parentPath);
+
+							const level = await this.getStateAsync(parentPath + '.level');
+							const tilt = await this.getStateAsync(parentPath + '.tilt');
+
+							if (level && tilt && level.val && tilt.val) {
+								sendData = {
+									level: level.val,
+									tilt: tilt.val
+								};
+							}
+
 						}
 						break;
 				}
@@ -1057,24 +1031,6 @@ class Wiserbyfeller extends utils.Adapter {
 						//this.log.debug('response.statusText: ' + response.statusText);
 						this.log.debug('response.headers: ' + JSON.stringify(response.headers));
 						this.log.debug('response.config: ' + JSON.stringify(response.config));
-
-						//this.log.debug('response.data.data.target_state: ' + JSON.stringify(response.data.data.target_state));
-						this.log.debug('Object.keys(response.data.data.target_state)[0]: ' + Object.keys(response.data.data.target_state)[0]);
-
-						if (Object.keys(response.data.data.target_state)[0] === 'bri') {
-							this.setState(id, {val: response.data.data.target_state.bri, ack: true});
-						} else if (Object.keys(response.data.data.target_state)[0] === 'tilt' && Object.keys(response.data.data.target_state)[1] === 'level') {
-							//f.ex.: {"level":3000, "tilt":3}
-							this.setState(id, {val: null, ack: true});
-							this.setState(id.substring(0, id.length - 9) + 'level', {val: response.data.data.target_state.level, ack: true});
-							this.setState(id.substring(0, id.length - 9) + 'tilt', {val: response.data.data.target_state.tilt, ack: true});
-						} else if (Object.keys(response.data.data.target_state)[0] === 'tilt') {
-							this.setState(id, {val: response.data.data.target_state.tilt, ack: true});
-						} else if (Object.keys(response.data.data.target_state)[0] === 'level') {
-							this.setState(id, {val: response.data.data.target_state.level, ack: true});
-						}
-
-						statesUpdate = false;
 					})
 					.catch((error) => {
 						if (error.response) {
