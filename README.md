@@ -16,11 +16,11 @@
 
 ## wiserbyfeller adapter for ioBroker
 
-This Adapter enables you to manage all your Wiser-by-Feller system devices.
+This Adapter enables you to manage all your Wiser-by-Feller system devices via a WebSocket connection.
 
 ## Installation requirements
 
-* Node >=12.0 is required
+* node.js >=12.0 is required
 * js-controller >=3.0 is required
 * Installed Wiser by Feller devices are required. More information can be found here: [Wiser by Feller](https://wiser.feller.ch/de/professionals).
 
@@ -81,6 +81,7 @@ Procedure:
 * (ice987987) implement WebSocket connection to get values of the devices
 * (ice987987) all subscribed states are bold
 * (ice987987) new way to set leveltilt values
+* (ice987987) update readme
 
 ### v0.0.2 (27.02.2022)
 * (ice987987) description of several datapoints updated
