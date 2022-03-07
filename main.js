@@ -200,7 +200,7 @@ class Wiserbyfeller extends utils.Adapter {
 			}
 		})
 			.then((response) => {
-				this.log.debug('[getAllLoads()] response.data: ' + JSON.stringify(response.data));
+				this.log.debug('[getAllLoads()] response.data.data: ' + JSON.stringify(response.data.data));
 				this.log.debug('[getAllLoads()] response.status: ' + response.status);
 				//this.log.debug('[getAllLoads()] response.statusText: ' + response.statusText); //empty
 				this.log.debug('[getAllLoads()] response.headers: ' + JSON.stringify(response.headers));
@@ -266,28 +266,30 @@ class Wiserbyfeller extends utils.Adapter {
 
 	//https://github.com/ioBroker/ioBroker/blob/master/doc/STATE_ROLES.md
 	async createObjects() {
-		//this.log.debug('createObjects(): this.allLoads: ' + JSON.stringify(this.allLoads));
+		this.log.debug('createObjects(): this.allLoads: ' + JSON.stringify(this.allLoads));
 
-		this.log.debug('[createObjects()] start objects creation for ' + this.allLoads.length + ' device' + (this.allLoads.length > 1 ? 's' : '') + '...');
+		if (this.allLoads && this.allLoads.length) {
+			this.log.debug('[createObjects()] start objects creation for ' + this.allLoads.length + ' device' + (this.allLoads.length > 1 ? 's' : '') + '...');
 
-		await this.setObjectNotExistsAsync('info.rssi', {
-			type: 'state',
-			common: {
-				name: 'Received Signal Strength Indication of the Gateway device.',
-				desc: 'Received Signal Strength Indication of the Gateway device',
-				type: 'number',
-				role: 'value',
-				min: -100,
-				max: -1,
-				unit: 'dBm',
-				read: true,
-				write: false
-			},
-			native: {}
-		});
+			await this.setObjectNotExistsAsync('info.rssi', {
+				type: 'state',
+				common: {
+					name: 'Received Signal Strength Indication of the Gateway device.',
+					desc: 'Received Signal Strength Indication of the Gateway device',
+					type: 'number',
+					role: 'value',
+					min: -100,
+					max: -1,
+					unit: 'dBm',
+					read: true,
+					write: false
+				},
+				native: {}
+			});
 
-		if (this.allLoads.length !== 0) {
-			for (let i = 0; i < this.allLoads.length; i++) {
+			//https://github.com/ioBroker/ioBroker.js-controller/blob/d40110f736e91e2cff4db623cc1b726fb7d4fe69/packages/controller/lib/setup/setupUpload.js#L94
+			//for (let i = 0; i < this.allLoads.length; i++) {
+			for (const i in this.allLoads) {
 
 				//get device type
 				let devicetypeName = '';
