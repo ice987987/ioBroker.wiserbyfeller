@@ -170,30 +170,6 @@ systemDictionary = {
 		'pl': 'Stan adaptera',
 		'zh-cn': '适配器状态'
 	},
-	'intervalTime': {
-		'en': 'Update interval (in seconds)',
-		'de': 'Aktualisierungsintervall (in Sekunden)',
-		'ru': 'Интервал обновления (в секундах)',
-		'pt': 'Intervalo de atualização (em segundos)',
-		'nl': 'Update-interval (in seconden)',
-		'fr': 'Intervalle de mise à jour (en secondes)',
-		'it': 'Intervallo di aggiornamento (in secondi)',
-		'es': 'Intervalo de actualización (en segundos)',
-		'pl': 'Interwał aktualizacji (w sekundach)',
-		'zh-cn': '更新间隔（秒）'
-	},
-	'intervallTimeHint': {
-		'en': 'values between 5sec and 300 are allowed.',
-		'de': 'Werte zwischen 5sec und 300sec sind erlaubt.',
-		'ru': 'допустимы значения от 5 до 300 с.',
-		'pt': 'valores entre 5 seg e 300 seg são permitidos.',
-		'nl': 'waarden tussen 5sec en 300sec zijn toegestaan.',
-		'fr': 'les valeurs entre 5sec et 300sec sont autorisées.',
-		'it': 'sono consentiti valori compresi tra 5sec e 300sec.',
-		'es': 'Se permiten valores entre 5 segundos y 300 segundos.',
-		'pl': 'dozwolone są wartości od 5 s do 300 s.',
-		'zh-cn': '允许 5 秒到 300 秒之间的值。'
-	},
 	'on save adapter restarts with new config immediately': {
 		'en': 'on save adapter restarts with new config immediately',
 		'de': 'Beim Speichern der Einstellungen wird der Adapter sofort neu gestartet.',

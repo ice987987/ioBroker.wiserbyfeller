@@ -1,7 +1,7 @@
 {
 	"common": {
 		"name": "wiserbyfeller",
-		"version": "0.0.2",
+		"version": "0.0.3",
 		"news": {
 			"0.0.1": {
 				"en": "initial release",
@@ -17,15 +17,27 @@
 			},
 			"0.0.2": {
 				"en": "description of several datapoints updated\nicons for main datapoints added\nupdate year\nmove DP rssi into info-folder\nupdate readme.md\nupdate dependencies",
-				"de": "Beschreibung mehrerer Datenpunkte aktualisiert\nSymbole für Hauptdatenpunkte hinzugefügt\nAktualisierungsjahr\nDP RSSI in Info-Ordner verschieben\nreadme.md aktualisieren\nAbhängigkeiten aktualisieren",
-				"ru": "обновлено описание нескольких точек данных\nобавлены значки для основных точек данных\nгод обновления\nпереместить DP rssi в информационную папку\nобновить readme.md\nобновить зависимости",
-				"pt": "descrição de vários pontos de dados atualizados\nicons para pontos de dados principais adicionados\nupdate year\nmove DP rssi para a pasta info\nupdate readme.md\nupdate dependencies",
-				"nl": "beschrijving van verschillende datapunten bijgewerkt\nicons voor belangrijkste datapunten toegevoegd\nupdate jaar\nverplaats DP rssi naar info-map\nupdate readme.md\nupdate afhankelijkheden",
-				"fr": "description de plusieurs points de données mise à jour\nicones pour les principaux points de données ajoutés\nmise à jour de l'année\ndéplacement DP rssi dans le dossier d'informations\nmise à jour readme.md\nmise à jour des dépendances",
-				"it": "descrizione di diversi datapoint aggiornati\nicons per i principali datapoint aggiunti\naggiornamento anno\nsposta DP rssi nella cartella info\nupdate readme.md\nupdate dipendenze",
-				"es": "descripción de varios puntos de datos actualizados\niconos para puntos de datos principales añadidos\naño de actualización\nmover DP rssi a la carpeta de información\nactualizar readme.md\nactualizar dependencias",
-				"pl": "opis kilku zaktualizowanych punktów danych\nicons dla głównych punktów danych dodanych\nzaktualizuj rok\nprzenieś DP rssi do folderu informacyjnego\naktualizuj readme.md\nzaktualizuj zależności",
-				"zh-cn": "更新了几个数据点的描述\n加了主要数据点的图标\n更新年份\n将 DP rssi 移动到信息文件夹\n更新 readme.md\n更新依赖项"
+				"de": "Beschreibung mehrerer Datenpunkte aktualisiert\nSymbole für Hauptdatenpunkte hinzugefügt\nJahr aktualisieren\nVerschieben Sie DP RSSi in den Info-Ordner\nreadme.md aktualisieren\nAbhängigkeiten aktualisieren",
+				"ru": "описание нескольких точек данных обновлено\nдобавлены значки для основных точек данных\nгод обновления\nпереместите DP rssi в информационную папку\nобновить readme.md\nобновить зависимости",
+				"pt": "descrição de vários pontos de dados atualizados\nícones para os principais pontos de dados adicionados\nano de atualização\nmova DP rssi para a pasta de informações\natualize o readme.md\natualizar dependências",
+				"nl": "beschrijving van verschillende datapunten bijgewerkt\npictogrammen voor belangrijkste datapunten toegevoegd\nupdate jaar\nverplaats DP rssi naar info-map\nupdate readme.md\nupdate afhankelijkheden",
+				"fr": "description de plusieurs points de données mise à jour\nicônes pour les points de données principaux ajoutés\nannée de mise à jour\ndéplacer DP rssi dans le dossier d'informations\nmettre à jour readme.md\nmettre à jour les dépendances",
+				"it": "descrizione di diversi datapoint aggiornata\nicone per i principali datapoint aggiunte\nanno di aggiornamento\nsposta DP rssi nella cartella info\naggiorna readme.md\naggiornare le dipendenze",
+				"es": "descripción de varios puntos de datos actualizados\niconos para puntos de datos principales agregados\naño de actualización\nmover DP rssi a la carpeta de información\nactualizar readme.md\nactualizar dependencias",
+				"pl": "zaktualizowano opis kilku punktów danych\ndodano ikony dla głównych punktów danych\nrok aktualizacji\nprzenieś DP rssi do folderu informacyjnego\nzaktualizuj plik readme.md\nzaktualizuj zależności",
+				"zh-cn": "更新了几个数据点的描述\n添加了主要数据点的图标\n更新年份\n将 DP rssi 移动到信息文件夹\n更新自述文件.md\n更新依赖"
+			},
+			"0.0.3": {
+				"en": "implement WebSocket connection to get values of the devices\nall subscribed states are capitalized\nnew way to set leveltilt values\nupdate readme",
+				"de": "Implementieren Sie eine WebSocket-Verbindung, um Werte der Geräte abzurufen\nalle abonnierten Zustände werden groß geschrieben\nneue Methode zum Einstellen von Leveltilt-Werten\nReadme aktualisieren",
+				"ru": "реализовать соединение WebSocket для получения значений устройств\nвсе подписанные состояния пишутся с заглавной буквы\nновый способ установки значений leveltilt\nобновить ридми",
+				"pt": "implementar conexão WebSocket para obter valores dos dispositivos\ntodos os estados inscritos são capitalizados\nnova maneira de definir valores de inclinação de nível\natualize o leia-me",
+				"nl": "Implementeer WebSocket-verbinding om waarden van de apparaten te krijgen\nalle ingeschreven staten worden met een hoofdletter geschreven\nnieuwe manier om leveltilt-waarden in te stellen\nupdate leesmij",
+				"fr": "implémenter la connexion WebSocket pour obtenir les valeurs des appareils\ntous les états souscrits sont en majuscules\nnouvelle façon de définir les valeurs leveltilt\nmettre à jour le fichier lisez-moi",
+				"it": "implementare la connessione WebSocket per ottenere i valori dei dispositivi\ntutti gli stati sottoscritti sono in maiuscolo\nnuovo modo per impostare i valori di leveltilt\naggiorna il readme",
+				"es": "implementar la conexión WebSocket para obtener valores de los dispositivos\ntodos los estados suscritos están en mayúscula\nnueva forma de establecer valores leveltilt\nactualizar Léame",
+				"pl": "zaimplementuj połączenie WebSocket, aby uzyskać wartości urządzeń\nwszystkie subskrybowane stany są pisane wielkimi literami\nnowy sposób ustawiania wartości nachylenia\nzaktualizuj plik readme",
+				"zh-cn": "实现 WebSocket 连接以获取设备的值\n所有订阅状态都大写\n设置水平倾斜值的新方法\n更新自述文件"
 			}
 		},
 		"title": "Wiser by Feller",
@@ -88,8 +100,7 @@
 	"native": {
 		"gatewayIP": "",
 		"username": "",
-		"authToken": "",
-		"intervalTime": 10
+		"authToken": ""
 	},
 	"objects": [],
 	"instanceObjects": [

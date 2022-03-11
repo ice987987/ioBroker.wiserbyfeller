@@ -1,6 +1,6 @@
 {
   "name": "iobroker.wiserbyfeller",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "This Adapter enables you to manage all your Wiser-by-Feller system devices.",
   "author": {
     "name": "ice987987",
@@ -18,8 +18,9 @@
     "url": "https://github.com/ice987987/ioBroker.wiserbyfeller"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^2.6.0",
-    "axios": "^0.26.0"
+    "@iobroker/adapter-core": "^2.5.1",
+    "axios": "^0.25.0",
+    "ws": "^8.5.0"
   },
   "devDependencies": {
     "@iobroker/testing": "^2.5.4",
