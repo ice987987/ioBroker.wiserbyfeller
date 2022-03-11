@@ -6,8 +6,8 @@
 	"description": "This Adapter enables you to manage all your Wiser-by-Feller system devices.",
 	"keywords": [
 		"smarthome",
-		"wiserbyfeller",
-		"ioBroker"
+		"iobroker",
+		"wiserbyfeller"
 	],
 	"expert": "yes",
 	"features": [

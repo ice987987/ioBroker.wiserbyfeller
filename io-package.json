@@ -70,8 +70,8 @@
 		],
 		"keywords": [
 			"smarthome",
-			"wiserbyfeller",
-			"ioBroker"
+			"iobroker",
+			"wiserbyfeller"
 		],
 		"license": "MIT",
 		"platform": "Javascript/Node.js",

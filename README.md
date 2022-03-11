@@ -37,6 +37,7 @@ Trigger changes on states in folder `ACTONS`.
 
 **Wiser switchable light:**
 
+
 To turn on or off a load set the attribute `BRI` (brightness) to the following values:
 * Turn off set the `.ACTIONS.BRI` attribute to `off`
 * Turn on set the `.ACTIONS.BRI` attribute to `on`
@@ -57,8 +58,8 @@ On a dimmable light you can set the target brightness between 0% and 100% (`0` -
 * To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 
 <!-- 
-**The Embedded Web Interface**
-Еven without the mobile app, Wiser-by-Feller WLAN device can be set and controlled through a browser and WiFi connection of a mobile phone, tablet or PC (please make sure, that the device is not connetced to the cloud service -> see reset guideline in the manual).
+**The Embedded Web Interface from Wiser-by-Feller WLAN device**
+Еven without the mobile app, Wiser-by-Feller WLAN device can be set and controlled through a browser and WiFi connection of a mobile phone, tablet or PC (please make sure, that the device is not connetced to the cloud service -> see reset guideline in the manual of the device).
 
 Procedure:
 1. Install Wiser-by-Feller WLAN device
@@ -76,7 +77,6 @@ Procedure:
 -->
 
 ## Changelog
-
 <!-- ### __WORK IN PROGRESS__ -->
 
 ### v0.0.3 (not yet published)
