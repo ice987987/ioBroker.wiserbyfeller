@@ -79,7 +79,7 @@ Procedure:
 ## Changelog
 <!-- ### __WORK IN PROGRESS__ -->
 
-### v0.0.3 (not yet published)
+### v0.0.3 (11.03.2022)
 * (ice987987) implement WebSocket connection to get values of the devices
 * (ice987987) all subscribed states are capitalized
 * (ice987987) new way to set leveltilt values
