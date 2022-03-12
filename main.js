@@ -34,7 +34,7 @@ class Wiserbyfeller extends utils.Adapter {
 		this.rssi = null;
 
 		this.updateInterval = null;
-		//this.autoRestartTimeout = null;
+		this.autoRestartTimeout = null;
 	}
 
 	/**
@@ -949,7 +949,7 @@ class Wiserbyfeller extends utils.Adapter {
 			// Here you must clear all timeouts or intervals that may still be active
 			this.setState('info.connection', false, true);
 			this.updateInterval && clearInterval(this.updateInterval);
-			//this.autoRestartTimeout && clearTimeout(this.autoRestartTimeout);
+			this.autoRestartTimeout && clearTimeout(this.autoRestartTimeout);
 			callback();
 			this.log.info('cleaned everything up... (#1)');
 		} catch (e) {
