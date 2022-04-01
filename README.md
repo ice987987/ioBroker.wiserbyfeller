@@ -79,6 +79,9 @@ Procedure:
 ## Changelog
 <!-- ### __WORK IN PROGRESS__ -->
 
+### **WORK IN PROGRESS**
+- (ice987987) update dependencies
+
 ### v0.0.4 (12.03.2022)
 * (ice987987) add cleartimeout 
 
