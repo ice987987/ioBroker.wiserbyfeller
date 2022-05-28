@@ -20,8 +20,9 @@ This Adapter enables you to manage all your Wiser-by-Feller system devices via a
 
 ## Installation requirements
 
-* node.js >=12.0 is required
-* js-controller >=3.0 is required
+* node.js >= v14.0 is required
+* js-controller >= v3.3.19 is required
+* admin >= v5.1.28 is required
 * Installed Wiser by Feller devices are required. More information can be found here: [Wiser by Feller](https://wiser.feller.ch/de/professionals).
 
 ## Supported Devices
@@ -36,7 +37,6 @@ This Adapter enables you to manage all your Wiser-by-Feller system devices via a
 Trigger changes on states in folder `ACTONS`.
 
 **Wiser switchable light:**
-
 
 To turn on or off a load set the attribute `BRI` (brightness) to the following values:
 * Turn off set the `.ACTIONS.BRI` attribute to `off`
@@ -61,7 +61,7 @@ On a dimmable light you can set the target brightness between 0% and 100% (`0` -
 **The Embedded Web Interface from Wiser-by-Feller WLAN device**
 Еven without the mobile app, Wiser-by-Feller WLAN device can be set and controlled through a browser and WiFi connection of a mobile phone, tablet or PC (please make sure, that the device is not connetced to the cloud service -> see reset guideline in the manual of the device).
 
-Procedure:
+Installation procedure:
 1. Install Wiser-by-Feller WLAN device
 2. After first connection to power, Wiser-by-Feller WLAN device has created an own WiFi network, with name (SSID) such as `wiser-000xxxxx`. Connect to it with your phone, tablet or PC and enter passwort, provided together with the device (sticker).
 3. Type `192.168.0.1` in your browser
@@ -80,7 +80,10 @@ Procedure:
 <!-- ### __WORK IN PROGRESS__ -->
 
 ### **WORK IN PROGRESS**
-- (ice987987) update dependencies
+* (ice987987) update dependencies
+* (ice987987) clean up code
+* (ice987987) implementation of JSON config (this change requires js-controller >= v3.3.19 and admin >= v5.1.28)
+* (ice987987) node.js >= v14.0 is required
 
 ### v0.0.4 (12.03.2022)
 * (ice987987) add cleartimeout 
