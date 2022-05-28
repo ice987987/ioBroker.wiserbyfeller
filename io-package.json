@@ -40,7 +40,6 @@
 				"zh-cn": "实现 WebSocket 连接以获取设备的值\n所有订阅状态都大写\n设置水平倾斜值的新方法\n更新自述文件"
 			}
 		},
-		"title": "Wiser by Feller",
 		"titleLang": {
 			"en": "Wiser by Feller",
 			"de": "Wiser by Feller",
@@ -69,9 +68,9 @@
 			"ice987987 <mathias.frei1@gmail.com>"
 		],
 		"keywords": [
-			"smarthome",
-			"iobroker",
-			"wiserbyfeller"
+			"wiserbyfeller",
+			"wiser",
+			"feller"
 		],
 		"license": "MIT",
 		"platform": "Javascript/Node.js",
@@ -91,11 +90,19 @@
 		"localLinks": {
 			"_default": "http://%gatewayIP%"
 		},
+        "adminUI": {
+            "config": "json"
+        },
 		"dependencies": [
 			{
-				"js-controller": ">=3.0.0"
+				"js-controller": ">=3.3.19"
 			}
-		]
+		],
+        "globalDependencies": [
+            {
+                "admin": ">=5.1.28"
+            }
+        ]
 	},
 	"native": {
 		"gatewayIP": "",
