@@ -13,7 +13,8 @@ const axios = require('axios').default;
 const WebSocket = require('ws');
 
 // variables
-//let statesUpdate = true;
+const isValidIP = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
+const isValidUsername = /[a-zA-Z0-9]{4,}/;
 
 class Wiserbyfeller extends utils.Adapter {
 
@@ -35,6 +36,8 @@ class Wiserbyfeller extends utils.Adapter {
 
 		this.updateInterval = null;
 		this.autoRestartTimeout = null;
+
+		this.waitBeforeCheck = null;
 	}
 
 	/**
@@ -1067,7 +1070,77 @@ class Wiserbyfeller extends utils.Adapter {
 	//  * Using this method requires "common.messagebox" property to be set to true in io-package.json
 	//  * @param {ioBroker.Message} obj
 	//  */
+
+	onMessage(msg) {
+		this.log.debug(`[onMessage] message received: ${JSON.stringify(msg)}`);
+
+		// check API-Key
+		if (!isValidIP.test(msg.message.gatewayIP)) {
+			this.log.error('no valid Gateway-IP (ERR_#0xx)');
+			this.sendTo(msg.from, msg.command, 'Gateway-IP einfügen', msg.callback);
+			return;
+		}
+
+		// check username
+		if (!isValidUsername.test(msg.message.username)) {
+			this.log.error('no valid username (ERR_#0xx)');
+			this.sendTo(msg.from, msg.command, 'username einfügen', msg.callback);
+			return;
+		}
+
+		//wait after last user input
+		this.waitBeforeCheck && clearTimeout(this.waitBeforeCheck);
+		this.waitBeforeCheck = setTimeout(() => {
+
+			if (msg.command === 'getAuthToken') {
+				this.log.info(`Try to obtain authorization token from ${msg.message.gatewayIP} with username ${msg.message.username} (Press Button on blinking device!)`);
+
+				//this.sendTo(msg.from, msg.command, `Try to obtain authorization token from ${msg.message.gatewayIP} with username ${msg.message.username} (Press Button on blinking device!)`, msg.callback);
+
+				axios({
+					method: 'POST',
+					url: `http://${msg.message.gatewayIP}/api/account/claim`,
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					data: {'user': msg.message.username},
+					timeout: 30000
+				})
+				.then((response) => {
+					this.log.debug(`[onMessage]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
+					this.log.info(`Got new authentication token ${response.data.data.secret} with username ${response.data.data.user}`);
+
+					this.config.authToken = response.data.data.secret;
+					//this.sendTo(msg.from, msg.command, `Success: Got new authentication token "${response.data.data.secret}" with username "${response.data.data.user}"`, msg.callback);
+					this.sendTo(msg.from, msg.command, { result: "result1" }, msg.callback);
+				})
+				.catch((error) => {
+					if (error.response) {
+						// The request was made and the server responded with a status code that falls out of the range of 2xx
+						this.log.debug(`[onMessage]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
+					} else if (error.request) {
+						// The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
+						this.log.debug(`[onMessage]: error request: ${error}`);
+					} else {
+						// Something happened in setting up the request that triggered an Error
+						this.log.debug(`[onMessage]: error message: ${error.message}`);
+					}
+					this.log.debug(`[onMessage]: error.config: ${JSON.stringify(error.config)}`);
+					this.log.debug(`[onMessage]: msg.from: ${msg.from}; msg.command: ${JSON.stringify(msg.command)}; msg.callback: ${JSON.stringify(msg.callback)}`);
+
+					//this.sendTo(msg.from, msg.command, { error: `Configuration invalid. (Gateway-IP: ${msg.callback.message.gatewayIP}; Username: ${msg.callback.message.config.username})` }, msg.callback);
+					//this.sendTo(msg.from, msg.command, `ERROR: No authentication token received`, msg.callback);
+					this.sendTo(msg.from, msg.command, { error: "error1" }, msg.callback);
+				});
+
+			}
+		}, 3000);
+
+	}
+
+/*
 	onMessage(obj) {
+		this.log.debug(`message received: ${JSON.stringify(obj)}`);
 		if (typeof obj === 'object' && obj.message) {
 			if (obj.command === 'getAuthToken') {
 
@@ -1122,6 +1195,7 @@ class Wiserbyfeller extends utils.Adapter {
 			}
 		}
 	}
+*/
 }
 
 if (require.main !== module) {
