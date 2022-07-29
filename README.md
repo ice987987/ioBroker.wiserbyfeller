@@ -82,16 +82,16 @@ Procedure:
 ### **WORK IN PROGRESS**
 - (ice987987) update dependencies
 
-### v0.0.4 (12.03.2022)
+### 0.0.4 (12.03.2022)
 * (ice987987) add cleartimeout 
 
-### v0.0.3 (11.03.2022)
+### 0.0.3 (11.03.2022)
 * (ice987987) implement WebSocket connection to get values of the devices
 * (ice987987) all subscribed states are capitalized
 * (ice987987) new way to set leveltilt values
 * (ice987987) update readme
 
-### v0.0.2 (27.02.2022)
+### 0.0.2 (27.02.2022)
 * (ice987987) description of several datapoints updated
 * (ice987987) icons for main datapoints added
 * (ice987987) update year
@@ -99,7 +99,7 @@ Procedure:
 * (ice987987) update readme.md
 * (ice987987) update dependencies
 
-### v0.0.1 (28.12.2021)
+### 0.0.1 (28.12.2021)
 * (ice987978) initial release
 
 ## License
