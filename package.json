@@ -9,9 +9,8 @@
   "homepage": "https://github.com/ice987987/ioBroker.wiserbyfeller",
   "license": "MIT",
   "keywords": [
-    "smarthome",
-    "iobroker",
-    "wiserbyfeller"
+    "wiserbyfeller",
+    "wiser by feller"
   ],
   "repository": {
     "type": "git",
