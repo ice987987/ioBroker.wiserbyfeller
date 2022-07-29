@@ -40,7 +40,6 @@
 				"zh-cn": "实现 WebSocket 连接以获取设备的值\n所有订阅状态都大写\n设置水平倾斜值的新方法\n更新自述文件"
 			}
 		},
-		"title": "Wiser by Feller",
 		"titleLang": {
 			"en": "Wiser by Feller",
 			"de": "Wiser by Feller",
