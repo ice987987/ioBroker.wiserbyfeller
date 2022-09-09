@@ -20,7 +20,7 @@ This Adapter enables you to manage all your Wiser-by-Feller system devices via a
 
 ## Installation requirements
 
-* node.js >=12.0 is required
+* node.js >=14.0 is required
 * js-controller >=3.0 is required
 * Installed Wiser by Feller devices are required. More information can be found here: [Wiser by Feller](https://wiser.feller.ch/de/professionals).
 
