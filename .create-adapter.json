@@ -3,16 +3,10 @@
 	"target": "directory",
 	"adapterName": "wiserbyfeller",
 	"title": "Wiser by Feller",
-	"description": "This Adapter enables you to manage all your Wiser-by-Feller system devices.",
-	"keywords": [
-		"smarthome",
-		"iobroker",
-		"wiserbyfeller"
-	],
+	"description": "This Adapter enables you to manage all your \\\"Wiser by Feller\\\" system devices.",
+	"keywords": ["wiserbyfeller", "wiser by feller"],
 	"expert": "yes",
-	"features": [
-		"adapter"
-	],
+	"features": ["adapter"],
 	"adminFeatures": [],
 	"type": "household",
 	"startMode": "daemon",
@@ -20,17 +14,15 @@
 	"dataSource": "poll",
 	"connectionIndicator": "yes",
 	"language": "JavaScript",
-	"adminReact": "no",
-	"tools": [
-		"ESLint",
-		"type checking"
-	],
+	"nodeVersion": "14",
+	"adminUi": "json",
+	"tools": ["ESLint", "type checking", "Prettier"],
 	"releaseScript": "no",
 	"devServer": "no",
 	"indentation": "Tab",
 	"quotes": "single",
 	"es6class": "yes",
-	"authorName": "ice987",
+	"authorName": "ice987987",
 	"authorGithub": "ice987987",
 	"authorEmail": "mathias.frei1@gmail.com",
 	"gitRemoteProtocol": "HTTPS",
@@ -38,5 +30,5 @@
 	"defaultBranch": "main",
 	"license": "MIT License",
 	"dependabot": "yes",
-	"creatorVersion": "2.0.1"
+	"creatorVersion": "2.3.0"
 }

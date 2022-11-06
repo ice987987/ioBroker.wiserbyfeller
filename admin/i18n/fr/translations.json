@@ -1,0 +1,15 @@
+{
+    "instruction_1": "1.) Remplissez 'Gateway IP' et 'Username'",
+    "instruction_2": "2.) Appuyez sur le bouton 'Enregistrer'",
+    "instruction_3": "3.) Appuyez sur le bouton \"Obtenir un jeton d'authentification\"",
+    "instruction_4": "4.) Appuyez sur le bouton \"Fermer\"",
+    "gatewayIP": "IP passerelle",
+    "gatewayIPHint": "par exemple. '192.168.1.150'",
+    "username": "Nom d'utilisateur",
+    "usernameHint": "par exemple. 'administrateur'",
+    "getAuthToken": "Obtenir un jeton d'authentification",
+    "noValidGateway-IP": "Aucune 'IP de passerelle' valide",
+    "noValidUsername": "Aucun 'nom d'utilisateur' valide",
+    "noAuthenticationTokenRecived": "Aucun jeton d'authentification reçu. Veuillez vérifier votre configuration.",
+    "authenticationTokenRecived": "Jeton d'authentification reçu et l'adaptateur sera redémarré. Veuillez fermer cette configuration avec le bouton 'fermer'."
+}

@@ -1,0 +1,15 @@
+{
+    "instruction_1": "1.) Wypełnij „IP bramy” i „Nazwa użytkownika”",
+    "instruction_2": "2.) Naciśnij przycisk „Zapisz”",
+    "instruction_3": "3.) Naciśnij przycisk „Pobierz token uwierzytelniający”",
+    "instruction_4": "4.) Naciśnij przycisk „Zamknij”",
+    "gatewayIP": "IP bramy",
+    "gatewayIPHint": "np. „192.168.1.150”",
+    "username": "Nazwa użytkownika",
+    "usernameHint": "np. 'Admin'",
+    "getAuthToken": "Uzyskaj token uwierzytelniający",
+    "noValidGateway-IP": "Brak prawidłowego adresu IP bramy",
+    "noValidUsername": "Brak poprawnej „nazwy użytkownika”",
+    "noAuthenticationTokenRecived": "Nie otrzymano tokena uwierzytelniania. Sprawdź swoją konfigurację.",
+    "authenticationTokenRecived": "Otrzymano token uwierzytelniania i adapter zostanie zrestartowany. Proszę zamknąć tę konfigurację przyciskiem „zamknij”."
+}

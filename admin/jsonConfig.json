@@ -1,0 +1,105 @@
+{
+	"type": "panel",
+	"i18n": true,
+	"items": {
+		"_instruction_1": {
+			"newLine": true,
+			"type": "staticText",
+			"text": "instruction_1",
+			"style": {
+				"font-size": "15px"
+			}
+		},
+		"gatewayIP": {
+			"newLine": true,
+			"type": "text",
+			"label": "gatewayIP",
+			"help": "gatewayIPHint",
+			"placeholder": "192.168.1.150",
+			"validator": "/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/.test(data.gatewayIP)",
+			"validatorNoSaveOnError": true,
+			"sm": 6,
+			"md": 4,
+			"lg": 4
+		},
+		"username": {
+			"newLine": false,
+			"type": "text",
+			"label": "username",
+			"help": "usernameHint",
+			"placeholder": "admin",
+			"validator": "/[a-zA-Z0-9]{4,}/.test(data.username)",
+			"validatorNoSaveOnError": true,
+			"sm": 6,
+			"md": 4,
+			"lg": 4
+		},
+		"_instruction_2": {
+			"newLine": true,
+			"type": "staticText",
+			"text": "instruction_2",
+			"style": {
+				"font-size": "15px"
+			}
+		},
+		"_instruction_3": {
+			"newLine": true,
+			"type": "staticText",
+			"text": "instruction_3",
+			"style": {
+				"font-size": "15px"
+			}
+		},
+		"getAuthToken": {
+			"newLine": true,
+			"type": "sendTo",
+			"label": "getAuthToken",
+			"disabled": "!_alive || !/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/.test(data.gatewayIP) || !/[a-zA-Z0-9]{4,}/.test(data.username)",
+			"jsonData": "{\"gatewayIP\": \"${data.gatewayIP}\", \"username\": \"${data.username}\"}",
+			"result": {
+				"authenticationTokenRecived": "authenticationTokenRecived"
+			},
+			"error": {
+				"noValidGateway-IP": "noValidGateway-IP",
+				"noValidUsername": "noValidUsername",
+				"noAuthenticationTokenRecived": "noAuthenticationTokenRecived"
+			},
+			"command": "getAuthToken",
+			"variant": "contained",
+			"confirm": {
+				"type": "info",
+				"text": {
+					"en": "Authentification token for your Wiser by Feller RESTFul API. As soon you start the request the physical buttons of the Wiser-uGateway will start flashing for 30 seconds. For a valid request, one of the physical buttons has to be pressed within 30 seconds.",
+					"de": "Authentifizierungstoken für Ihr Wiser by Feller RESTFul API. Sobald Sie die Anfrage starten, blinken die physischen Tasten des Wiser-uGateway für 30 Sekunden. Für eine gültige Anfrage muss innerhalb von 30 Sekunden eine der physischen Tasten gedrückt werden.",
+					"ru": "Токен аутентификации для вашего Wiser by Feller RESTFul API. Как только вы начнете запрос, физические кнопки Wiser-uGateway начнут мигать в течение 30 секунд. Для правильного запроса одна из физических кнопок должна быть нажата в течение 30 секунд.",
+					"pt": "Token de autenticação para seu Wiser by Feller RESTFul API. Assim que você iniciar a solicitação, os botões físicos do Wiser-uGateway começarão a piscar por 30 segundos. Para uma solicitação válida, um dos botões físicos deve ser pressionado em 30 segundos.",
+					"nl": "Verificatietoken voor uw Wiser by Feller RESTFul API. Zodra je het verzoek start, gaan de fysieke knoppen van de Wiser-uGateway 30 seconden knipperen. Voor een geldig verzoek moet binnen 30 seconden een van de fysieke knoppen worden ingedrukt.",
+					"fr": "Jeton d\"authentification pour votre API RESTFul Wiser by Feller. Dès que vous lancez la demande, les boutons physiques de la Wiser-uGateway se mettent à clignoter pendant 30 secondes. Pour une demande valide, un des boutons physiques doit être pressé dans les 30 secondes.",
+					"it": "Token di autenticazione per Wiser by Feller RESTFul API. Non appena si avvia la richiesta i pulsanti fisici del Wiser-uGateway inizieranno a lampeggiare per 30 secondi. Per una richiesta valida, uno dei pulsanti fisici deve essere premuto entro 30 secondi.",
+					"es": "Token de autenticación para su API RESTFul de Wiser by Feller. Tan pronto como inicie la solicitud, los botones físicos de Wiser-uGateway comenzarán a parpadear durante 30 segundos. Para una solicitud válida, ¡uno de los botones físicos debe presionarse en 30 segundos.",
+					"pl": "Token uwierzytelniający dla Twojego Wiser by Feller RESTFul API. Natychmiast po uruchomieniu żądania fizyczne przyciski Wiser-uGateway zaczną migać przez 30 sekund. Aby żądanie było prawidłowe, jeden z fizycznych przycisków musi zostać wciśnięty w ciągu 30 sekund.",
+					"uk": "Перевірити токени для вашогоайзера за допомогою Feller RESTFul API. Після того, як ви починаєте запит на фізичних кнопках Wiser-uGateway, почнуть блимати протягом 30 секунд. Для дійсного запиту, один з фізичних кнопок повинен бути натисканий протягом 30 секунд.",
+					"zh-cn": "Feller RESTFul API 的 Wiser 身份验证令牌. 一旦您开始请求，Wiser-uGateway 的物理按钮将开始闪烁 30 秒。对于有效请求，必须在 30 秒内按下其中一个物理按钮."
+				}
+			}
+		},
+		"_instruction_4": {
+			"newLine": true,
+			"type": "staticText",
+			"text": "instruction_4",
+			"style": {
+				"font-size": "15px"
+			}
+		},
+		"_helpLink": {
+			"newLine": true,
+			"type": "staticLink",
+			"text": "Readme",
+			"noTranslation": true,
+			"variant": "contained",
+			"color": "primary",
+			"button": true,
+			"href": "https://github.com/ice987987/ioBroker.wiserbyfeller/blob/main/README.md"
+		}
+	}
+}

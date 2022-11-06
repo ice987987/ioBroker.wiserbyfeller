@@ -1,0 +1,15 @@
+{
+    "instruction_1": "1.) Vul 'Gateway IP' en 'Gebruikersnaam' in",
+    "instruction_2": "2.) Druk op de knop 'Opslaan'",
+    "instruction_3": "3.) Druk op de knop 'Verkrijg authenticatietoken'",
+    "instruction_4": "4.) Druk op de knop 'Sluiten'",
+    "gatewayIP": "Gateway IP",
+    "gatewayIPHint": "bijv. '192.168.1.150'",
+    "username": "gebruikersnaam",
+    "usernameHint": "bijv. 'beheerder'",
+    "getAuthToken": "Verificatietoken ophalen",
+    "noValidGateway-IP": "Geen geldig 'Gateway IP'",
+    "noValidUsername": "Geen geldige 'gebruikersnaam'",
+    "noAuthenticationTokenRecived": "Geen authenticatietoken ontvangen. Controleer uw configuratie.",
+    "authenticationTokenRecived": "Verificatietoken ontvangen en de adapter wordt opnieuw opgestart. Sluit deze configuratie af met de knop 'sluiten'."
+}

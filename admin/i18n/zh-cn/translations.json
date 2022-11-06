@@ -1,0 +1,15 @@
+{
+    "instruction_1": "1.) 填写“网关IP”和“用户名”",
+    "instruction_2": "2.) 按“保存”按钮",
+    "instruction_3": "3.）按按钮“获取身份验证令牌”",
+    "instruction_4": "4.) 按“关闭”按钮",
+    "gatewayIP": "网关 IP",
+    "gatewayIPHint": "例如'192.168.1.150'",
+    "username": "用户名",
+    "usernameHint": "例如'行政'",
+    "getAuthToken": "获取认证令牌",
+    "noValidGateway-IP": "没有有效的“网关 IP”",
+    "noValidUsername": "没有有效的“用户名”",
+    "noAuthenticationTokenRecived": "未收到身份验证令牌。请检查您的配置。",
+    "authenticationTokenRecived": "已收到身份验证令牌，适配器将重新启动。请使用“关闭”按钮关闭此配置。"
+}

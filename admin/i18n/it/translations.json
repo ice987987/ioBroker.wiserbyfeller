@@ -1,0 +1,15 @@
+{
+    "instruction_1": "1.) Inserisci 'Gateway IP' e 'Username'",
+    "instruction_2": "2.) Premi il pulsante 'Salva'",
+    "instruction_3": "3.) Premi il pulsante \"Ottieni token di autenticazione\"",
+    "instruction_4": "4.) Premere il pulsante 'Chiudi'",
+    "gatewayIP": "IP gateway",
+    "gatewayIPHint": "per esempio. '192.168.1.150'",
+    "username": "Nome utente",
+    "usernameHint": "per esempio. 'amministratore'",
+    "getAuthToken": "Ottieni token di autenticazione",
+    "noValidGateway-IP": "Nessun \"IP gateway\" valido",
+    "noValidUsername": "Nessun 'nome utente' valido",
+    "noAuthenticationTokenRecived": "Nessun token di autenticazione ricevuto. Si prega di controllare la configurazione.",
+    "authenticationTokenRecived": "Token di autenticazione ricevuto e l'adattatore verrà riavviato. Si prega di chiudere questa configurazione con il pulsante 'chiudi'."
+}

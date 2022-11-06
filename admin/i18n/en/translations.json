@@ -1,0 +1,15 @@
+{
+	"instruction_1": "1.) Fill in 'Gateway IP' and 'Username'",
+	"instruction_2": "2.) Press Button 'Save'",
+	"instruction_3": "3.) Press Button 'Get authentification token'",
+	"instruction_4": "4.) Press Button 'Close'",
+	"gatewayIP": "Gateway IP",
+	"gatewayIPHint": "e.g. '192.168.1.150'",
+	"username": "Username",
+	"usernameHint": "e.g. 'admin'",
+	"getAuthToken": "Get authentification token",
+	"noValidGateway-IP": "No valid 'Gateway IP'",
+	"noValidUsername": "No valid 'username'",
+	"noAuthenticationTokenRecived": "No authentication token recived. Please check your configuration.",
+	"authenticationTokenRecived": "Authentication token recived and the adapter will be restarted. Please close this configuration with the button 'close'."
+}

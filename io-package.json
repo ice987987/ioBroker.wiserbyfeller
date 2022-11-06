@@ -1,7 +1,7 @@
 {
 	"common": {
 		"name": "wiserbyfeller",
-		"version": "0.0.4",
+		"version": "0.0.5-beta.1",
 		"news": {
 			"0.0.1": {
 				"en": "initial release",
@@ -13,7 +13,8 @@
 				"it": "Versione iniziale",
 				"es": "Versión inicial",
 				"pl": "Pierwsze wydanie",
-				"zh-cn": "首次出版"
+				"zh-cn": "首次出版",
+				"uk": "початковий випуск"
 			},
 			"0.0.2": {
 				"en": "description of several datapoints updated\nicons for main datapoints added\nupdate year\nmove DP rssi into info-folder\nupdate readme.md\nupdate dependencies",
@@ -25,7 +26,8 @@
 				"it": "descrizione di diversi datapoint aggiornata\nicone per i principali datapoint aggiunte\nanno di aggiornamento\nsposta DP rssi nella cartella info\naggiorna readme.md\naggiornare le dipendenze",
 				"es": "descripción de varios puntos de datos actualizados\niconos para puntos de datos principales agregados\naño de actualización\nmover DP rssi a la carpeta de información\nactualizar readme.md\nactualizar dependencias",
 				"pl": "zaktualizowano opis kilku punktów danych\ndodano ikony dla głównych punktów danych\nrok aktualizacji\nprzenieś DP rssi do folderu informacyjnego\nzaktualizuj plik readme.md\nzaktualizuj zależności",
-				"zh-cn": "更新了几个数据点的描述\n添加了主要数据点的图标\n更新年份\n将 DP rssi 移动到信息文件夹\n更新自述文件.md\n更新依赖"
+				"zh-cn": "更新了几个数据点的描述\n添加了主要数据点的图标\n更新年份\n将 DP rssi 移动到信息文件夹\n更新自述文件.md\n更新依赖",
+				"uk": "оновлено опис кількох точок даних\nдодано значки для основних точок даних\nрік оновлення\nперемістіть DP rssi в папку з інформацією\nоновити readme.md\nоновити залежності"
 			},
 			"0.0.4": {
 				"en": "implement WebSocket connection to get values of the devices\nall subscribed states are capitalized\nnew way to set leveltilt values\nupdate readme",
@@ -37,7 +39,21 @@
 				"it": "implementare la connessione WebSocket per ottenere i valori dei dispositivi\ntutti gli stati sottoscritti sono in maiuscolo\nnuovo modo per impostare i valori di leveltilt\naggiorna il readme",
 				"es": "implementar la conexión WebSocket para obtener valores de los dispositivos\ntodos los estados suscritos están en mayúscula\nnueva forma de establecer valores leveltilt\nactualizar Léame",
 				"pl": "zaimplementuj połączenie WebSocket, aby uzyskać wartości urządzeń\nwszystkie subskrybowane stany są pisane wielkimi literami\nnowy sposób ustawiania wartości nachylenia\nzaktualizuj plik readme",
-				"zh-cn": "实现 WebSocket 连接以获取设备的值\n所有订阅状态都大写\n设置水平倾斜值的新方法\n更新自述文件"
+				"zh-cn": "实现 WebSocket 连接以获取设备的值\n所有订阅状态都大写\n设置水平倾斜值的新方法\n更新自述文件",
+				"uk": "реалізувати підключення WebSocket для отримання значень пристроїв\nусі підписані стани пишуться великими літерами\nновий спосіб встановлення значень leveltilt\nоновити readme"
+			},
+			"0.0.5-beta.1": {
+				"en": "BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required, update dependencies",
+				"de": "BREAKING: js-controller >= v4.0.23 und admin >= v6.2.19 ist erforderlich, Abhängigkeiten aktualisieren",
+				"ru": "BREAKING: требуется js-controller >= v4.0.23 и admin >= v6.2.19, обновить зависимости",
+				"pt": "QUEBRANDO: js-controller >= v4.0.23 e admin >= v6.2.19 é necessário, atualize as dependências",
+				"nl": "BREAKING: js-controller >= v4.0.23 en admin >= v6.2.19 is vereist, update afhankelijkheden",
+				"fr": "BREAKING : js-controller >= v4.0.23 et admin >= v6.2.19 sont requis, mettez à jour les dépendances",
+				"it": "ROTTURA: js-controller >= v4.0.23 e admin >= v6.2.19 è richiesto, aggiorna le dipendenze",
+				"es": "ÚLTIMA HORA: se requiere js-controller >= v4.0.23 y admin >= v6.2.19, actualizar dependencias",
+				"pl": "USZKODZENIE: wymagany jest js-controller >= v4.0.23 i admin >= v6.2.19, zaktualizuj zależności",
+				"uk": "ПОЛИМАННЯ: потрібні js-controller >= v4.0.23 і admin >= v6.2.19, оновіть залежності",
+				"zh-cn": "BREAKING：需要 js-controller >= v4.0.23 和 admin >= v6.2.19，更新依赖项"
 			}
 		},
 		"titleLang": {
@@ -50,33 +66,30 @@
 			"it": "Wiser by Feller",
 			"es": "Wiser by Feller",
 			"pl": "Wiser by Feller",
-			"zh-cn": "Wiser by Feller"
+			"zh-cn": "Wiser by Feller",
+			"uk": "Wiser від Feller"
 		},
 		"desc": {
-			"en": "This Adapter enables you to manage all your \"Wiser by Feller\" system devices.",
-			"de": "Mit diesem Adapter können Sie alle Ihre \"Wiser by Feller\" Systemgeräte verwalten.",
-			"ru": "Этот адаптер позволяет управлять всеми устройствами системы \"Wiser by Feller\".",
-			"pt": "Este adaptador permite que você gerencie todos os seus dispositivos do sistema \"Wiser by Feller\".",
-			"nl": "Met deze adapter kunt u al uw \"Wiser by Feller\" systeemapparaten beheren.",
-			"fr": "Cet adaptateur vous permet de gérer tous vos périphériques système \"Wiser by Feller\".",
-			"it": "Questo adattatore ti consente di gestire tutti i tuoi dispositivi di sistema \"Wiser by Feller\".",
-			"es": "Este adaptador le permite administrar todos sus dispositivos del sistema \"Wiser by Feller\".",
-			"pl": "Ten adapter umożliwia zarządzanie wszystkimi urządzeniami systemu \"Wiser by Feller\".",
-			"zh-cn": "此适配器使您能够管理所有 \"Wiser by Feller\" 系统设备。"
+			"en": "This Adapter enables you to manage all your \\\"Wiser by Feller\\\" system devices.",
+			"de": "Mit diesem Adapter können Sie alle Geräte Ihres \\\"Wiser by Feller\\\"-Systems verwalten.",
+			"ru": "Этот адаптер позволяет вам управлять всеми вашими системными устройствами \\\"Wiser by Feller\\\".",
+			"pt": "Este Adaptador permite que você gerencie todos os seus dispositivos do sistema \\\"Wiser by Feller\\\".",
+			"nl": "Met deze adapter kunt u al uw \\\"Wiser by Feller\\\" systeemapparaten beheren.",
+			"fr": "Cet adaptateur vous permet de gérer tous vos appareils système \\\"Wiser by Feller\\\".",
+			"it": "Questo adattatore ti consente di gestire tutti i tuoi dispositivi di sistema \\\"Wiser by Feller\\\".",
+			"es": "Este adaptador le permite administrar todos sus dispositivos del sistema \\\"Wiser by Feller\\\".",
+			"pl": "Ten adapter umożliwia zarządzanie wszystkimi urządzeniami systemowymi \\\"Wiser by Feller\\\".",
+			"zh-cn": "此适配器使您能够管理所有“Wiser by Feller”系统设备。",
+			"uk": "Цей адаптер дозволяє керувати всіма пристроями системи \\\"Wiser by Feller\\\"."
 		},
-		"authors": [
-			"ice987987 <mathias.frei1@gmail.com>"
-		],
-		"keywords": [
-			"wiserbyfeller",
-			"wiser by feller"
-		],
+		"authors": ["ice987987 <mathias.frei1@gmail.com>"],
+		"keywords": ["wiserbyfeller", "wiser by feller"],
 		"license": "MIT",
 		"platform": "Javascript/Node.js",
 		"main": "main.js",
-		"icon": "wiserbyfeller.png",
+		"icon": "wiserbyfeller.svg",
 		"enabled": true,
-		"extIcon": "https://raw.githubusercontent.com/ice987987/ioBroker.wiserbyfeller/main/admin/wiserbyfeller.png",
+		"extIcon": "https://raw.githubusercontent.com/ice987987/ioBroker.wiserbyfeller/main/admin/wiserbyfeller.svg",
 		"readme": "https://github.com/ice987987/ioBroker.wiserbyfeller/blob/main/README.md",
 		"loglevel": "info",
 		"mode": "daemon",
@@ -84,14 +97,21 @@
 		"compact": true,
 		"connectionType": "local",
 		"dataSource": "poll",
-		"materialize": true,
 		"messagebox": true,
 		"localLinks": {
 			"_default": "http://%gatewayIP%"
 		},
+		"adminUI": {
+			"config": "json"
+		},
 		"dependencies": [
 			{
-				"js-controller": ">=3.0.0"
+				"js-controller": ">=4.0.23"
+			}
+		],
+		"globalDependencies": [
+			{
+				"admin": ">=6.2.19"
 			}
 		]
 	},

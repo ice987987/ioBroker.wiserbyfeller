@@ -1,0 +1,15 @@
+{
+    "instruction_1": "1.) Geben Sie 'Gateway IP' und 'Benutzername' ein",
+    "instruction_2": "2.) Button 'Speichern' drücken",
+    "instruction_3": "3.) Drücken Sie die Schaltfläche 'Authentifizierungstoken abrufen'",
+    "instruction_4": "4.) Button 'Schließen' drücken",
+    "gatewayIP": "Gateway-IP",
+    "gatewayIPHint": "z.B. '192.168.1.150'",
+    "username": "Nutzername",
+    "usernameHint": "z.B. 'Administrator'",
+    "getAuthToken": "Authentifizierungstoken abrufen",
+    "noValidGateway-IP": "Keine gültige 'Gateway IP'",
+    "noValidUsername": "Kein gültiger 'Benutzername'",
+    "noAuthenticationTokenRecived": "Kein Authentifizierungstoken empfangen. Bitte überprüfen Sie Ihre Konfiguration.",
+    "authenticationTokenRecived": "Authentifizierungstoken empfangen und der Adapter wird neu gestartet. Bitte schließen Sie diese Konfiguration mit dem Button „Schließen“."
+}

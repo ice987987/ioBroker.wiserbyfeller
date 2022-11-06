@@ -1,0 +1,15 @@
+{
+    "instruction_1": "1.) Complete 'IP de puerta de enlace' y 'Nombre de usuario'",
+    "instruction_2": "2.) Presione el botón 'Guardar'",
+    "instruction_3": "3.) Presione el botón 'Obtener token de autenticación'",
+    "instruction_4": "4.) Presione el botón 'Cerrar'",
+    "gatewayIP": "IP de acceso",
+    "gatewayIPHint": "p.ej. '192.168.1.150'",
+    "username": "Nombre de usuario",
+    "usernameHint": "p.ej. 'administración'",
+    "getAuthToken": "Obtener token de autenticación",
+    "noValidGateway-IP": "No hay una 'IP de puerta de enlace' válida",
+    "noValidUsername": "No hay 'nombre de usuario' válido",
+    "noAuthenticationTokenRecived": "No se recibió ningún token de autenticación. Por favor, compruebe su configuración.",
+    "authenticationTokenRecived": "Se recibió el token de autenticación y se reiniciará el adaptador. Cierre esta configuración con el botón 'cerrar'."
+}

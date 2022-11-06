@@ -1,10 +1,12 @@
-![Logo](admin/wiserbyfeller.png)
+![Logo](admin/wiserbyfeller.svg)
+
 # ioBroker.wiserbyfeller
 
 [![NPM version](https://img.shields.io/npm/v/iobroker.wiserbyfeller.svg)](https://www.npmjs.com/package/iobroker.wiserbyfeller)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.wiserbyfeller.svg)](https://www.npmjs.com/package/iobroker.wiserbyfeller)
 ![Number of Installations](https://iobroker.live/badges/wiserbyfeller-installed.svg)
 ![Current version in stable repository](https://img.shields.io/badge/stable-not%20published-%23264777)
+
 <!-- ![Current version in stable repository](https://iobroker.live/badges/wiserbyfeller-stable.svg) -->
 <!-- [![Dependency Status](https://img.shields.io/david/ice987987/iobroker.wiserbyfeller.svg)](https://david-dm.org/ice987987/iobroker.wiserbyfeller) -->
 
@@ -20,44 +22,49 @@ This Adapter enables you to manage all your Wiser-by-Feller system devices via a
 
 ## Installation requirements
 
-* node.js >=14.0 is required
-* js-controller >=3.0 is required
-* Installed Wiser by Feller devices are required. More information can be found here: [Wiser by Feller](https://wiser.feller.ch/de/professionals).
+-   node.js >= v14.0 is required
+-   js-controller >= v4.0.23 is required
+-   admin >= v6.2.19 is required
+-   Installed Wiser by Feller devices are required. More information can be found here: [Wiser by Feller](https://wiser.feller.ch/de/professionals).
 
 ## Supported Devices
-* Wiser switchable light 1-channel #3401
-* Wiser switchable light 2-channel #3402
-* Wiser blind switch 1-channel #3404
-* Wiser blind switch 2-channel #3405
-* Wiser LED-universaldimmer 1-channel #3406
-* Wiser LED-universaldimmer 2-channel #3407
+
+-   Wiser switchable light 1-channel #3401
+-   Wiser switchable light 2-channel #3402
+-   Wiser blind switch 1-channel #3404
+-   Wiser blind switch 2-channel #3405
+-   Wiser LED-universaldimmer 1-channel #3406
+-   Wiser LED-universaldimmer 2-channel #3407
 
 ## Usage
+
 Trigger changes on states in folder `ACTONS`.
 
 **Wiser switchable light:**
 
-
 To turn on or off a load set the attribute `BRI` (brightness) to the following values:
-* Turn off set the `.ACTIONS.BRI` attribute to `off`
-* Turn on set the `.ACTIONS.BRI` attribute to `on`
+
+-   Turn off set the `.ACTIONS.BRI` attribute to `off`
+-   Turn on set the `.ACTIONS.BRI` attribute to `on`
 
 **Wiser blind switch:**
 
 On a motor e.g. shutter/blind you can set the target level between 0% and 100% (`0` - `10000`) and a tilt value.
-* To set the shutter in open position set the `.ACTIONS.LEVEL` attribute to `0`
-* To set the shutter in close position set the `.ACTIONS.LEVEL` attribute to `10000`
-* To control the shutter set the `.ACTIONS.LEVEL` attribute between `1` and `10000` (e.g. set `.ACTIONS.LEVEL` to `5000`, means set the shutter/blind to position 50%)
-* To control slats of a shutter (number of tilt) set the `.ACTIONS.TILT` attribute to a value `0` - `9`. Finally it's the motor running time, because we don't know the slat position in degrees.
-* To control the position and the tilt attribute together, set the `.ACTIONS.leveltilt.SET` attribute to value `true`. The shutter/blind will move to the position of the two values `.ACTIONS.leveltilt.level` and `.ACTIONS.leveltilt.tilt`
+
+-   To set the shutter in open position set the `.ACTIONS.LEVEL` attribute to `0`
+-   To set the shutter in close position set the `.ACTIONS.LEVEL` attribute to `10000`
+-   To control the shutter set the `.ACTIONS.LEVEL` attribute between `1` and `10000` (e.g. set `.ACTIONS.LEVEL` to `5000`, means set the shutter/blind to position 50%)
+-   To control slats of a shutter (number of tilt) set the `.ACTIONS.TILT` attribute to a value `0` - `9`. Finally it's the motor running time, because we don't know the slat position in degrees.
+-   To control the position and the tilt attribute together, set the `.ACTIONS.leveltilt.SET` attribute to value `true`. The shutter/blind will move to the position of the two values `.ACTIONS.leveltilt.level` and `.ACTIONS.leveltilt.tilt`
 
 **Wiser LED-universaldimmer**
 
 On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
-* Turn off set the `.ACTIONS.BRI` attribute to `0`
-* To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 
-<!-- 
+-   Turn off set the `.ACTIONS.BRI` attribute to `0`
+-   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
+
+<!--
 **The Embedded Web Interface from Wiser-by-Feller WLAN device**
 Еven without the mobile app, Wiser-by-Feller WLAN device can be set and controlled through a browser and WiFi connection of a mobile phone, tablet or PC (please make sure, that the device is not connetced to the cloud service -> see reset guideline in the manual of the device).
 
@@ -77,32 +84,40 @@ Procedure:
 -->
 
 ## Changelog
+
 <!-- ### __WORK IN PROGRESS__ -->
 
-### **WORK IN PROGRESS**
-- (ice987987) update dependencies
+### 0.0.5-beta.1
+
+-   (ice987987) BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required
+-   (ice987987) update dependencies
 
 ### 0.0.4 (12.03.2022)
-* (ice987987) add cleartimeout 
+
+-   (ice987987) add cleartimeout
 
 ### 0.0.3 (11.03.2022)
-* (ice987987) implement WebSocket connection to get values of the devices
-* (ice987987) all subscribed states are capitalized
-* (ice987987) new way to set leveltilt values
-* (ice987987) update readme
+
+-   (ice987987) implement WebSocket connection to get values of the devices
+-   (ice987987) all subscribed states are capitalized
+-   (ice987987) new way to set leveltilt values
+-   (ice987987) update readme
 
 ### 0.0.2 (27.02.2022)
-* (ice987987) description of several datapoints updated
-* (ice987987) icons for main datapoints added
-* (ice987987) update year
-* (ice987987) move DP rssi into info-folder
-* (ice987987) update readme.md
-* (ice987987) update dependencies
+
+-   (ice987987) description of several datapoints updated
+-   (ice987987) icons for main datapoints added
+-   (ice987987) update year
+-   (ice987987) move DP rssi into info-folder
+-   (ice987987) update readme.md
+-   (ice987987) update dependencies
 
 ### 0.0.1 (28.12.2021)
-* (ice987978) initial release
+
+-   (ice987987) initial release
 
 ## License
+
 MIT License
 
 Copyright (c) 2021-2022 ice987987 <mathias.frei1@gmail.com>
