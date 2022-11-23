@@ -20,6 +20,10 @@
 
 This Adapter enables you to manage all your Wiser-by-Feller system devices via a WebSocket connection.
 
+## Disclaimer
+
+All product and company names or logos are trademarks™ or registered® trademarks of their respective holders. Use of them does not imply any affiliation with or endorsement by them or any associated subsidiaries! This personal project is maintained in spare time and has no business goal. Wiser by Feller is a trademark of Feller AG, CH-8810 Horgen.
+
 ## Installation requirements
 
 -   node.js >= v14.0 is required
@@ -91,6 +95,8 @@ Procedure:
 
 -   (ice987987) BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required
 -   (ice987987) update dependencies
+-   (ice987987) add section "disclaimer" in readme
+-   (ice987987) add ukrainian language
 
 ### 0.0.4 (12.03.2022)
 
