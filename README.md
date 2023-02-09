@@ -42,6 +42,25 @@ All product and company names or logos are trademarks™ or registered® tradema
 
 ## Usage
 
+**The Embedded Web Interface from Wiser-by-Feller WLAN device**
+
+Еven without the mobile app, Wiser-by-Feller WLAN device can be set and controlled through a browser and WiFi connection of a mobile phone, tablet or PC (please make sure, that the device is not connetced to the cloud service -> see reset guideline in the manual of the device).
+
+Installation procedure:
+
+1. Install Wiser-by-Feller WLAN device
+2. After first connection to power, Wiser-by-Feller WLAN device has created an own WiFi network, with name (SSID) such as `wiser-000xxxxx`. Connect to it with your phone, tablet or PC and enter passwort, provided together with the device (sticker).
+3. Type `192.168.0.1` in your browser
+4. Fill in `New Registration` and press the button on the device to continue
+5. Log in
+6. Go to `settings` -> `Network settings` -> `Add new WLAN`
+7. Enter your credentials and press button `Add WLAN`
+8. Press button `Reboot Now!`
+9. Log out and discconnect your phone, tablet or PC from the Wiser-by-Feller WLAN device
+10. Get IP-Address of Wiser-by-Feller WLAN device in your router
+11. Enter `IP-Adress` of Wiser-by-Feller WLAN device in settings of the Instance `Gateway-IP`
+12. Enter `username` of Wiser-by-Feller WLAN device in settings of the Instance `username`
+
 Trigger changes on states in folder `ACTONS`.
 
 **Wiser switchable light:**
@@ -68,35 +87,16 @@ On a dimmable light you can set the target brightness between 0% and 100% (`0` -
 -   Turn off set the `.ACTIONS.BRI` attribute to `0`
 -   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 
-<!--
-**The Embedded Web Interface from Wiser-by-Feller WLAN device**
-Еven without the mobile app, Wiser-by-Feller WLAN device can be set and controlled through a browser and WiFi connection of a mobile phone, tablet or PC (please make sure, that the device is not connetced to the cloud service -> see reset guideline in the manual of the device).
-
-Procedure:
-1. Install Wiser-by-Feller WLAN device
-2. After first connection to power, Wiser-by-Feller WLAN device has created an own WiFi network, with name (SSID) such as `wiser-000xxxxx`. Connect to it with your phone, tablet or PC and enter passwort, provided together with the device (sticker).
-3. Type `192.168.0.1` in your browser
-4. Fill in `New Registration` and press the button on the device to continue
-5. Log in
-6. Go to `settings` -> `Network settings` -> `Add new WLAN`
-7. Enter your credentials and press button `Add WLAN`
-8. Press button `Reboot Now!`
-9. Log out and discconnect your phone, tablet or PC from the Wiser-by-Feller WLAN device
-10. Get IP-Address of Wiser-by-Feller WLAN device in your router
-11. Enter `IP-Adress` of Wiser-by-Feller WLAN device in settings of the Instance `Gateway-IP`
-12. Enter `username` of Wiser-by-Feller WLAN device in settings of the Instance `username`
--->
-
 ## Changelog
 
 <!-- ### __WORK IN PROGRESS__ -->
 
-### 0.0.5-beta.1
+### 0.0.5-beta.2
 
 -   (ice987987) BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required
--   (ice987987) update dependencies
--   (ice987987) add section "disclaimer" in readme
--   (ice987987) add ukrainian language
+-   (ice987987) dependencies updated
+-   (ice987987) section "disclaimer" in readme added
+-   (ice987987) ukrainian language added
 
 ### 0.0.4 (12.03.2022)
 
@@ -126,7 +126,7 @@ Procedure:
 
 MIT License
 
-Copyright (c) 2021-2022 ice987987 <mathias.frei1@gmail.com>
+Copyright (c) 2023 ice987987 <mathias.frei1@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
