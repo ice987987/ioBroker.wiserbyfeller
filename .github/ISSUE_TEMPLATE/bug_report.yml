@@ -42,6 +42,12 @@ body:
           required: true
     - type: input
       attributes:
+          label: Softwareversion of µGateway (sw x.x.xx-x)
+          description: Can be found on the main (home) page of µGateway
+      validations:
+          required: true
+    - type: input
+      attributes:
           label: Version of Node.js
           description: Can be found in the host section of ioBroker admin
       validations:
