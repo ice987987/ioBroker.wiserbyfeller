@@ -1,7 +1,7 @@
 {
   "name": "iobroker.wiserbyfeller",
-  "version": "0.0.5-beta.2",
-  "description": "This Adapter enables you to manage all your 'Wiser by Feller' system devices.",
+  "version": "0.0.5-beta.3",
+  "description": "This Adapter enables you to manage all your \"Wiser by Feller\" system devices.",
   "author": {
     "name": "ice987987",
     "email": "mathias.frei1@gmail.com"
@@ -37,7 +37,7 @@
     "@types/sinon-chai": "^3.2.9",
     "chai": "^4.3.7",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^8.33.0",
+    "eslint": "^8.34.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
     "mocha": "^10.2.0",

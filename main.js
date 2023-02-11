@@ -76,6 +76,9 @@ class Wiserbyfeller extends utils.Adapter {
 				// RSSI
 				await this.getRssi();
 
+				// Device Info
+				await this.getDeviceInfo();
+
 				this.updateInterval = setInterval(async () => {
 					try {
 						await this.getRssi();
@@ -139,6 +142,14 @@ class Wiserbyfeller extends utils.Adapter {
 					this.setState(`${allLoads_device}.${allLoads_device}_${message.load.id}.flags.noise`, { val: message.load.state.flags.noise, ack: true });
 					this.setState(`${allLoads_device}.${allLoads_device}_${message.load.id}.flags.direction`, { val: message.load.state.flags.direction, ack: true });
 					this.setState(`${allLoads_device}.${allLoads_device}_${message.load.id}.flags.over_temperature`, { val: message.load.state.flags.over_temperature, ack: true });
+				} else if (allLoads_type === 'dali') {
+					this.setState(`${allLoads_device}.${allLoads_device}_${message.load.id}.ACTIONS.BRI`, { val: message.load.state.bri, ack: true });
+
+					this.setState(`${allLoads_device}.${allLoads_device}_${message.load.id}.flags.short_circuit`, { val: message.load.state.flags.short_circuit, ack: true });
+					this.setState(`${allLoads_device}.${allLoads_device}_${message.load.id}.flags.fading`, { val: message.load.state.flags.fading, ack: true });
+					this.setState(`${allLoads_device}.${allLoads_device}_${message.load.id}.flags.noise`, { val: message.load.state.flags.noise, ack: true });
+					this.setState(`${allLoads_device}.${allLoads_device}_${message.load.id}.flags.direction`, { val: message.load.state.flags.direction, ack: true });
+					this.setState(`${allLoads_device}.${allLoads_device}_${message.load.id}.flags.rx_error`, { val: message.load.state.flags.rx_error, ack: true });
 				} else if (allLoads_type === 'motor') {
 					this.setState(`${allLoads_device}.${allLoads_device}_${message.load.id}.ACTIONS.LEVEL`, { val: message.load.state.level, ack: true });
 					this.setState(`${allLoads_device}.${allLoads_device}_${message.load.id}.ACTIONS.TILT`, { val: message.load.state.tilt, ack: true });
@@ -249,6 +260,42 @@ class Wiserbyfeller extends utils.Adapter {
 			});
 	}
 
+	// Get Device Info
+	async getDeviceInfo() {
+		await this.requestClient({
+			method: 'GET',
+			url: `http://${this.config.gatewayIP}/api/info`,
+			headers: {
+				Authorization: `Bearer ${this.config.authToken}`,
+			},
+		})
+			.then((response) => {
+				this.log.debug(`[getDeviceInfo()]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
+
+				this.setState('info.device.instance_id', { val: response.data.data.instance_id, ack: true });
+				this.setState('info.device.sn', { val: response.data.data.sn, ack: true });
+				this.setState('info.device.sw', { val: response.data.data.sw, ack: true });
+				this.setState('info.device.api', { val: response.data.data.api, ack: true });
+				this.setState('info.device.product', { val: response.data.data.product, ack: true });
+				this.setState('info.device.boot', { val: response.data.data.boot, ack: true });
+				response.data.data.hw ? this.setState('info.device.hw', { val: response.data.data.hw, ack: true }) : 0;
+			})
+			.catch((error) => {
+				if (error.response) {
+					// The request was made and the server responded with a status code that falls out of the range of 2xx
+					this.log.debug(`[getDeviceInfo()]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
+				} else if (error.request) {
+					// The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
+					this.log.debug(`[getDeviceInfo()] error request: ${error}`);
+				} else {
+					// Something happened in setting up the request that triggered an Error
+					this.log.debug(`[getDeviceInfo()] error message: ${error.message}`);
+				}
+				this.log.debug(`[getDeviceInfo()] error.config: ${JSON.stringify(error.config)}`);
+				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#0xx)');
+			});
+	}
+
 	// https://github.com/ioBroker/ioBroker/blob/master/doc/STATE_ROLES.md
 	async createObjects() {
 		this.log.debug(`createObjects(): this.allLoads: ${JSON.stringify(this.allLoads)}`);
@@ -272,18 +319,115 @@ class Wiserbyfeller extends utils.Adapter {
 				native: {},
 			});
 
+			// create device
+			await this.setObjectNotExistsAsync('info.device', {
+				type: 'channel',
+				common: {
+					name: 'Device Information',
+					desc: 'Device Information'
+				},
+				native: {},
+			});
+			await this.setObjectNotExistsAsync('info.device.instance_id', {
+				type: 'state',
+				common: {
+					name: 'Unique Nubes Cloud instance ID of µGateway',
+					desc: 'Unique Nubes Cloud instance ID of µGateway',
+					type: 'number',
+					role: 'value',
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			await this.setObjectNotExistsAsync('info.device.sn', {
+				type: 'state',
+				common: {
+					name: 'Serial number of µGateway',
+					desc: 'Serial number of µGateway',
+					type: 'string',
+					role: 'value',
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			await this.setObjectNotExistsAsync('info.device.sw', {
+				type: 'state',
+				common: {
+					name: 'Version of µGateway Software',
+					desc: 'Version of µGateway Software',
+					type: 'string',
+					role: 'value',
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			await this.setObjectNotExistsAsync('info.device.api', {
+				type: 'state',
+				common: {
+					name: 'Version of µGateway ReST API',
+					desc: 'Version of µGateway ReST API',
+					type: 'number',
+					role: 'value',
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			await this.setObjectNotExistsAsync('info.device.product', {
+				type: 'state',
+				common: {
+					name: 'Product Name',
+					desc: 'Product Name',
+					type: 'string',
+					role: 'value',
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			await this.setObjectNotExistsAsync('info.device.boot', {
+				type: 'state',
+				common: {
+					name: 'Version of µGateway Bootloader',
+					desc: 'Version of µGateway Bootloader',
+					type: 'string',
+					role: 'value',
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+			await this.setObjectNotExistsAsync('info.device.hw', {
+				type: 'state',
+				common: {
+					name: 'Version of µGateway Hardware',
+					desc: 'Version of µGateway Hardware',
+					type: 'number',
+					role: 'value',
+					read: true,
+					write: false,
+				},
+				native: {},
+			});
+
 			for (const i in this.allLoads) {
 				// get device type
 				let devicetypeName = '';
 				let deviceIcon = '';
 				if (this.allLoads[i].type === 'onoff') {
-					devicetypeName = 'WiserByFeller switchable light';
+					devicetypeName = 'WiserByFeller Switchable Light';
 					deviceIcon = 'icons/icon_wiserbyfeller_switchable_light_2ch.svg';
 				} else if (this.allLoads[i].type === 'dim') {
-					devicetypeName = 'WiserByFeller LED-universaldimmer';
+					devicetypeName = 'WiserByFeller LED-Universaldimmer';
+					deviceIcon = 'icons/icon_wiserbyfeller_led_universaldimmer_2ch.svg';
+				} else if (this.allLoads[i].type === 'dali') {
+					devicetypeName = 'WiserByFeller DALI-Universaldimmer';
 					deviceIcon = 'icons/icon_wiserbyfeller_led_universaldimmer_2ch.svg';
 				} else if (this.allLoads[i].type === 'motor') {
-					devicetypeName = 'WiserByFeller blind switch';
+					devicetypeName = 'WiserByFeller Blind Switch';
 					deviceIcon = 'icons/icon_wiserbyfeller_led_blindswitch_2ch.svg';
 				}
 
@@ -345,8 +489,8 @@ class Wiserbyfeller extends utils.Adapter {
 				await this.setObjectNotExistsAsync(`${this.allLoads[i].device}.${this.allLoads[i].device}_${this.allLoads[i].id}.channel`, {
 					type: 'state',
 					common: {
-						name: 'Device Channel',
-						desc: 'Device Channel',
+						name: 'Reference ID to the physical device',
+						desc: 'Reference ID to the physical device',
 						type: 'number',
 						role: 'value',
 						read: true,
@@ -357,8 +501,8 @@ class Wiserbyfeller extends utils.Adapter {
 				await this.setObjectNotExistsAsync(`${this.allLoads[i].device}.${this.allLoads[i].device}_${this.allLoads[i].id}.unused`, {
 					type: 'state',
 					common: {
-						name: 'Unused',
-						desc: 'Unused',
+						name: 'Flag to indicate that the underlying load is currently not used (no load is physically connected to that channel)',
+						desc: 'Flag to indicate that the underlying load is currently not used (no load is physically connected to that channel)',
 						type: 'boolean',
 						role: 'value',
 						read: true,
@@ -370,8 +514,8 @@ class Wiserbyfeller extends utils.Adapter {
 				await this.setObjectNotExistsAsync(`${this.allLoads[i].device}.${this.allLoads[i].device}_${this.allLoads[i].id}.name`, {
 					type: 'state',
 					common: {
-						name: 'Device Name',
-						desc: 'Device Name',
+						name: 'Name of the load',
+						desc: 'Name of the load',
 						type: 'string',
 						role: 'value',
 						read: true,
@@ -379,7 +523,8 @@ class Wiserbyfeller extends utils.Adapter {
 					},
 					native: {},
 				});
-				// not found in https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/api_loads.md#get-apiloads
+				/*
+				// room and kind are app-only
 				await this.setObjectNotExistsAsync(`${this.allLoads[i].device}.${this.allLoads[i].device}_${this.allLoads[i].id}.room`, {
 					type: 'state',
 					common: {
@@ -404,6 +549,7 @@ class Wiserbyfeller extends utils.Adapter {
 					},
 					native: {},
 				});
+				*/
 
 				// #3401 1-channel pressure switch
 				// #3402 2-channel pressure switch
@@ -523,6 +669,102 @@ class Wiserbyfeller extends utils.Adapter {
 						common: {
 							name: 'over_temperature',
 							desc: 'over_temperature',
+							type: 'number',
+							role: 'value',
+							read: true,
+							write: false,
+						},
+						native: {},
+					});
+
+					// #3411 DALI-Dimmer 1-channel
+				} else if (this.allLoads[i].type === 'dali') {
+					// create channel
+					await this.setObjectNotExistsAsync(`${this.allLoads[i].device}.${this.allLoads[i].device}_${this.allLoads[i].id}.ACTIONS`, {
+						type: 'channel',
+						common: {
+							name: 'ACTIONS',
+							desc: 'ACTIONS',
+						},
+						native: {},
+					});
+					await this.setObjectNotExistsAsync(`${this.allLoads[i].device}.${this.allLoads[i].device}_${this.allLoads[i].id}.ACTIONS.BRI`, {
+						type: 'state',
+						common: {
+							name: 'Brightness',
+							desc: 'Brightness',
+							type: 'number',
+							role: 'level.dimmer',
+							min: 0,
+							max: 10000,
+							read: true,
+							write: true,
+						},
+						native: {},
+					});
+					// create channel
+					await this.setObjectNotExistsAsync(`${this.allLoads[i].device}.${this.allLoads[i].device}_${this.allLoads[i].id}.flags`, {
+						type: 'channel',
+						common: {
+							name: 'flags',
+							desc: 'flags',
+						},
+						native: {},
+					});
+
+					await this.setObjectNotExistsAsync(`${this.allLoads[i].device}.${this.allLoads[i].device}_${this.allLoads[i].id}.flags.short_circuit`, {
+						type: 'state',
+						common: {
+							name: 'short_circuit',
+							desc: 'short_circuit',
+							type: 'number',
+							role: 'value',
+							read: true,
+							write: false,
+						},
+						native: {},
+					});
+					await this.setObjectNotExistsAsync(`${this.allLoads[i].device}.${this.allLoads[i].device}_${this.allLoads[i].id}.flags.fading`, {
+						type: 'state',
+						common: {
+							name: 'fading',
+							desc: 'fading',
+							type: 'number',
+							role: 'value',
+							read: true,
+							write: false,
+						},
+						native: {},
+					});
+					await this.setObjectNotExistsAsync(`${this.allLoads[i].device}.${this.allLoads[i].device}_${this.allLoads[i].id}.flags.noise`, {
+						type: 'state',
+						common: {
+							name: 'noise',
+							desc: 'noise',
+							type: 'number',
+							role: 'value',
+							read: true,
+							write: false,
+						},
+						native: {},
+					});
+					await this.setObjectNotExistsAsync(`${this.allLoads[i].device}.${this.allLoads[i].device}_${this.allLoads[i].id}.flags.direction`, {
+						type: 'state',
+						common: {
+							name: 'direction',
+							desc: 'direction',
+							type: 'number',
+							role: 'value',
+							read: true,
+							write: false,
+						},
+						native: {},
+					});
+					await this.setObjectNotExistsAsync(`${this.allLoads[i].device}.${this.allLoads[i].device}_${this.allLoads[i].id}.flags.rx_error`, {
+						type: 'state',
+						common: {
+							name: 'rx_error',
+							desc: 'rx_error',
 							type: 'number',
 							role: 'value',
 							read: true,
@@ -812,6 +1054,9 @@ class Wiserbyfeller extends utils.Adapter {
 						}
 						break;
 					case 'dim':
+						sendData = { bri: state.val };
+						break;
+					case 'dali':
 						sendData = { bri: state.val };
 						break;
 					case 'motor':

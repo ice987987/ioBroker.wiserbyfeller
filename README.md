@@ -39,6 +39,7 @@ All product and company names or logos are trademarks™ or registered® tradema
 -   Wiser blind switch 2-channel #3405
 -   Wiser LED-universaldimmer 1-channel #3406
 -   Wiser LED-universaldimmer 2-channel #3407
+-   Wiser DALI-Dimmer 1-channel #3411
 
 ## Usage
 
@@ -82,6 +83,8 @@ On a motor e.g. shutter/blind you can set the target level between 0% and 100% (
 
 **Wiser LED-universaldimmer**
 
+**Wiser DALI-dimmer**
+
 On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
 
 -   Turn off set the `.ACTIONS.BRI` attribute to `0`
@@ -91,32 +94,34 @@ On a dimmable light you can set the target brightness between 0% and 100% (`0` -
 
 <!-- ### __WORK IN PROGRESS__ -->
 
-### 0.0.5-beta.2
+### 0.0.5-beta.3
 
 -   (ice987987) BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required
 -   (ice987987) dependencies updated
 -   (ice987987) section "disclaimer" in readme added
 -   (ice987987) ukrainian language added
+-   (ice987987) support for DALI-dimmer added
+-   (ice987987) additional device info added (folder `.info.device.[...]`)
 
 ### 0.0.4 (12.03.2022)
 
--   (ice987987) add cleartimeout
+-   (ice987987) cleartimeout added
 
 ### 0.0.3 (11.03.2022)
 
--   (ice987987) implement WebSocket connection to get values of the devices
--   (ice987987) all subscribed states are capitalized
--   (ice987987) new way to set leveltilt values
--   (ice987987) update readme
+-   (ice987987) WebSocket connection to get values of the devices implemented
+-   (ice987987) all subscribed states are now capitalized
+-   (ice987987) new way to set leveltilt values added
+-   (ice987987) readme updated
 
 ### 0.0.2 (27.02.2022)
 
 -   (ice987987) description of several datapoints updated
 -   (ice987987) icons for main datapoints added
--   (ice987987) update year
--   (ice987987) move DP rssi into info-folder
--   (ice987987) update readme.md
--   (ice987987) update dependencies
+-   (ice987987) license year updated
+-   (ice987987) DP rssi into info-folder moved
+-   (ice987987) readme.md updated
+-   (ice987987) dependencies updated
 
 ### 0.0.1 (28.12.2021)
 
