@@ -1390,6 +1390,7 @@ class Wiserbyfeller extends utils.Adapter {
 	onUnload(callback) {
 		try {
 			// Here you must clear all timeouts or intervals that may still be active
+			this.autoRestartTimeout && clearTimeout(this.autoRestartTimeout);
 
 			this.setState('info.connection', false, true);
 
