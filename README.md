@@ -43,7 +43,7 @@ All product and company names or logos are trademarks™ or registered® tradema
 
 ## Usage
 
-**The Embedded Web Interface from Wiser-by-Feller WLAN device**
+### Connect the Embedded Web Interface from Wiser-by-Feller WLAN device
 
 Еven without the mobile app, Wiser-by-Feller WLAN device can be set and controlled through a browser and WiFi connection of a mobile phone, tablet or PC (please make sure, that the device is not connetced to the cloud service -> see reset guideline in the manual of the device).
 
@@ -54,24 +54,27 @@ Installation procedure:
 3. Type `192.168.0.1` in your browser
 4. Fill in `New Registration` and press the button on the device to continue
 5. Log in
-6. Go to `settings` -> `Network settings` -> `Add new WLAN`
+6. Go to `settings` -> `Network settings` -> `Get authentification tokenGet authentification tokenAdd new WLAN`
 7. Enter your credentials and press button `Add WLAN`
 8. Press button `Reboot Now!`
 9. Log out and discconnect your phone, tablet or PC from the Wiser-by-Feller WLAN device
 10. Get IP-Address of Wiser-by-Feller WLAN device in your router
-11. Enter `IP-Adress` of Wiser-by-Feller WLAN device in settings of the Instance `Gateway-IP`
-12. Enter `username` of Wiser-by-Feller WLAN device in settings of the Instance `username`
+11. Enter `IP-Adress` of Wiser-by-Feller WLAN device in settings of ioBroker.wiserbyfeller adapter instance `Gateway-IP`
+12. Enter `username` of Wiser-by-Feller WLAN device in settings of ioBroker.wiserbyfeller adapter instance `username`
+13. Click `save` button
+14. Click `Get authentification token` button and follow the shown procedure
+15. Click `close` button
 
-Trigger changes on states in folder `ACTONS`.
+### Controls
 
-**Wiser switchable light:**
+**Wiser Switchable Light:**
 
 To turn on or off a load set the attribute `BRI` (brightness) to the following values:
 
 -   Turn off set the `.ACTIONS.BRI` attribute to `off`
 -   Turn on set the `.ACTIONS.BRI` attribute to `on`
 
-**Wiser blind switch:**
+**Wiser Blind Switch:**
 
 On a motor e.g. shutter/blind you can set the target level between 0% and 100% (`0` - `10000`) and a tilt value.
 
@@ -81,27 +84,74 @@ On a motor e.g. shutter/blind you can set the target level between 0% and 100% (
 -   To control slats of a shutter (number of tilt) set the `.ACTIONS.TILT` attribute to a value `0` - `9`. Finally it's the motor running time, because we don't know the slat position in degrees.
 -   To control the position and the tilt attribute together, set the `.ACTIONS.leveltilt.SET` attribute to value `true`. The shutter/blind will move to the position of the two values `.ACTIONS.leveltilt.level` and `.ACTIONS.leveltilt.tilt`
 
-**Wiser LED-universaldimmer**
-
-**Wiser DALI-dimmer**
+**Wiser LED-Universaldimmer**
 
 On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
 
 -   Turn off set the `.ACTIONS.BRI` attribute to `0`
 -   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 
+**Wiser DALI-Dimmer**
+
+DALI-Dimmer configured default (normal mode):
+
+On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
+
+-   Turn off set the `.ACTIONS.BRI` attribute to `0`
+-   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
+
+DALI-Dimmer configured tw (Tunable-White):
+
+On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
+
+-   Turn off set the `.ACTIONS.BRI` attribute to `0`
+-   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
+-   To change the color set the `.ACTIONS.CT` attribute between `1000` and `20000`
+
+DALI-Dimmer configured rgb (RGBW red-green-blue-white):
+
+On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
+
+-   Turn off set the `.ACTIONS.BRI` attribute to `0`
+-   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
+-   To change the color set the `.ACTIONS.RED`, `.ACTIONS.GREEN`, `.ACTIONS.BLUE` and/or `.ACTIONS.WHITE` attribute between `0` and `255`
+
+### Jobs
+
+create a new job:
+
+1. Open`[IP-Adress of Wiser-by-Feller WLAN device]/debug/apiui.html`
+2. Click `Authorize` button
+3. Enter `SecretAuth  (http, Bearer)`
+4. Click `Authorize` button
+5. Click `close` button
+6. Goto `POST api/system/flags`, click `Try it out` button
+7. Enter `{"symbol": "cleaning", "value": true, "name": "[enter your command name]"}`
+8. Click `Execute` button
+9. Goto `POST api/jobs`
+10. Enter `{"flag_values": [ {"flag": [enter ID from step 8], "value": false}]}`
+11. Goto `POST api/jobs` again
+12. Enter `{"flag_values": [ {"flag": [enter ID from step 8], "value": true}]}`
+13. Goto `GET api/jobs/[ID from step 10]/setflags` and test your first job
+14. Goto `GET api/jobs/[ID from step 12]/setflags` and test your second job
+15. Connect the both jobs with the Scene SmartButtons on your WiserByFeler-Device:
+16. Goto `POST api/smartbutton/program` and enter `{"on": true, "timeout": 60, "button_type": "scene", "owner": "user"}` to set the WiserByFeler-Device in the programming mode
+17. Execute `GET api/smartbutton/notify` and press a Scene button
+18. Goto `PATCH api/smartbutton/[ID from SmartButton from Step 16]` and enter `{ "job": [job ID from step 10]}`
+
 ## Changelog
 
 <!-- ### __WORK IN PROGRESS__ -->
 
-### 0.0.5-beta.3
+### 0.1.0-beta.1
 
 -   (ice987987) BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required
 -   (ice987987) dependencies updated
 -   (ice987987) section "disclaimer" in readme added
 -   (ice987987) ukrainian language added
--   (ice987987) support for DALI-dimmer added
--   (ice987987) additional device info added (folder `.info.device.[...]`)
+-   (ice987987) support for DALI-Dimmer added
+-   (ice987987) additional device info added (folder: `.info.device.[...]`)
+-   (ice987987) jobs added (folder: `.jobs.[...]`)
 
 ### 0.0.4 (12.03.2022)
 
