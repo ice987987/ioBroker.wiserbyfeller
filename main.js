@@ -78,6 +78,24 @@ class Wiserbyfeller extends utils.Adapter {
 				// open WebSocket connection
 				await this.connectToWS();
 
+				this.updateInterval = await setInterval(async () => {
+					try {
+						// get device Info
+						await this.getDeviceInfo();
+
+						// get all devices
+						await this.getAllDevices();
+
+						// get all loads
+						await this.getAllLoads();
+
+						// get RSSI
+						await this.getRssi();
+					} catch (error) {
+						this.log.error(`${error} (ERR_#001)`);
+					}
+				}, 6 * 60 * 60 * 1000); // 6 * 60 * 60 * 1000ms = 6h
+
 			} catch (error) {
 				this.log.error(`${error} (ERR_#002)`);
 			}
@@ -247,7 +265,7 @@ class Wiserbyfeller extends utils.Adapter {
 						const flags = response.data.data;
 						this.log.debug(`[getJobs()]: jobs: ${JSON.stringify(jobs)}; flags ${JSON.stringify(flags)}`);
 
-						if (response.data.data.lenght !== 0) {
+						if (response.data.data.length !== 0) {
 							await this.createJobs(jobs, flags);
 						}
 
@@ -633,7 +651,7 @@ class Wiserbyfeller extends utils.Adapter {
 					native: {},
 				});
 
-				if (devices[i].outputs[j].type === 'onoff') { // main-type "onoff"
+				if (devices[i].outputs[j].type === 'onoff') { // main-type 'onoff'
 					await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS`, {
 						type: 'channel',
 						common: {
@@ -641,7 +659,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {},
 					});
-					if (devices[i].outputs[j].sub_type === '') { // sub-type ""
+					if (devices[i].outputs[j].sub_type === '') { // sub-type ''
 						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
 							type: 'state',
 							common: {
@@ -658,7 +676,7 @@ class Wiserbyfeller extends utils.Adapter {
 							native: {},
 						});
 						this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`);
-					} else if (devices[i].outputs[j].sub_type === 'dto') { // sub-type "dto"
+					} else if (devices[i].outputs[j].sub_type === 'dto') { // sub-type 'dto'
 						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
 							type: 'state',
 							common: {
@@ -748,7 +766,7 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {},
 					});
-				} else if (devices[i].outputs[j].type === 'dali') { // main-type "dali"
+				} else if (devices[i].outputs[j].type === 'dali') { // main-type 'dali'
 					await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS`, {
 						type: 'channel',
 						common: {
@@ -1289,7 +1307,7 @@ class Wiserbyfeller extends utils.Adapter {
 					const deviceID = allLoads.find((sID) => sID.id === message.load.id).device;
 					const loadType = allLoads.find((sID) => sID.id === message.load.id).type;
 					const loadSubtype = allLoads.find((sID) => sID.id === message.load.id).sub_type;
-					// this.log.debug(`[wss.on - message]: deviceID: ${deviceID}; loadType: ${loadType}; loadSubtype: ${loadSubtype}`);
+					this.log.debug(`[wss.on - message]: deviceID: ${deviceID}; loadType: ${loadType}; loadSubtype: ${loadSubtype}`);
 
 					if (loadType === 'onoff') {
 						if (loadSubtype === '') {
@@ -1390,6 +1408,7 @@ class Wiserbyfeller extends utils.Adapter {
 	onUnload(callback) {
 		try {
 			// Here you must clear all timeouts or intervals that may still be active
+			this.updateInterval && clearInterval(this.updateInterval);
 			this.autoRestartTimeout && clearTimeout(this.autoRestartTimeout);
 
 			this.setState('info.connection', false, true);

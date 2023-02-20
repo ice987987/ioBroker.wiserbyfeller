@@ -65,16 +65,16 @@ Installation procedure:
 14. Click `Get authentification token` button and follow the shown procedure
 15. Click `close` button
 
-### Controls
+## Controls
 
-**Wiser Switchable Light:**
+### Wiser Switchable Light
 
 To turn on or off a load set the attribute `BRI` (brightness) to the following values:
 
 -   Turn off set the `.ACTIONS.BRI` attribute to `off`
 -   Turn on set the `.ACTIONS.BRI` attribute to `on`
 
-**Wiser Blind Switch:**
+### Wiser Blind Switch
 
 On a motor e.g. shutter/blind you can set the target level between 0% and 100% (`0` - `10000`) and a tilt value.
 
@@ -84,23 +84,21 @@ On a motor e.g. shutter/blind you can set the target level between 0% and 100% (
 -   To control slats of a shutter (number of tilt) set the `.ACTIONS.TILT` attribute to a value `0` - `9`. Finally it's the motor running time, because we don't know the slat position in degrees.
 -   To control the position and the tilt attribute together, set the `.ACTIONS.leveltilt.SET` attribute to value `true`. The shutter/blind will move to the position of the two values `.ACTIONS.leveltilt.level` and `.ACTIONS.leveltilt.tilt`
 
-**Wiser LED-Universaldimmer**
+### Wiser LED-Universaldimmer
 
 On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
 
 -   Turn off set the `.ACTIONS.BRI` attribute to `0`
 -   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 
-**Wiser DALI-Dimmer**
-
-DALI-Dimmer configured default (normal mode):
+### Wiser DALI-Dimmer configured default (normal mode)
 
 On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
 
 -   Turn off set the `.ACTIONS.BRI` attribute to `0`
 -   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 
-DALI-Dimmer configured tw (Tunable-White):
+### Wiser DALI-Dimmer configured tw (Tunable-White)
 
 On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
 
@@ -108,7 +106,7 @@ On a dimmable light you can set the target brightness between 0% and 100% (`0` -
 -   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 -   To change the color set the `.ACTIONS.CT` attribute between `1000` and `20000`
 
-DALI-Dimmer configured rgb (RGBW red-green-blue-white):
+### Wiser DALI-Dimmer configured rgb (RGBW red-green-blue-white)
 
 On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
 
@@ -116,28 +114,54 @@ On a dimmable light you can set the target brightness between 0% and 100% (`0` -
 -   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 -   To change the color set the `.ACTIONS.RED`, `.ACTIONS.GREEN`, `.ACTIONS.BLUE` and/or `.ACTIONS.WHITE` attribute between `0` and `255`
 
-### Jobs
+## Jobs
 
-create a new job:
+Create a two new jobs and connect them to two smartbuttons with `true` and `false`:
 
-1. Open`[IP-Adress of Wiser-by-Feller WLAN device]/debug/apiui.html`
+1. Open `[IP-Adress of Wiser-by-Feller WLAN device]/debug/apiui.html`
 2. Click `Authorize` button
-3. Enter `SecretAuth  (http, Bearer)`
+3. Enter value `SecretAuth (http, Bearer)`
 4. Click `Authorize` button
-5. Click `close` button
+5. Click `Close` button
 6. Goto `POST api/system/flags`, click `Try it out` button
 7. Enter `{"symbol": "cleaning", "value": true, "name": "[enter your command name]"}`
 8. Click `Execute` button
-9. Goto `POST api/jobs`
-10. Enter `{"flag_values": [ {"flag": [enter ID from step 8], "value": false}]}`
-11. Goto `POST api/jobs` again
-12. Enter `{"flag_values": [ {"flag": [enter ID from step 8], "value": true}]}`
-13. Goto `GET api/jobs/[ID from step 10]/setflags` and test your first job
-14. Goto `GET api/jobs/[ID from step 12]/setflags` and test your second job
-15. Connect the both jobs with the Scene SmartButtons on your WiserByFeler-Device:
-16. Goto `POST api/smartbutton/program` and enter `{"on": true, "timeout": 60, "button_type": "scene", "owner": "user"}` to set the WiserByFeler-Device in the programming mode
-17. Execute `GET api/smartbutton/notify` and press a Scene button
-18. Goto `PATCH api/smartbutton/[ID from SmartButton from Step 16]` and enter `{ "job": [job ID from step 10]}`
+9. Write down the ID
+10. Goto `POST api/jobs`, click `Try it out` button
+11. Enter `{"flag_values": [{"flag": [enter ID from step 9], "value": false}]}` in the Request body
+12. Click `Execute` button
+13. Write down the ID
+14. Goto `POST api/jobs` again
+15. Enter `{"flag_values": [{"flag": [enter ID from step 9], "value": true}]}` in the Request body
+16. Click `Execute` button
+17. Write down the ID
+18. Goto `GET api/jobs/{id}}/setflags`, click `Try it out` button to test your first job
+19. Enter the `id` of step 13
+20. Goto `GET api/jobs/{id}}/setflags`, click `Try it out` button to test your second job
+21. Enter the `id` of step 17
+22. Connect the first job with the first scene SmartButton on your WiserByFeler-Device: Goto `POST api/smartbutton/program`, click `Try it out` button
+23. Enter `{"on": true, "timeout": 60, "button_type": "scene", "owner": "user"}` in the Request body to set the WiserByFeller-Device in the programming mode
+24. Click `Execute` button
+25. Goto `GET api/smartbutton/notify`, click `Try it out` button
+26. Click `Execute` button
+27. Press a blinking Scene Button on your WiserByFeller Device
+28. Write down the ID of the Button
+29. Goto `PATCH api/smartbutton/{id}`, click `Try it out` button
+30. Enter the button ID from step 28
+31. Enter `{ "job": [job ID from step 9]}` in the Request body
+32. Click `Execute` button
+33. Connect the second job with the second scene SmartButton on your WiserByFeler-Device: Goto `POST api/smartbutton/program`, click `Try it out` button
+34. Enter `{"on": true, "timeout": 60, "button_type": "scene", "owner": "user"}` in the Request body to set the WiserByFeller-Device in the programming mode
+35. Goto `GET api/smartbutton/notify` again , click `Try it out` button
+36. Click `Execute` button
+37. Press a blinking Scene Button on your WiserByFeller Device
+38. Write down the ID of the Button
+39. Goto `PATCH api/smartbutton/{id}`, click `Try it out` button
+40. Enter the button ID from step 36
+41. Enter `{ "job": [job ID from step 13]}` in the Request body
+42. Click `Execute` button
+43. Restart ioBroker.wiserbyfeller adapter in the instance tab.
+44. In the objects tab `wiserbyfeller.0.jobs.[ID]` should now an Object appear which can be toggeled `true` / `false` with the two scene SmartButtons
 
 ## Changelog
 
