@@ -167,7 +167,7 @@ Create a two new jobs and connect them to two smartbuttons with `true` and `fals
 
 <!-- ### __WORK IN PROGRESS__ -->
 
-### 0.1.0-beta.1
+### 0.1.0-beta.2
 
 -   (ice987987) BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required
 -   (ice987987) dependencies updated

@@ -1,6 +1,6 @@
 {
   "name": "iobroker.wiserbyfeller",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0-beta.2",
   "description": "This Adapter enables you to manage all your \"Wiser by Feller\" system devices.",
   "author": {
     "name": "ice987987",
