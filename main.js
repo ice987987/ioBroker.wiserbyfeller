@@ -23,8 +23,8 @@ let firstStart = true;
 class Wiserbyfeller extends utils.Adapter {
 
 	/**
-		 * @param {Partial<utils.AdapterOptions>} [options={}]
-		 */
+	 * @param {Partial<utils.AdapterOptions>} [options={}]
+	 */
 	constructor(options) {
 		super({
 			...options,
@@ -39,8 +39,8 @@ class Wiserbyfeller extends utils.Adapter {
 	}
 
 	/**
-		 * Is called when databases are connected and adapter received configuration.
-		 */
+	 * Is called when databases are connected and adapter received configuration.
+	 */
 	async onReady() {
 		// Initialize your adapter here
 		this.log.info('starting adapter "wiserbyfeller" ...');
@@ -133,7 +133,7 @@ class Wiserbyfeller extends utils.Adapter {
 					this.log.debug(`[getDeviceInfo()] error message: ${error.message}`);
 				}
 				this.log.debug(`[getDeviceInfo()] error.config: ${JSON.stringify(error.config)}`);
-				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#0xx)');
+				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#004)');
 			});
 	}
 
@@ -167,7 +167,7 @@ class Wiserbyfeller extends utils.Adapter {
 					this.log.debug(`[getAllDevices()] error message: ${error.message}`);
 				}
 				this.log.debug(`[getAllDevices()] error.config: ${JSON.stringify(error.config)}`);
-				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#008)');
+				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#005)');
 			});
 	}
 
@@ -201,7 +201,7 @@ class Wiserbyfeller extends utils.Adapter {
 					this.log.debug(`[getAllLoads()] error message: ${error.message}`);
 				}
 				this.log.debug(`[getAllLoads()] error.config: ${JSON.stringify(error.config)}`);
-				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#008)');
+				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#006)');
 			});
 	}
 
@@ -235,7 +235,7 @@ class Wiserbyfeller extends utils.Adapter {
 					this.log.debug(`[getRssi()] error message: ${error.message}`);
 				}
 				this.log.debug(`[getRssi()] error.config: ${JSON.stringify(error.config)}`);
-				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#009)');
+				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#007)');
 			});
 	}
 
@@ -282,7 +282,7 @@ class Wiserbyfeller extends utils.Adapter {
 							this.log.debug(`[getJobs()] error message: ${error.message}`);
 						}
 						this.log.debug(`[getJobs()] error.config: ${JSON.stringify(error.config)}`);
-						throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#0xx)');
+						throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#008)');
 					});
 			})
 			.catch((error) => {
@@ -297,7 +297,7 @@ class Wiserbyfeller extends utils.Adapter {
 					this.log.debug(`[getJobs()] error message: ${error.message}`);
 				}
 				this.log.debug(`[getJobs()] error.config: ${JSON.stringify(error.config)}`);
-				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#0xx)');
+				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#009)');
 			});
 	}
 
@@ -1282,19 +1282,26 @@ class Wiserbyfeller extends utils.Adapter {
 				Authorization: `Bearer ${this.config.authToken}`,
 			},
 		});
+		
+		this.wss.on('error', (error) => {
+			this.log.debug(`[wss.on - error]: error: ${error}; error.message: ${error.message} (ERR_#010)`);
+		});
 
 		// on connect
-		this.wss.on('open', () => {
+		this.wss.on('open', async() => {
 			this.log.info('Connection to "Wiser Gateway WebSocket" established. Ready to get status events...');
 
-			this.setStateAsync('info.connection', true, true);
+			await this.setStateAsync('info.connection', true, true);
 
 			// get all loads https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/websocket.md#get-all-load-states
-			this.wss.send(
+			await this.wss.send(
 				JSON.stringify({
 					command: 'dump_loads',
 				}),
 			);
+			
+			// Send ping to server
+			await this.sendPingToServer();
 		});
 
 		this.wss.on('message', async (data, isBinary) => {
@@ -1357,12 +1364,12 @@ class Wiserbyfeller extends utils.Adapter {
 						this.setState(`${deviceID}.${deviceID}_${message.load.id}.flags.timeout`, { val: message.load.state.flags.timeout, ack: true });
 						this.setState(`${deviceID}.${deviceID}_${message.load.id}.flags.locked`, { val: message.load.state.flags.locked, ack: true });
 					} else {
-						this.log.info('[wss.on - message]: Unknown device. Nothing Set. (ERR_#004)');
+						this.log.info('[wss.on - message]: Unknown device. Nothing Set. (ERR_#011)');
 					}
 				} else if (message.flag !== undefined) {
 					this.setState(`jobs.${message.flag.id}`, { val: message.flag.value, ack: true });
 				} else {
-					this.log.info('[wss.on - message]: Unknown message. Nothing Set. (ERR_#0xx)');
+					this.log.info('[wss.on - message]: Unknown message. Nothing Set. (ERR_#012)');
 				}
 
 			} catch (error) {
@@ -1371,45 +1378,77 @@ class Wiserbyfeller extends utils.Adapter {
 			}
 		});
 
-		this.wss.on('close', async (data, reason) => {
+		// Pong from Server
+		this.wss.on('pong', () => {
+			this.log.debug('[wss.on - pong]: WebSocket receives pong from server.');
+			this.heartbeat();
+		});
+		
+		this.wss.on('close', (data, reason) => {
 			this.log.debug(`[wss.on - close]: this.wss.readyState: ${this.wss.readyState}; data: ${data}; reason: ${reason}`);
-
-			this.setStateAsync('info.connection', false, true);
-
+			
+			// https://docs.w3cub.com/dom/closeevent/code
+			// this.wss.terminate(): readyState: 3; data: 1006 (Abnormal Closure)
+			
 			try {
 				if (data === 1000) {
 					// do not restart because of shut down of connection from the adapter
 					this.log.debug(`[wss.on - close]: ${reason}`);
 				} else if (data === 1006) {
-					await this.autoRestart();
+					// f. ex. power interruption
+					this.log.debug(`[wss.on - close]: try to reconnect in 5min.`);
+					this.restartTimeout = setTimeout(() => {
+						this.connectToWS();
+						clearTimeout(this.restartTimeout);
+					}, 5 * 60 * 1000); // 5min
 				} else {
-					throw new Error('Unknown WebSocket error. (ERR_#005)');
+					throw new Error('Unknown WebSocket error. (ERR_#013)');
 				}
 			} catch (error) {
-				this.log.debug(`[wss.close - error]: ${error} (ERR_#006)`);
+				this.log.debug(`[wss.close - error]: ${error}`);
 			}
-		});
 
-		this.wss.on('error', (error) => {
-			this.log.debug(`[wss.on - error]: error: ${error}; error.message: ${error.message} (ERR_#007)`);
+			this.setStateAsync('info.connection', false, true);
 		});
 	}
+	
+	sendPingToServer() {
+		this.log.debug('[sendPingToServer]: WebSocket sends ping to server...');
+		this.wss.ping('ping');
+		this.pingTimeout = setTimeout(() => {
+			this.sendPingToServer();
+		}, 30 * 1000); // 30s
+	}
+	
+	heartbeat() {
+		clearTimeout(this.heartbeatTimeout);
 
-	async autoRestart() {
+		this.heartbeatTimeout = setTimeout(() => {
+			clearTimeout(this.pingTimeout);
+			this.autoRestart();
+		}, 30 * 1000 + 1000); // 31s
+	}
+	
+	autoRestart() {
 		this.log.debug('[autoRestart()]: WebSocket connection terminated by "Wiser Gateway". Reconnect again in 5 seconds...');
 		this.autoRestartTimeout = setTimeout(() => {
 			this.connectToWS();
 		}, 5 * 1000); // min. 5s = 5000ms
 	}
+	
 	/**
-		 * Is called when adapter shuts down - callback has to be called under any circumstances!
-		 * @param {() => void} callback
-		 */
+	 * Is called when adapter shuts down - callback has to be called under any circumstances!
+	 * @param {() => void} callback
+	 */
 	onUnload(callback) {
 		try {
 			// Here you must clear all timeouts or intervals that may still be active
 			this.updateInterval && clearInterval(this.updateInterval);
 			this.autoRestartTimeout && clearTimeout(this.autoRestartTimeout);
+
+			this.heartbeatTimeout && clearTimeout(this.heartbeatTimeout);
+			this.pingTimeout && clearTimeout(this.pingTimeout);
+			this.restartTimeout && clearTimeout(this.restartTimeout);
 
 			this.setState('info.connection', false, true);
 
@@ -1526,19 +1565,25 @@ class Wiserbyfeller extends utils.Adapter {
 		}
 	}
 
+
+	/**
+	 * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
+	 * Using this method requires "common.messagebox" property to be set to true in io-package.json
+	 * @param {ioBroker.Message} obj
+	 */
 	onMessage(obj) {
 		this.log.debug(`[onMessage] message received: ${JSON.stringify(obj)}`);
 		if (typeof obj === 'object' && obj.message) {
 			// check API-Key
 			if (!isValidIP.test(obj.message.gatewayIP)) {
-				this.log.error('no valid Gateway-IP (ERR_#011)');
+				this.log.error('no valid Gateway-IP (ERR_#014)');
 				this.sendTo(obj.from, obj.command, { error: 'noValidGateway-IP' }, obj.callback);
 				return;
 			}
 
 			// check username
 			if (!isValidUsername.test(obj.message.username)) {
-				this.log.error('no valid username (ERR_#012)');
+				this.log.error('no valid username (ERR_#015)');
 				this.sendTo(obj.from, obj.command, { error: 'noValidUsername' }, obj.callback);
 				return;
 			}
@@ -1590,8 +1635,8 @@ class Wiserbyfeller extends utils.Adapter {
 if (require.main !== module) {
 	// Export the constructor in compact mode
 	/**
-		 * @param {Partial<utils.AdapterOptions>} [options={}]
-		 */
+	 * @param {Partial<utils.AdapterOptions>} [options={}]
+	 */
 	module.exports = (options) => new Wiserbyfeller(options);
 } else {
 	// otherwise start the instance directly
