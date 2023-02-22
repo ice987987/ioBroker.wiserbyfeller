@@ -1282,13 +1282,13 @@ class Wiserbyfeller extends utils.Adapter {
 				Authorization: `Bearer ${this.config.authToken}`,
 			},
 		});
-		
+
 		this.wss.on('error', (error) => {
 			this.log.debug(`[wss.on - error]: error: ${error}; error.message: ${error.message} (ERR_#010)`);
 		});
 
 		// on connect
-		this.wss.on('open', async() => {
+		this.wss.on('open', async () => {
 			this.log.info('Connection to "Wiser Gateway WebSocket" established. Ready to get status events...');
 
 			await this.setStateAsync('info.connection', true, true);
@@ -1299,7 +1299,7 @@ class Wiserbyfeller extends utils.Adapter {
 					command: 'dump_loads',
 				}),
 			);
-			
+
 			// Send ping to server
 			await this.sendPingToServer();
 		});
@@ -1383,13 +1383,13 @@ class Wiserbyfeller extends utils.Adapter {
 			this.log.debug('[wss.on - pong]: WebSocket receives pong from server.');
 			this.heartbeat();
 		});
-		
+
 		this.wss.on('close', (data, reason) => {
 			this.log.debug(`[wss.on - close]: this.wss.readyState: ${this.wss.readyState}; data: ${data}; reason: ${reason}`);
-			
+
 			// https://docs.w3cub.com/dom/closeevent/code
 			// this.wss.terminate(): readyState: 3; data: 1006 (Abnormal Closure)
-			
+
 			try {
 				if (data === 1000) {
 					// do not restart because of shut down of connection from the adapter
@@ -1411,7 +1411,7 @@ class Wiserbyfeller extends utils.Adapter {
 			this.setStateAsync('info.connection', false, true);
 		});
 	}
-	
+
 	sendPingToServer() {
 		this.log.debug('[sendPingToServer]: WebSocket sends ping to server...');
 		this.wss.ping('ping');
@@ -1419,7 +1419,7 @@ class Wiserbyfeller extends utils.Adapter {
 			this.sendPingToServer();
 		}, 30 * 1000); // 30s
 	}
-	
+
 	heartbeat() {
 		clearTimeout(this.heartbeatTimeout);
 
@@ -1428,14 +1428,14 @@ class Wiserbyfeller extends utils.Adapter {
 			this.autoRestart();
 		}, 30 * 1000 + 1000); // 31s
 	}
-	
+
 	autoRestart() {
 		this.log.debug('[autoRestart()]: WebSocket connection terminated by "Wiser Gateway". Reconnect again in 5 seconds...');
 		this.autoRestartTimeout = setTimeout(() => {
 			this.connectToWS();
 		}, 5 * 1000); // min. 5s = 5000ms
 	}
-	
+
 	/**
 	 * Is called when adapter shuts down - callback has to be called under any circumstances!
 	 * @param {() => void} callback
@@ -1564,7 +1564,6 @@ class Wiserbyfeller extends utils.Adapter {
 			this.log.debug(`state ${id} was changed. NO ACTION PERFORMED.`);
 		}
 	}
-
 
 	/**
 	 * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
