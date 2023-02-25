@@ -1565,11 +1565,11 @@ class Wiserbyfeller extends utils.Adapter {
 		}
 	}
 
-	/**
-	 * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-	 * Using this method requires "common.messagebox" property to be set to true in io-package.json
-	 * @param {ioBroker.Message} obj
-	 */
+	// /**
+	//  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
+	//  * Using this method requires "common.messagebox" property to be set to true in io-package.json
+	//  * @param {ioBroker.Message} obj
+	//  */
 	onMessage(obj) {
 		this.log.debug(`[onMessage] message received: ${JSON.stringify(obj)}`);
 		if (typeof obj === 'object' && obj.message) {

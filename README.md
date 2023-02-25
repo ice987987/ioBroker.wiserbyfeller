@@ -116,7 +116,7 @@ On a dimmable light you can set the target brightness between 0% and 100% (`0` -
 
 ## Jobs
 
-Create a two new jobs and connect them to two smartbuttons with `true` and `false`:
+Create two new jobs on the uGateqey and connect them to two smartbuttons with `true` respectively `false`:
 
 1. Open `[IP-Adress of Wiser-by-Feller WLAN device]/debug/apiui.html`
 2. Click `Authorize` button
@@ -148,7 +148,7 @@ Create a two new jobs and connect them to two smartbuttons with `true` and `fals
 28. Write down the ID of the Button
 29. Goto `PATCH api/smartbutton/{id}`, click `Try it out` button
 30. Enter the button ID from step 28
-31. Enter `{ "job": [job ID from step 9]}` in the Request body
+31. Enter `{"job": [job ID from step 9]}` in the Request body
 32. Click `Execute` button
 33. Connect the second job with the second scene SmartButton on your WiserByFeler-Device: Goto `POST api/smartbutton/program`, click `Try it out` button
 34. Enter `{"on": true, "timeout": 60, "button_type": "scene", "owner": "user"}` in the Request body to set the WiserByFeller-Device in the programming mode
@@ -158,7 +158,7 @@ Create a two new jobs and connect them to two smartbuttons with `true` and `fals
 38. Write down the ID of the Button
 39. Goto `PATCH api/smartbutton/{id}`, click `Try it out` button
 40. Enter the button ID from step 36
-41. Enter `{ "job": [job ID from step 13]}` in the Request body
+41. Enter `{"job": [job ID from step 13]}` in the Request body
 42. Click `Execute` button
 43. Restart ioBroker.wiserbyfeller adapter in the instance tab.
 44. In the objects tab `wiserbyfeller.0.jobs.[ID]` should now an Object appear which can be toggeled `true` / `false` with the two scene SmartButtons
@@ -176,6 +176,7 @@ Create a two new jobs and connect them to two smartbuttons with `true` and `fals
 -   (ice987987) support for DALI-Dimmer added
 -   (ice987987) additional device info added (folder: `.info.device.[...]`)
 -   (ice987987) jobs added (folder: `.jobs.[...]`)
+-   (ice978987) watchdog for WebSocket-Connection added
 
 ### 0.0.4 (12.03.2022)
 
