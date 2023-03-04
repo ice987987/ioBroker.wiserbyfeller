@@ -163,6 +163,15 @@ Create two new jobs on the μGateway and connect them to two smartbuttons with `
 43. Restart ioBroker.wiserbyfeller adapter in the instance tab.
 44. In the objects tab `wiserbyfeller.0.jobs.[ID]` should now an Object appear which can be toggeled `true` / `false` with the two scene SmartButtons
 
+## How to report issues and feature requests
+
+-   For issues please use [GitHub issues](https://github.com/ice987987/ioBroker.wiserbyfeller/issues/new/choose) -> "Bug report" and fill in the form.
+
+    Set the adapter to debug log mode (Instances -> Expert mode -> Column Log level). Get the logfile from disk (subdirectory "log" in ioBroker installation directory and not from Admin because Admin cuts the lines). Check that there are no personal information before you publish your log.
+
+-   For feature requests
+    Please use [GitHub issues](https://github.com/ice987987/ioBroker.wiserbyfeller/issues/new/choose) -> "Feature request" and fill in the form.
+
 ## Changelog
 
 <!-- ### __WORK IN PROGRESS__ -->
