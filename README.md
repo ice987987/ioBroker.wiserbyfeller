@@ -16,9 +16,9 @@
 
 [![Donate](https://img.shields.io/badge/donate-paypal-blue?style=flat)](https://paypal.me/ice987987)
 
-## wiserbyfeller adapter for ioBroker
+## Wiser by Feller adapter for ioBroker
 
-This Adapter enables you to manage all your Wiser-by-Feller system devices via a WebSocket connection.
+This Adapter enables you to manage the supported Wiser by Feller system devices via a WebSocket connection.
 
 ## Disclaimer
 
@@ -33,48 +33,48 @@ All product and company names or logos are trademarks™ or registered® tradema
 
 ## Supported Devices
 
--   Wiser switchable light 1-channel #3401
--   Wiser switchable light 2-channel #3402
--   Wiser blind switch 1-channel #3404
--   Wiser blind switch 2-channel #3405
--   Wiser LED-universaldimmer 1-channel #3406
--   Wiser LED-universaldimmer 2-channel #3407
--   Wiser DALI-Dimmer 1-channel #3411
+-   Wiser by Feller Druckschalter 1-Kanal 3401...
+-   Wiser by Feller Druckschalter 2-Kanal 3402...
+-   Wiser by Feller Storenschalter 1-Kanal 3404...
+-   Wiser by Feller Storenschalter 2-Kabal 3405...
+-   Wiser by Feller LED-Universaldimmer 1-Kanal 3406...
+-   Wiser by Feller LED-Universaldimmer 2-Kanal 3407...
+-   Wiser by Feller DALI-Dimmer 1-Kanal 3411...
 
 ## Usage
 
-### Connect the Embedded Web Interface from Wiser-by-Feller WLAN device
+### Connect the Embedded Web Interface from Wiser by Feller WLAN device
 
-Еven without the mobile app, Wiser-by-Feller WLAN device can be set and controlled through a browser and WiFi connection of a mobile phone, tablet or PC (please make sure, that the device is not connetced to the cloud service -> see reset guideline in the manual of the device).
+Еven without the mobile app, Wiser by Feller WLAN device can be set and controlled through a browser and WiFi connection of a mobile phone, tablet or PC (please make sure, that the device is not connetced to the cloud service -> see reset guideline in the manual of the device).
 
 Installation procedure:
 
-1. Install Wiser-by-Feller WLAN device
-2. After first connection to power, Wiser-by-Feller WLAN device has created an own WiFi network, with name (SSID) such as `wiser-000xxxxx`. Connect to it with your phone, tablet or PC and enter passwort, provided together with the device (sticker).
-3. Type `192.168.0.1` in your browser
+1. Install Wiser by Feller WLAN device
+2. After first connection to power, Wiser by Feller WLAN device has created an own WiFi network, with name (SSID) such as `wiser-000xxxxx`. Connect to it with your phone, tablet or PC and enter passwort, provided together with the device (sticker).
+3. Type `http://192.168.0.1` in your browser
 4. Fill in `New Registration` and press the button on the device to continue
 5. Log in
-6. Go to `settings` -> `Network settings` -> `Get authentification tokenGet authentification tokenAdd new WLAN`
+6. Go to `settings` -> `Network settings` -> `Add new WLAN`
 7. Enter your credentials and press button `Add WLAN`
 8. Press button `Reboot Now!`
-9. Log out and discconnect your phone, tablet or PC from the Wiser-by-Feller WLAN device
-10. Get IP-Address of Wiser-by-Feller WLAN device in your router
-11. Enter `IP-Adress` of Wiser-by-Feller WLAN device in settings of ioBroker.wiserbyfeller adapter instance `Gateway-IP`
-12. Enter `username` of Wiser-by-Feller WLAN device in settings of ioBroker.wiserbyfeller adapter instance `username`
+9. Log out and discconnect your phone, tablet or PC from the Wiser by Feller WLAN device
+10. Get IP-Address of Wiser by Feller WLAN device in your router
+11. Enter `IP-Address` of Wiser by Feller WLAN device in settings of ioBroker.wiserbyfeller adapter instance `Gateway-IP`
+12. Enter `username` of Wiser by Feller WLAN device in settings of ioBroker.wiserbyfeller adapter instance `username`
 13. Click `save` button
 14. Click `Get authentification token` button and follow the shown procedure
 15. Click `close` button
 
 ## Controls
 
-### Wiser Switchable Light
+### Wiser by Feller Druckschalter 1-Kanal/2-Kanal
 
 To turn on or off a load set the attribute `BRI` (brightness) to the following values:
 
 -   Turn off set the `.ACTIONS.BRI` attribute to `off`
 -   Turn on set the `.ACTIONS.BRI` attribute to `on`
 
-### Wiser Blind Switch
+### Wiser by Feller Storenschalter 1-Kanal/2-Kanal
 
 On a motor e.g. shutter/blind you can set the target level between 0% and 100% (`0` - `10000`) and a tilt value.
 
@@ -84,21 +84,21 @@ On a motor e.g. shutter/blind you can set the target level between 0% and 100% (
 -   To control slats of a shutter (number of tilt) set the `.ACTIONS.TILT` attribute to a value `0` - `9`. Finally it's the motor running time, because we don't know the slat position in degrees.
 -   To control the position and the tilt attribute together, set the `.ACTIONS.leveltilt.SET` attribute to value `true`. The shutter/blind will move to the position of the two values `.ACTIONS.leveltilt.level` and `.ACTIONS.leveltilt.tilt`
 
-### Wiser LED-Universaldimmer
+### Wiser by Feller LED-Universaldimmer 1-Kanal/2-Kanal
 
 On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
 
 -   Turn off set the `.ACTIONS.BRI` attribute to `0`
 -   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 
-### Wiser DALI-Dimmer configured default (normal mode)
+### Wiser by Feller DALI-Dimmer 1-Kanal configured default (normal mode)
 
 On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
 
 -   Turn off set the `.ACTIONS.BRI` attribute to `0`
 -   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 
-### Wiser DALI-Dimmer configured tw (Tunable-White)
+### Wiser by Feller DALI-Dimmer 1-Kanal configured tw (Tunable-White)
 
 On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
 
@@ -106,7 +106,7 @@ On a dimmable light you can set the target brightness between 0% and 100% (`0` -
 -   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 -   To change the color set the `.ACTIONS.CT` attribute between `1000` and `20000`
 
-### Wiser DALI-Dimmer configured rgb (RGBW red-green-blue-white)
+### Wiser by Feller DALI-Dimmer 1-Kanal configured rgb (RGBW red-green-blue-white)
 
 On a dimmable light you can set the target brightness between 0% and 100% (`0` - `10000`).
 
@@ -116,9 +116,9 @@ On a dimmable light you can set the target brightness between 0% and 100% (`0` -
 
 ## Jobs
 
-Create two new jobs on the uGateqey and connect them to two smartbuttons with `true` respectively `false`:
+Create two new jobs on the μGateway and connect them to two smartbuttons with `true` respectively `false`:
 
-1. Open `[IP-Adress of Wiser-by-Feller WLAN device]/debug/apiui.html`
+1. Open `[IP-Adress of Wiser by Feller WLAN device]/debug/apiui.html`
 2. Click `Authorize` button
 3. Enter value `SecretAuth (http, Bearer)`
 4. Click `Authorize` button
@@ -139,22 +139,22 @@ Create two new jobs on the uGateqey and connect them to two smartbuttons with `t
 19. Enter the `id` of step 13
 20. Goto `GET api/jobs/{id}}/setflags`, click `Try it out` button to test your second job
 21. Enter the `id` of step 17
-22. Connect the first job with the first scene SmartButton on your WiserByFeler-Device: Goto `POST api/smartbutton/program`, click `Try it out` button
-23. Enter `{"on": true, "timeout": 60, "button_type": "scene", "owner": "user"}` in the Request body to set the WiserByFeller-Device in the programming mode
+22. Connect the first job with the first scene SmartButton on your Wiser by Feller Device: Goto `POST api/smartbutton/program`, click `Try it out` button
+23. Enter `{"on": true, "timeout": 60, "button_type": "scene", "owner": "user"}` in the Request body to set the Wiser by Feller Device in the programming mode
 24. Click `Execute` button
 25. Goto `GET api/smartbutton/notify`, click `Try it out` button
 26. Click `Execute` button
-27. Press a blinking Scene Button on your WiserByFeller Device
+27. Press a blinking Scene Button on your Wiser by Feller Device
 28. Write down the ID of the Button
 29. Goto `PATCH api/smartbutton/{id}`, click `Try it out` button
 30. Enter the button ID from step 28
 31. Enter `{"job": [job ID from step 9]}` in the Request body
 32. Click `Execute` button
-33. Connect the second job with the second scene SmartButton on your WiserByFeler-Device: Goto `POST api/smartbutton/program`, click `Try it out` button
-34. Enter `{"on": true, "timeout": 60, "button_type": "scene", "owner": "user"}` in the Request body to set the WiserByFeller-Device in the programming mode
+33. Connect the second job with the second scene SmartButton on your Wiser by Feller Device: Goto `POST api/smartbutton/program`, click `Try it out` button
+34. Enter `{"on": true, "timeout": 60, "button_type": "scene", "owner": "user"}` in the Request body to set the Wiser by Feller Device in the programming mode
 35. Goto `GET api/smartbutton/notify` again , click `Try it out` button
 36. Click `Execute` button
-37. Press a blinking Scene Button on your WiserByFeller Device
+37. Press a blinking Scene Button on your Wiser by Feller Device
 38. Write down the ID of the Button
 39. Goto `PATCH api/smartbutton/{id}`, click `Try it out` button
 40. Enter the button ID from step 36
@@ -167,7 +167,7 @@ Create two new jobs on the uGateqey and connect them to two smartbuttons with `t
 
 <!-- ### __WORK IN PROGRESS__ -->
 
-### 0.1.0-beta.2
+### 0.1.0-beta.3
 
 -   (ice987987) BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required
 -   (ice987987) dependencies updated
@@ -176,7 +176,8 @@ Create two new jobs on the uGateqey and connect them to two smartbuttons with `t
 -   (ice987987) support for DALI-Dimmer added
 -   (ice987987) additional device info added (folder: `.info.device.[...]`)
 -   (ice987987) jobs added (folder: `.jobs.[...]`)
--   (ice978987) watchdog for WebSocket-Connection added
+-   (ice987987) watchdog for WebSocket-Connection added
+-   (ice987987) device icons fixed
 
 ### 0.0.4 (12.03.2022)
 

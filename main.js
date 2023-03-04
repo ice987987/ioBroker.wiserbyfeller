@@ -393,15 +393,70 @@ class Wiserbyfeller extends utils.Adapter {
 
 		for (let i = 0; i < devices.length; i++) {
 			let deviceIcon = '';
-			switch (devices[i].a.hw_id) {
-				case '0x2110':
-					deviceIcon = 'icons/0x2110.svg';
+			switch (devices[i].c.comm_ref) {
+				case '920-3401.1':
+				case '926-3401.1.A':
+				case '926-3401.1.W.A':
+					deviceIcon = 'icons/926-3401_1_x.svg';
 					break;
-				case '0x2301':
-					deviceIcon = 'icons/0x2301.svg';
+				case '926-3401.2.S1.A':
+				case '926-3401.2.S1.W.A':
+					deviceIcon = 'icons/926-3401_2_S1_x.svg';
 					break;
-				case '0x1202':
-					deviceIcon = 'icons/0x1202.svg';
+				case '920-3402.2':
+				case '926-3402.2.A':
+				case '926-3402.2.W.A':
+					deviceIcon = 'icons/926-3402_2_x.svg';
+					break;
+				case '926-3406.2.A.':
+				case '926-3406.2.W.A':
+				case '926-3406.2.A.FMI':
+				case '926-3406.2.W.A.FMI':
+					deviceIcon = 'icons/926-3406_2_x.svg';
+					break;
+				case '926-3406.4.S.A':
+				case '926-3406.4.S.W.A':
+					deviceIcon = 'icons/926-3406_4_S_x.svg';
+					break;
+				case '920-3407.4':
+				case '926-3407.4.A.FMI':
+				case '926-3407.4.W.A.FMI':
+					deviceIcon = 'icons/926-3407_x.svg';
+					break;
+				case '920-3406.2':
+				case '920-3404.2':
+				case '926-3404.2.A':
+				case '926-3404.2.W.A':
+					deviceIcon = 'icons/926-3404_2_x.svg';
+					break;
+				case '920-3404.4.S':
+				case '920-3406.4.S':
+				case '926-3404.4.S.A':
+				case '926-3404.4.S.W.A.':
+					deviceIcon = 'icons/926-3404_4_S_x.svg';
+					break;
+				case '920-3405.4':
+				case '926-3405.4.A':
+				case '926-3405.4.W.A':
+					deviceIcon = 'icons/926-3405_4_x.svg';
+					break;
+				case '920-3400.1.S1':
+				case '926-3400.1.S1.A':
+				case '926-3400.1.S1.W.A':
+					deviceIcon = 'icons/926-3400_1_S1.svg';
+					break;
+				case '920-3400.2.VS':
+				case '926-3400.2.VS.A':
+				case '926-3400.2.VS.W.A':
+					deviceIcon = 'icons/926-3400_2_VS_x.svg';
+					break;
+				case '920-3400.4.S4':
+				case '926-3400.4.S4.A':
+				case '926-3400.4.S4.W.A':
+					deviceIcon = 'icons/926-3400_4_S4.x.svg';
+					break;
+				case '920-3401.2.S1':
+					deviceIcon = 'icons/920-3401_2_S1.svg';
 					break;
 				default:
 					deviceIcon = 'icons/unknown.svg';
