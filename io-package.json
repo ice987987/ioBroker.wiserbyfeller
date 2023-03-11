@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "wiserbyfeller",
-        "version": "0.1.0-beta.3",
+        "version": "0.1.0-beta.4",
         "news": {
             "0.0.1": {
                 "en": "initial release",
@@ -42,7 +42,7 @@
                 "uk": "Підключення WebSocket для отримання значень реалізованих пристроїв\nусі підписані стани пишуться великими літерами\nновий спосіб встановлення значень leveltilt\nreadme",
                 "zh-cn": "WebSocket 连接以获取所实现设备的值\n所有订阅状态都大写\n设置水平倾斜值的新方法\n自述文件"
             },
-            "0.1.0-beta.3": {
+            "0.1.0-beta.4": {
                 "en": "BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required, dependencies updated, ukrainian language added, support for DALI-dimmer added, additional device info added (folder .info.device.[...]), jobs added (folder: .jobs.[...]), watchdog for WebSocket-Connection added, device icons fixed",
                 "de": "BREAKING: js-controller >= v4.0.23 und admin >= v6.2.19 ist erforderlich, Abhängigkeiten aktualisiert, ukrainische Sprache hinzugefügt, Unterstützung für DALI-Dimmer hinzugefügt, zusätzliche Geräteinfo hinzugefügt (Ordner .info.device.[...] ), Jobs hinzugefügt (Ordner: .jobs.[...]), Watchdog für WebSocket-Verbindung hinzugefügt, Gerätesymbole korrigiert",
                 "ru": "BREAKING: требуется js-controller >= v4.0.23 и admin >= v6.2.19, обновлены зависимости, добавлен украинский язык, добавлена ​​поддержка DALI-dimmer, добавлена ​​дополнительная информация об устройстве (папка .info.device.[...] ), добавлены задания (папка: .jobs.[...]), добавлен сторожевой таймер для WebSocket-Connection, исправлены значки устройств",

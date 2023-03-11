@@ -248,7 +248,7 @@ class Wiserbyfeller extends utils.Adapter {
 			},
 		})
 			.then(async (response) => {
-				this.log.debug(`[getJobs()]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
+				this.log.debug(`[getJobs() api/jobs]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
 
 				const jobs = response.data.data;
 
@@ -260,12 +260,11 @@ class Wiserbyfeller extends utils.Adapter {
 					},
 				})
 					.then(async (response) => {
-						this.log.debug(`[getJobs()]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
+						this.log.debug(`[getJobs() /api/system/flags]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
 
 						const flags = response.data.data;
-						this.log.debug(`[getJobs()]: jobs: ${JSON.stringify(jobs)}; flags ${JSON.stringify(flags)}`);
 
-						if (response.data.data.length !== 0) {
+						if (jobs.length !== 0 && flags.length !== 0) {
 							await this.createJobs(jobs, flags);
 						}
 
@@ -273,30 +272,30 @@ class Wiserbyfeller extends utils.Adapter {
 					.catch((error) => {
 						if (error.response) {
 							// The request was made and the server responded with a status code that falls out of the range of 2xx
-							this.log.debug(`[getJobs()]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
+							this.log.debug(`[getJobs() /api/system/flags]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
 						} else if (error.request) {
 							// The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
-							this.log.debug(`[getJobs()] error request: ${error}`);
+							this.log.debug(`[getJobs() /api/system/flags] error request: ${error}`);
 						} else {
 							// Something happened in setting up the request that triggered an Error
-							this.log.debug(`[getJobs()] error message: ${error.message}`);
+							this.log.debug(`[getJobs() /api/system/flags] error message: ${error.message}`);
 						}
-						this.log.debug(`[getJobs()] error.config: ${JSON.stringify(error.config)}`);
+						this.log.debug(`[getJobs() /api/system/flags] error.config: ${JSON.stringify(error.config)}`);
 						throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#008)');
 					});
 			})
 			.catch((error) => {
 				if (error.response) {
 					// The request was made and the server responded with a status code that falls out of the range of 2xx
-					this.log.debug(`[getJobs()]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
+					this.log.debug(`[getJobs() api/jobs]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
 				} else if (error.request) {
 					// The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
-					this.log.debug(`[getJobs()] error request: ${error}`);
+					this.log.debug(`[getJobs() api/jobs] error request: ${error}`);
 				} else {
 					// Something happened in setting up the request that triggered an Error
-					this.log.debug(`[getJobs()] error message: ${error.message}`);
+					this.log.debug(`[getJobs() api/jobs] error message: ${error.message}`);
 				}
-				this.log.debug(`[getJobs()] error.config: ${JSON.stringify(error.config)}`);
+				this.log.debug(`[getJobs() api/jobs] error.config: ${JSON.stringify(error.config)}`);
 				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#009)');
 			});
 	}
@@ -1254,26 +1253,30 @@ class Wiserbyfeller extends utils.Adapter {
 	}
 
 	async createJobs(jobs, flags) {
-		await this.setObjectNotExistsAsync(`jobs`, {
-			type: 'channel',
-			common: {
-				name: 'Jobs',
-			},
-			native: {},
-		});
+		this.log.debug(`[createJobs] jobs: ${JSON.stringify(jobs)}`);
+		this.log.debug(`[createJobs] flags: ${JSON.stringify(flags)}`);
 
 		for (let i = 0; i < jobs.length; i++) {
-			await this.setObjectNotExistsAsync(`jobs.${jobs[i].flag_values[0].flag}`, {
-				type: 'state',
-				common: {
-					name: `Job: ${flags.find((sID) => sID.id === jobs[i].flag_values[0].flag).name}`,
-					type: 'boolean',
-					role: 'value',
-					read: true,
-					write: false,
-				},
-				native: {},
-			});
+			if (jobs[i].name) {
+				await this.setObjectNotExistsAsync(`jobs`, {
+					type: 'channel',
+					common: {
+						name: 'Jobs',
+					},
+					native: {},
+				});
+				await this.setObjectNotExistsAsync(`jobs.${jobs[i].flag_values[0].flag}`, {
+					type: 'state',
+					common: {
+						name: `Job: ${flags.find((sID) => sID.id === jobs[i].flag_values[0].flag).name}`,
+						type: 'boolean',
+						role: 'value',
+						read: true,
+						write: false,
+					},
+					native: {},
+				});
+			}
 		}
 	}
 
