@@ -408,7 +408,7 @@ class Wiserbyfeller extends utils.Adapter {
 				case '926-3402.2.W.A':
 					deviceIcon = 'icons/926-3402_2_x.svg';
 					break;
-				case '926-3406.2.A.':
+				case '926-3406.2.A': // comm_name: 'Dimmer 1K'
 				case '926-3406.2.W.A':
 				case '926-3406.2.A.FMI':
 				case '926-3406.2.W.A.FMI':
@@ -432,7 +432,7 @@ class Wiserbyfeller extends utils.Adapter {
 				case '920-3404.4.S':
 				case '920-3406.4.S':
 				case '926-3404.4.S.A': // comm_name: 'Storenschalter 1K Sz'
-				case '926-3404.4.S.W.A.':
+				case '926-3404.4.S.W.A':
 				case '3404.4.S.FMI.61': // comm_name: 'Storenschalter 1K Sz'
 					deviceIcon = 'icons/926-3404_4_S_x.svg';
 					break;
@@ -1260,8 +1260,8 @@ class Wiserbyfeller extends utils.Adapter {
 		this.log.debug(`[createJobs] jobs: ${JSON.stringify(jobs)}`);
 		this.log.debug(`[createJobs] flags: ${JSON.stringify(flags)}`);
 
-		for (let i = 0; i < jobs.length; i++) {
-			if (jobs[i].name) {
+		for (let i = 0; i < flags.length; i++) {
+			if (flags[i].name) {
 				await this.setObjectNotExistsAsync(`jobs`, {
 					type: 'channel',
 					common: {
@@ -1269,10 +1269,10 @@ class Wiserbyfeller extends utils.Adapter {
 					},
 					native: {},
 				});
-				await this.setObjectNotExistsAsync(`jobs.${jobs[i].flag_values[0].flag}`, {
+				await this.setObjectNotExistsAsync(`jobs.${flags[i].id}`, {
 					type: 'state',
 					common: {
-						name: `Job: ${flags.find((sID) => sID.id === jobs[i].flag_values[0].flag).name}`,
+						name: `Job: ${flags[i].name}`,
 						type: 'boolean',
 						role: 'value',
 						read: true,
