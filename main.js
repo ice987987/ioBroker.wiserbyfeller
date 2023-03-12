@@ -393,6 +393,7 @@ class Wiserbyfeller extends utils.Adapter {
 		for (let i = 0; i < devices.length; i++) {
 			let deviceIcon = '';
 			switch (devices[i].c.comm_ref) {
+				// comm_name: 'Druckschalter 1K' ?
 				case '920-3401.1':
 				case '926-3401.1.A':
 				case '926-3401.1.W.A':
@@ -403,7 +404,7 @@ class Wiserbyfeller extends utils.Adapter {
 					deviceIcon = 'icons/926-3401_2_S1_x.svg';
 					break;
 				case '920-3402.2':
-				case '926-3402.2.A':
+				case '926-3402.2.A': // comm_name: 'Druckschalter 2K'
 				case '926-3402.2.W.A':
 					deviceIcon = 'icons/926-3402_2_x.svg';
 					break;
@@ -413,12 +414,12 @@ class Wiserbyfeller extends utils.Adapter {
 				case '926-3406.2.W.A.FMI':
 					deviceIcon = 'icons/926-3406_2_x.svg';
 					break;
-				case '926-3406.4.S.A':
-				case '926-3406.4.S.W.A':
+				case '926-3406.4.S.A': // comm_name: 'Dimmer 1K Sz'
+				case '926-3406.4.S.W.A': // comm_name: 'Dimmer 1K Sz WLAN'
 					deviceIcon = 'icons/926-3406_4_S_x.svg';
 					break;
 				case '920-3407.4':
-				case '926-3407.4.A.FMI':
+				case '926-3407.4.A.FMI': // comm_name: 'Dimmer 2K'
 				case '926-3407.4.W.A.FMI':
 					deviceIcon = 'icons/926-3407_x.svg';
 					break;
@@ -430,12 +431,13 @@ class Wiserbyfeller extends utils.Adapter {
 					break;
 				case '920-3404.4.S':
 				case '920-3406.4.S':
-				case '926-3404.4.S.A':
+				case '926-3404.4.S.A': // comm_name: 'Storenschalter 1K Sz'
 				case '926-3404.4.S.W.A.':
+				case '3404.4.S.FMI.61': // comm_name: 'Storenschalter 1K Sz'
 					deviceIcon = 'icons/926-3404_4_S_x.svg';
 					break;
 				case '920-3405.4':
-				case '926-3405.4.A':
+				case '926-3405.4.A': // comm_name: 'Storenschalter 2K'
 				case '926-3405.4.W.A':
 					deviceIcon = 'icons/926-3405_4_x.svg';
 					break;
@@ -450,10 +452,11 @@ class Wiserbyfeller extends utils.Adapter {
 					deviceIcon = 'icons/926-3400_2_VS_x.svg';
 					break;
 				case '920-3400.4.S4':
-				case '926-3400.4.S4.A':
+				case '926-3400.4.S4.A': // comm_name: 'Taster 4 Szenen'
 				case '926-3400.4.S4.W.A':
 					deviceIcon = 'icons/926-3400_4_S4.x.svg';
 					break;
+				// comm_name: 'Druckschalter 1K Sz' ?
 				case '920-3401.2.S1':
 					deviceIcon = 'icons/920-3401_2_S1.svg';
 					break;
@@ -821,129 +824,130 @@ class Wiserbyfeller extends utils.Adapter {
 						native: {},
 					});
 				} else if (devices[i].outputs[j].type === 'dali') { // main-type 'dali'
-					await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS`, {
-						type: 'channel',
-						common: {
-							name: 'ACTIONS',
-						},
-						native: {},
-					});
-					if (devices[i].outputs[j].sub_type === '') { // sub-type ''
-						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
-							type: 'state',
+					if (['', 'tw', 'rgb'].includes(devices[i].outputs[j].sub_type)) {
+						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS`, {
+							type: 'channel',
 							common: {
-								name: 'Brightness',
-								type: 'number',
-								role: 'level.dimmer',
-								min: 0,
-								max: 10000,
-								read: true,
-								write: true,
+								name: 'ACTIONS',
 							},
 							native: {},
 						});
-						this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`);
-					} else if (devices[i].outputs[j].sub_type === 'tw') { // sub-type 'tw'
-						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
-							type: 'state',
-							common: {
-								name: 'Brightness',
-								type: 'number',
-								role: 'level.dimmer',
-								min: 0,
-								max: 10000,
-								read: true,
-								write: true,
-							},
-							native: {},
-						});
-						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.CT`, {
-							type: 'state',
-							common: {
-								name: 'Color temperature',
-								type: 'number',
-								role: 'level.color.temperature',
-								min: 1000,
-								max: 20000,
-								read: true,
-								write: true,
-							},
-							native: {},
-						});
-						this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`);
-						this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.CT`);
-					} else if (devices[i].outputs[j].sub_type === 'rgb') { // sub-type "rgb"
-						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
-							type: 'state',
-							common: {
-								name: 'Brightness',
-								type: 'number',
-								role: 'level.dimmer',
-								min: 0,
-								max: 10000,
-								read: true,
-								write: true,
-							},
-							native: {},
-						});
-						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.RED`, {
-							type: 'state',
-							common: {
-								name: 'Color Red',
-								type: 'number',
-								role: 'level.color.red',
-								min: 0,
-								max: 255,
-								read: true,
-								write: true,
-							},
-							native: {},
-						});
-						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.GREEN`, {
-							type: 'state',
-							common: {
-								name: 'Color Green',
-								type: 'number',
-								role: 'level.color.green',
-								min: 0,
-								max: 255,
-								read: true,
-								write: true,
-							},
-							native: {},
-						});
-						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BLUE`, {
-							type: 'state',
-							common: {
-								name: 'Color Blue',
-								type: 'number',
-								role: 'level.color.blue',
-								min: 0,
-								max: 255,
-								read: true,
-								write: true,
-							},
-							native: {},
-						});
-						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.WHITE`, {
-							type: 'state',
-							common: {
-								name: 'Color White',
-								type: 'number',
-								role: 'level.color.white',
-								min: 0,
-								max: 255,
-								read: true,
-								write: true,
-							},
-							native: {},
-						});
-						this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`);
-						this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.RED`);
-						this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.GREEN`);
-						this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BLUE`);
-						this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.WHITE`);
-
+						if (devices[i].outputs[j].sub_type === '') { // sub-type ''
+							await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
+								type: 'state',
+								common: {
+									name: 'Brightness',
+									type: 'number',
+									role: 'level.dimmer',
+									min: 0,
+									max: 10000,
+									read: true,
+									write: true,
+								},
+								native: {},
+							});
+							this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`);
+						} else if (devices[i].outputs[j].sub_type === 'tw') { // sub-type 'tw'
+							await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
+								type: 'state',
+								common: {
+									name: 'Brightness',
+									type: 'number',
+									role: 'level.dimmer',
+									min: 0,
+									max: 10000,
+									read: true,
+									write: true,
+								},
+								native: {},
+							});
+							await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.CT`, {
+								type: 'state',
+								common: {
+									name: 'Color temperature',
+									type: 'number',
+									role: 'level.color.temperature',
+									min: 1000,
+									max: 20000,
+									read: true,
+									write: true,
+								},
+								native: {},
+							});
+							this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`);
+							this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.CT`);
+						} else if (devices[i].outputs[j].sub_type === 'rgb') { // sub-type "rgb"
+							await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
+								type: 'state',
+								common: {
+									name: 'Brightness',
+									type: 'number',
+									role: 'level.dimmer',
+									min: 0,
+									max: 10000,
+									read: true,
+									write: true,
+								},
+								native: {},
+							});
+							await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.RED`, {
+								type: 'state',
+								common: {
+									name: 'Color Red',
+									type: 'number',
+									role: 'level.color.red',
+									min: 0,
+									max: 255,
+									read: true,
+									write: true,
+								},
+								native: {},
+							});
+							await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.GREEN`, {
+								type: 'state',
+								common: {
+									name: 'Color Green',
+									type: 'number',
+									role: 'level.color.green',
+									min: 0,
+									max: 255,
+									read: true,
+									write: true,
+								},
+								native: {},
+							});
+							await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BLUE`, {
+								type: 'state',
+								common: {
+									name: 'Color Blue',
+									type: 'number',
+									role: 'level.color.blue',
+									min: 0,
+									max: 255,
+									read: true,
+									write: true,
+								},
+								native: {},
+							});
+							await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.WHITE`, {
+								type: 'state',
+								common: {
+									name: 'Color White',
+									type: 'number',
+									role: 'level.color.white',
+									min: 0,
+									max: 255,
+									read: true,
+									write: true,
+								},
+								native: {},
+							});
+							this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`);
+							this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.RED`);
+							this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.GREEN`);
+							this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BLUE`);
+							this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.WHITE`);
+						}
 						// create channel
 						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.flags`, {
 							type: 'channel',

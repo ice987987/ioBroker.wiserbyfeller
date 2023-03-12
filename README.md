@@ -43,7 +43,7 @@ All product and company names or logos are trademarks™ or registered® tradema
 
 ## Usage
 
-### Connect the Embedded Web Interface from Wiser by Feller WLAN device
+### Connect the Embedded Web Interface from Wiser by Feller WLAN device without cloud connection
 
 Еven without the mobile app, Wiser by Feller WLAN device can be set and controlled through a browser and WiFi connection of a mobile phone, tablet or PC (please make sure, that the device is not connetced to the cloud service -> see reset guideline in the manual of the device).
 
@@ -64,6 +64,18 @@ Installation procedure:
 13. Click `save` button
 14. Click `Get authentification token` button and follow the shown procedure
 15. Click `close` button
+
+### Connect the Embedded Web Interface from Wiser by Feller WLAN device with cloud connection
+
+Installation procedure:
+
+1. Install Wiser by Feller WLAN device and connect it via the guideline from Wiser by Feller via the normal installation guide.
+2. Get IP-Address of Wiser by Feller WLAN device in your router
+3. Enter `IP-Address` of Wiser by Feller WLAN device in settings of ioBroker.wiserbyfeller adapter instance `Gateway-IP`
+4. Enter `username` of Wiser by Feller WLAN device in settings of ioBroker.wiserbyfeller adapter instance `username`
+5. Click `save` button
+6. Click `Get authentification token` button and follow the shown procedure
+7. Click `close` button
 
 ## Controls
 
@@ -176,7 +188,7 @@ Create two new jobs on the μGateway and connect them to two smartbuttons with `
 
 <!-- ### __WORK IN PROGRESS__ -->
 
-### 0.1.0-beta.4
+### 0.1.0-beta.5
 
 -   (ice987987) BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required
 -   (ice987987) dependencies updated
