@@ -476,14 +476,14 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.a`, {
 				type: 'channel',
 				common: {
-					name: 'A-Block information.'
+					name: 'A-Block information'
 				},
 				native: {},
 			});
 			await this.setObjectNotExistsAsync(`${devices[i].id}.a.hw_id`, {
 				type: 'state',
 				common: {
-					name: 'Hardware ID, actual assembly variant, defined by the HWID Resistor on the PCBA.',
+					name: 'Hardware ID, actual assembly variant, defined by the HWID Resistor on the PCBA',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -494,7 +494,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.a.nubes_id`, {
 				type: 'state',
 				common: {
-					name: 'Unique ID to identify the device in the Cloud.',
+					name: 'Unique ID to identify the device in the Cloud',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -505,7 +505,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.a.fw_version`, {
 				type: 'state',
 				common: {
-					name: 'Firmware Version, consists of Major, Minor, Patch and Build Number.',
+					name: 'Firmware Version, consists of Major, Minor, Patch and Build Number',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -527,7 +527,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.a.comm_name`, {
 				type: 'state',
 				common: {
-					name: 'Commercial name. A-BLOCK Feller article name.',
+					name: 'Commercial name. A-BLOCK Feller article name',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -549,7 +549,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.a.fw_id`, {
 				type: 'state',
 				common: {
-					name: 'A Firmware project generates an image file (fhx) with a specific FWID.',
+					name: 'A Firmware project generates an image file (fhx) with a specific FWID',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -560,7 +560,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.a.comm_ref`, {
 				type: 'state',
 				common: {
-					name: 'Commercial reference. A-BLOCK Feller article number.',
+					name: 'Commercial reference. A-BLOCK Feller article number',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -579,7 +579,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.c.hw_id`, {
 				type: 'state',
 				common: {
-					name: 'Hardware ID, actual assembly variant, defined by the HWID Resistor on the PCBA.',
+					name: 'Hardware ID, actual assembly variant, defined by the HWID Resistor on the PCBA',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -590,7 +590,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.c.nubes_id`, {
 				type: 'state',
 				common: {
-					name: 'Unique ID to identify the device in the Cloud.',
+					name: 'Unique ID to identify the device in the Cloud',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -601,7 +601,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.c.fw_version`, {
 				type: 'state',
 				common: {
-					name: 'Firmware Version, consists of Major, Minor, Patch and Build Number.',
+					name: 'Firmware Version, consists of Major, Minor, Patch and Build Number',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -612,7 +612,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.c.cmd_matrix`, {
 				type: 'state',
 				common: {
-					name: 'Command matrix selection defines the button functionality of C-Block.',
+					name: 'Command matrix selection defines the button functionality of C-Block',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -623,7 +623,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.c.comm_name`, {
 				type: 'state',
 				common: {
-					name: 'Commercial name. C-BLOCK Feller article name.',
+					name: 'Commercial name. C-BLOCK Feller article name',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -645,7 +645,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.c.fw_id`, {
 				type: 'state',
 				common: {
-					name: 'C Firmware project generates an image file (fhx) with a specific FWID.',
+					name: 'C Firmware project generates an image file (fhx) with a specific FWID',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -656,7 +656,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.c.comm_ref`, {
 				type: 'state',
 				common: {
-					name: 'Commercial reference. C-BLOCK Feller article number.',
+					name: 'Commercial reference. C-BLOCK Feller article number',
 					type: 'string',
 					role: 'value',
 					read: true,
@@ -1243,7 +1243,7 @@ class Wiserbyfeller extends utils.Adapter {
 		await this.setObjectNotExistsAsync('info.rssi', {
 			type: 'state',
 			common: {
-				name: 'Received Signal Strength Indication of the Gateway device.',
+				name: 'Received Signal Strength Indication of the Gateway device',
 				type: 'number',
 				role: 'value',
 				min: -100,
