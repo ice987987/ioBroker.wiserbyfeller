@@ -147,9 +147,9 @@ Create two new jobs on the μGateway and connect them to two smartbuttons with `
 15. Enter `{"flag_values": [{"flag": [enter ID from step 9], "value": true}]}` in the Request body
 16. Click `Execute` button
 17. Write down the ID
-18. Goto `GET api/jobs/{id}}/setflags`, click `Try it out` button to test your first job
+18. Goto `GET api/jobs/{id}/setflags`, click `Try it out` button to test your first job
 19. Enter the `id` of step 13
-20. Goto `GET api/jobs/{id}}/setflags`, click `Try it out` button to test your second job
+20. Goto `GET api/jobs/{id}/setflags`, click `Try it out` button to test your second job
 21. Enter the `id` of step 17
 22. Connect the first job with the first scene SmartButton on your Wiser by Feller Device: Goto `POST api/smartbutton/program`, click `Try it out` button
 23. Enter `{"on": true, "timeout": 60, "button_type": "scene", "owner": "user"}` in the Request body to set the Wiser by Feller Device in the programming mode
@@ -188,7 +188,7 @@ Create two new jobs on the μGateway and connect them to two smartbuttons with `
 
 <!-- ### __WORK IN PROGRESS__ -->
 
-### 0.1.0-beta.7
+### 0.1.0-beta.8
 
 -   (ice987987) BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required
 -   (ice987987) dependencies updated
