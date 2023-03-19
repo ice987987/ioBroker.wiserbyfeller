@@ -54,8 +54,8 @@ class Wiserbyfeller extends utils.Adapter {
 		this.log.debug(`config.authToken: ${this.config.authToken}`);
 
 		// check if gatewayIP has a valid IP
-		// authtoken is like "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-		// username must be at least 4 characters only a-zA-Z0-9
+		// authtoken musr be like "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+		// username must have at least 4 characters and contaibs only a-zA-Z0-9
 		if (isValidIP.test(this.config.gatewayIP) && isValidAuthToken.test(this.config.authToken) && isValidUsername.test(this.config.username)) {
 			try {
 				this.log.info(`Trying to connect Wiser Gateway [IP: ${this.config.gatewayIP}]...`);
@@ -78,6 +78,7 @@ class Wiserbyfeller extends utils.Adapter {
 				// open WebSocket connection
 				await this.connectToWS();
 
+				// update regurarly device info
 				this.updateInterval = await setInterval(async () => {
 					try {
 						// get device Info
@@ -95,11 +96,9 @@ class Wiserbyfeller extends utils.Adapter {
 						this.log.error(`${error} (ERR_#001)`);
 					}
 				}, 6 * 60 * 60 * 1000); // 6 * 60 * 60 * 1000ms = 6h
-
 			} catch (error) {
 				this.log.error(`${error} (ERR_#002)`);
 			}
-
 		} else {
 			this.log.error('Wiser Gateway-IP and/or username and/or "authentification token" not set and/or not valid. (ERR_#003)');
 		}
@@ -1295,7 +1294,6 @@ class Wiserbyfeller extends utils.Adapter {
 	}
 
 	async fillAllDevices(devices) {
-		// TODO
 		for (let i = 0; i < devices.length; i++) {
 			this.setState(`${devices[i].id}.a.hw_id`, { val: `${devices[i].a.hw_id}`, ack: true });
 			this.setState(`${devices[i].id}.a.nubes_id`, { val: `${devices[i].a.nubes_id}`, ack: true });
@@ -1336,7 +1334,7 @@ class Wiserbyfeller extends utils.Adapter {
 
 	async connectToWS() {
 		if (this.wss) {
-			this.wss.close(1000, 'Close old websocket connection before start new websocket connection.');
+			await this.wss.close(1000, 'Close old WebSocket connection before start new WebSocket connection.');
 		}
 
 		this.wss = new WebSocket(`ws://${this.config.gatewayIP}/api`, {
@@ -1346,16 +1344,14 @@ class Wiserbyfeller extends utils.Adapter {
 		});
 
 		this.wss.on('error', (error) => {
-			this.log.debug(`[wss.on - error]: error: ${error}; error.message: ${error.message} (ERR_#010)`);
+			this.log.warn(`[wss.on - error]: error: ${error}; error.message: ${error.message} (ERR_#010)`);
 		});
 
-		// on connect
 		this.wss.on('open', async () => {
-			this.log.info('Connection to "Wiser Gateway WebSocket" established. Ready to get status events...');
-
 			await this.setStateAsync('info.connection', true, true);
 
-			// get all loads https://github.com/Feller-AG/wiser-tutorial/blob/main/doc/websocket.md#get-all-load-states
+			this.log.info('WebSocket connection to "Wiser by Feller Gateway" established. Ready to get status events...');
+
 			await this.wss.send(
 				JSON.stringify({
 					command: 'dump_loads',
@@ -1363,13 +1359,27 @@ class Wiserbyfeller extends utils.Adapter {
 			);
 
 			// Send ping to server
-			await this.sendPingToServer();
+			this.sendPingToServer();
+		});
+
+		this.wss.on('close', (data, reason) => {
+			this.log.debug(`[wss.on - close]: this.wss.readyState: ${this.wss.readyState}; data: ${data}; reason: ${reason}`);
+
+			this.setStateAsync('info.connection', false, true);
+
+			// if data === 1000: do not restart because of shut down of an old existing connection from the adapter
+			if (data === 1006) {
+				// f. ex. power interruption
+				this.log.warn(`WebSocket connection to "Wiser by Feller Gateway" broken. Trying to reconnect in 5min.`);
+				this.restartTimeout = setTimeout(() => {
+					this.connectToWS();
+				}, 5 * 60 * 1000); // 5min
+			}
 		});
 
 		this.wss.on('message', async (data, isBinary) => {
 			const message = isBinary ? JSON.parse(data) : JSON.parse(data.toString());
 			this.log.debug(`[wss.on - message]: ${JSON.stringify(message)}`);
-
 
 			try {
 				if (message.load !== undefined) {
@@ -1440,62 +1450,22 @@ class Wiserbyfeller extends utils.Adapter {
 			}
 		});
 
-		// Pong from Server
 		this.wss.on('pong', () => {
 			this.log.debug('[wss.on - pong]: WebSocket receives pong from server.');
-			this.heartbeat();
-		});
+			this.pingTimeout = setTimeout(() => {
+				this.sendPingToServer();
+			}, 30 * 1000); // 30s
 
-		this.wss.on('close', (data, reason) => {
-			this.log.debug(`[wss.on - close]: this.wss.readyState: ${this.wss.readyState}; data: ${data}; reason: ${reason}`);
-
-			// https://docs.w3cub.com/dom/closeevent/code
-			// this.wss.terminate(): readyState: 3; data: 1006 (Abnormal Closure)
-
-			try {
-				if (data === 1000) {
-					// do not restart because of shut down of connection from the adapter
-					this.log.debug(`[wss.on - close]: ${reason}`);
-				} else if (data === 1006) {
-					// f. ex. power interruption
-					this.log.debug(`[wss.on - close]: try to reconnect in 5min.`);
-					this.restartTimeout = setTimeout(() => {
-						this.connectToWS();
-						clearTimeout(this.restartTimeout);
-					}, 5 * 60 * 1000); // 5min
-				} else {
-					throw new Error('Unknown WebSocket error. (ERR_#013)');
-				}
-			} catch (error) {
-				this.log.debug(`[wss.close - error]: ${error}`);
-			}
-
-			this.setStateAsync('info.connection', false, true);
+			this.heartbeatTimeout && clearTimeout(this.heartbeatTimeout);
+			this.heartbeatTimeout = setTimeout(() => {
+				this.wss.terminate();
+			}, 31 * 1000); // 31s
 		});
 	}
 
 	sendPingToServer() {
 		this.log.debug('[sendPingToServer]: WebSocket sends ping to server...');
 		this.wss.ping('ping');
-		this.pingTimeout = setTimeout(() => {
-			this.sendPingToServer();
-		}, 30 * 1000); // 30s
-	}
-
-	heartbeat() {
-		clearTimeout(this.heartbeatTimeout);
-
-		this.heartbeatTimeout = setTimeout(() => {
-			clearTimeout(this.pingTimeout);
-			this.autoRestart();
-		}, 30 * 1000 + 1000); // 31s
-	}
-
-	autoRestart() {
-		this.log.debug('[autoRestart()]: WebSocket connection terminated by "Wiser Gateway". Reconnect again in 5 seconds...');
-		this.autoRestartTimeout = setTimeout(() => {
-			this.connectToWS();
-		}, 5 * 1000); // min. 5s = 5000ms
 	}
 
 	/**
@@ -1533,15 +1503,15 @@ class Wiserbyfeller extends utils.Adapter {
 				this.log.debug(`[onStateChange]: id: ${id}; state: ${JSON.stringify(state)}`);
 
 				const deviceID = id.split('.')[2];
-				this.log.debug(`[onStateChange]: deviceID: ${deviceID}`);
+				// this.log.debug(`[onStateChange]: deviceID: ${deviceID}`);
 				const loadID = id.split('.')[3].split('_')[1];
-				this.log.debug(`[onStateChange]: loadID: ${loadID}`);
+				// this.log.debug(`[onStateChange]: loadID: ${loadID}`);
 				const load = id.split('.')[5];
-				this.log.debug(`[onStateChange]: load: ${load}`);
+				// this.log.debug(`[onStateChange]: load: ${load}`);
 				const deviceType = allLoads.find((sID) => sID.device === deviceID).type;
-				this.log.debug(`[onStateChange]: deviceType: ${deviceType}`);
+				// this.log.debug(`[onStateChange]: deviceType: ${deviceType}`);
 				const deviceSubtype = allLoads.find((sID) => sID.device === deviceID).sub_type;
-				this.log.debug(`[onStateChange]: deviceSubtype: ${deviceSubtype}`);
+				// this.log.debug(`[onStateChange]: deviceSubtype: ${deviceSubtype}`);
 
 				let sendData = {};
 

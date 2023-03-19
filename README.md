@@ -188,7 +188,7 @@ Create two new jobs on the μGateway and connect them to two smartbuttons with `
 
 <!-- ### __WORK IN PROGRESS__ -->
 
-### 0.1.0-beta.6
+### 0.1.0-beta.7
 
 -   (ice987987) BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required
 -   (ice987987) dependencies updated
@@ -199,6 +199,7 @@ Create two new jobs on the μGateway and connect them to two smartbuttons with `
 -   (ice987987) jobs added (folder: `.jobs.[...]`)
 -   (ice987987) watchdog for WebSocket-Connection added
 -   (ice987987) device icons fixed
+-   (ice987987) websocket connection fixed
 
 ### 0.0.4 (12.03.2022)
 
