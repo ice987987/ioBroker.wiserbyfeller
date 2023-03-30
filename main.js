@@ -72,8 +72,8 @@ class Wiserbyfeller extends utils.Adapter {
 				// get RSSI
 				await this.getRssi();
 
-				// get jobs
-				await this.getJobs();
+				// get Smartbuttons
+				await this.getSmartbuttons();
 
 				// open WebSocket connection
 				await this.connectToWS();
@@ -238,36 +238,34 @@ class Wiserbyfeller extends utils.Adapter {
 			});
 	}
 
-	async getJobs() {
+	async getSmartbuttons() {
 		await this.requestClient({
 			method: 'GET',
-			url: `http://${this.config.gatewayIP}/api/system/flags`,
+			url: `http://${this.config.gatewayIP}/api/smartbuttons`,
 			headers: {
 				Authorization: `Bearer ${this.config.authToken}`,
 			},
 		})
 			.then(async (response) => {
-				this.log.debug(`[getJobs() /api/system/flags]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
+				this.log.debug(`[getSmartbuttons()]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
 
-				const flags = response.data.data;
-
-				if (flags.length !== 0) {
-					await this.createJobs(flags);
+				if (response.data.data.length !== 0) {
+					await this.createSmartbuttons(response.data.data);
 				}
 
 			})
 			.catch((error) => {
 				if (error.response) {
 					// The request was made and the server responded with a status code that falls out of the range of 2xx
-					this.log.debug(`[getJobs() /api/system/flags]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
+					this.log.debug(`[getSmartbuttons()]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
 				} else if (error.request) {
 					// The request was made but no response was received `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in node.js
-					this.log.debug(`[getJobs() /api/system/flags] error request: ${error}`);
+					this.log.debug(`[getSmartbuttons()] error request: ${error}`);
 				} else {
 					// Something happened in setting up the request that triggered an Error
-					this.log.debug(`[getJobs() /api/system/flags] error message: ${error.message}`);
+					this.log.debug(`[getSmartbuttons()] error message: ${error.message}`);
 				}
-				this.log.debug(`[getJobs() /api/system/flags] error.config: ${JSON.stringify(error.config)}`);
+				this.log.debug(`[getSmartbuttons()] error.config: ${JSON.stringify(error.config)}`);
 				throw new Error('Wiser Gateway not reachable. Please check Wiser Gateway connection and/or authentification token. (ERR_#008)');
 			});
 	}
@@ -1228,22 +1226,22 @@ class Wiserbyfeller extends utils.Adapter {
 		});
 	}
 
-	async createJobs(flags) {
-		this.log.debug(`[createJobs] flags: ${JSON.stringify(flags)}`);
+	async createSmartbuttons(smartbuttons) {
+		this.log.debug(`[createSmartbuttons] smartbuttons: ${JSON.stringify(smartbuttons)}`);
 
-		for (let i = 0; i < flags.length; i++) {
-			if (flags[i].name) {
-				await this.setObjectNotExistsAsync(`jobs`, {
+		for (let i = 0; i < smartbuttons.length; i++) {
+			if (smartbuttons[i].name) {
+				await this.setObjectNotExistsAsync(`smartbuttons`, {
 					type: 'channel',
 					common: {
-						name: 'Jobs',
+						name: 'Smartbuttons',
 					},
 					native: {},
 				});
-				await this.setObjectNotExistsAsync(`jobs.${flags[i].id}`, {
+				await this.setObjectNotExistsAsync(`smartbuttons.${smartbuttons[i].id}`, {
 					type: 'state',
 					common: {
-						name: `Job: ${flags[i].name}`,
+						name: `${smartbuttons[i].name}`,
 						type: 'boolean',
 						role: 'value',
 						read: true,
@@ -1410,8 +1408,8 @@ class Wiserbyfeller extends utils.Adapter {
 					} else {
 						this.log.info('[wss.on - message]: Unknown device. Nothing Set. (ERR_#011)');
 					}
-				} else if (message.flag !== undefined) {
-					this.setState(`jobs.${message.flag.id}`, { val: message.flag.value, ack: true });
+				} else if (message.smb !== undefined) {
+					this.setState(`smartbuttons.${message.smb.id}`, { val: message.smb.value, ack: true });
 				} else {
 					this.log.info('[wss.on - message]: Unknown message. Nothing Set. (ERR_#012)');
 				}

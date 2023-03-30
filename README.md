@@ -126,6 +126,7 @@ On a dimmable light you can set the target brightness between 0% and 100% (`0` -
 -   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 -   To change the color set the `.ACTIONS.RED`, `.ACTIONS.GREEN`, `.ACTIONS.BLUE` and/or `.ACTIONS.WHITE` attribute between `0` and `255`
 
+<!---
 ## Jobs
 
 Create two new jobs on the μGateway and connect them to two smartbuttons with `true` respectively `false`:
@@ -174,6 +175,66 @@ Create two new jobs on the μGateway and connect them to two smartbuttons with `
 42. Click `Execute` button
 43. Restart ioBroker.wiserbyfeller adapter in the instance tab.
 44. In the objects tab `wiserbyfeller.0.jobs.[ID]` should now an Object appear which can be toggeled `true` / `false` with the two scene SmartButtons
+-->
+
+## Smartbuttons
+
+Create a job on the μGateway and connect them to a smartbuttons with `true` respectively `false` or toggle value:
+
+1.  Open `[IP-Adress of Wiser by Feller WLAN device]/debug/apiui.html`
+2.  Click Authorize button
+3.  Enter value `SecretAuth (http, Bearer)`
+4.  Click `Authorize` button
+5.  Click `Close` button
+6.  Open `scripts` tab on your μGateway (url: `[IP-Adress of Wiser by Feller WLAN device]/scripts.html`), click button `Create File`
+7.  Enter a program name (f. ex. `smartbutton_1.py`), click button `Save`
+8.  Open programm by clicking on the pencil right in the above created program
+9.  First Option:
+
+    Add the following code if you want to get `true` and `false` you need two buttons
+    First Button:
+
+    ```
+    import websockets
+    async def onButtonEvent(*argv):
+        await websockets.Connection.push_event('/api', {'smb': {'id': argv[2], 'value': True}})
+    ```
+
+    Second Button:
+
+    ```
+    import websockets
+    async def onButtonEvent(*argv):
+        await websockets.Connection.push_event('/api', {'smb': {'id': argv[2], 'value': False}})
+    ```
+
+    Second Option:
+
+    Add the following code if you want to toggle the value `true -> false -> true ...`
+
+    ```
+    import websockets
+    value = True
+    async def onButtonEvent(*argv):
+    global value
+    await websockets.Connection.push_event('/api', {'smb': {'id': argv[2], 'value': value}})
+        value = False if value else True
+    ```
+
+10. Click on button `✓` (save)
+11. Open `[IP-Adress of Wiser by Feller WLAN device]/debug/apiui.html`
+12. Go to `POST /api/smartbuttons/program`, click `Try it out` button
+13. Enter `{"on": true, "timeout": 60, "button_type": "scene", "owner": "user"}`, click `Execute` button
+14. Go to `GET api/smartbutton/notify`, click `Try it out` button
+15. Click `Execute` button
+16. Press a blinking Scene Button on your Wiser by Feller Device
+17. Write down the `button id`
+18. Go to `POST api/jobs`, click `Try it out` button
+19. Enter `{"scripts": ["smartbutton_1.py"]}` (`smartbutton_1.py` must match the above choosen program name), click `Execute` button
+20. Write down the `job id` (103)
+21. Go to `PATCH /api/smartbuttons/{id}`, click `Try it out` button
+22. Enter the `button id` in `id` field
+23. Enter following code in the request body: `{"job": 102, "name": "Smartbutton_1"}` (job must match the `job id` from above, `name` can be choosen), click `Execute` button
 
 ## How to report issues and feature requests
 
@@ -188,7 +249,7 @@ Create two new jobs on the μGateway and connect them to two smartbuttons with `
 
 <!-- ### __WORK IN PROGRESS__ -->
 
-### 0.1.0-beta.8
+### 0.1.0-beta.9
 
 -   (ice987987) BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required
 -   (ice987987) dependencies updated
@@ -196,7 +257,7 @@ Create two new jobs on the μGateway and connect them to two smartbuttons with `
 -   (ice987987) ukrainian language added
 -   (ice987987) support for DALI-Dimmer added
 -   (ice987987) additional device info added (folder: `.info.device.[...]`)
--   (ice987987) jobs added (folder: `.jobs.[...]`)
+-   (ice987987) smartbuttons added (folder: `.smartbuttons.[...]`)
 -   (ice987987) watchdog for WebSocket-Connection added
 -   (ice987987) device icons fixed
 -   (ice987987) websocket connection fixed
