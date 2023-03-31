@@ -126,7 +126,7 @@ On a dimmable light you can set the target brightness between 0% and 100% (`0` -
 -   To dim set the `.ACTIONS.BRI` attribute between `1` and `10000` (e.g. set `.ACTIONS.BRI` to `5000`, means 50% of brightness)
 -   To change the color set the `.ACTIONS.RED`, `.ACTIONS.GREEN`, `.ACTIONS.BLUE` and/or `.ACTIONS.WHITE` attribute between `0` and `255`
 
-<!---
+<!--
 ## Jobs
 
 Create two new jobs on the μGateway and connect them to two smartbuttons with `true` respectively `false`:
@@ -189,9 +189,8 @@ Create a job on the μGateway and connect them to a smartbuttons with `true` res
 6.  Open `scripts` tab on your μGateway (url: `[IP-Adress of Wiser by Feller WLAN device]/scripts.html`), click button `Create File`
 7.  Enter a program name (f. ex. `smartbutton_1.py`), click button `Save`
 8.  Open programm by clicking on the pencil right in the above created program
-9.  First Option:
+9.  First Option: Add the following code if you want to get `true` and `false` you need two buttons
 
-    Add the following code if you want to get `true` and `false` you need two buttons
     First Button:
 
     ```
@@ -208,9 +207,7 @@ Create a job on the μGateway and connect them to a smartbuttons with `true` res
         await websockets.Connection.push_event('/api', {'smb': {'id': argv[2], 'value': False}})
     ```
 
-    Second Option:
-
-    Add the following code if you want to toggle the value `true -> false -> true ...`
+    Second Option: Add the following code if you want to toggle the value `true -> false -> true ...`
 
     ```
     import websockets
@@ -231,7 +228,7 @@ Create a job on the μGateway and connect them to a smartbuttons with `true` res
 17. Write down the `button id`
 18. Go to `POST api/jobs`, click `Try it out` button
 19. Enter `{"scripts": ["smartbutton_1.py"]}` (`smartbutton_1.py` must match the above choosen program name), click `Execute` button
-20. Write down the `job id` (103)
+20. Write down the `job id`
 21. Go to `PATCH /api/smartbuttons/{id}`, click `Try it out` button
 22. Enter the `button id` in `id` field
 23. Enter following code in the request body: `{"job": 102, "name": "Smartbutton_1"}` (job must match the `job id` from above, `name` can be choosen), click `Execute` button
