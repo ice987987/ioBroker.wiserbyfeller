@@ -246,7 +246,7 @@ Create a job on the μGateway and connect them to a smartbuttons with `true` res
 
 <!-- ### __WORK IN PROGRESS__ -->
 
-### 0.1.0-beta.9
+### 0.1.0-beta.10
 
 -   (ice987987) BREAKING: js-controller >= v4.0.23 and admin >= v6.2.19 is required
 -   (ice987987) dependencies updated

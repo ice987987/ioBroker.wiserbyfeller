@@ -1429,7 +1429,7 @@ class Wiserbyfeller extends utils.Adapter {
 			this.heartbeatTimeout && clearTimeout(this.heartbeatTimeout);
 			this.heartbeatTimeout = setTimeout(() => {
 				this.wss.terminate();
-			}, 31 * 1000); // 31s
+			}, 32 * 1000); // 32s
 		});
 	}
 
