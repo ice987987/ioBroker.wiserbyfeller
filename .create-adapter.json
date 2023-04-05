@@ -3,10 +3,15 @@
 	"target": "directory",
 	"adapterName": "wiserbyfeller",
 	"title": "Wiser by Feller",
-	"description": "This Adapter enables you to manage all your \\\"Wiser by Feller\\\" system devices.",
-	"keywords": ["wiserbyfeller", "wiser by feller"],
+	"description": "This Adapter enables you to manage all your 'Wiser by Feller' system devices.",
+	"keywords": [
+		"wiserbyfeller",
+		"wiser by feller"
+	],
 	"expert": "yes",
-	"features": ["adapter"],
+	"features": [
+		"adapter"
+	],
 	"adminFeatures": [],
 	"type": "household",
 	"startMode": "daemon",
@@ -16,7 +21,11 @@
 	"language": "JavaScript",
 	"nodeVersion": "14",
 	"adminUi": "json",
-	"tools": ["ESLint", "type checking", "Prettier"],
+	"tools": [
+		"ESLint",
+		"type checking",
+		"Prettier"
+	],
 	"releaseScript": "no",
 	"devServer": "no",
 	"indentation": "Tab",
