@@ -9,7 +9,7 @@
 const utils = require('@iobroker/adapter-core');
 
 // Load your modules here, e.g.:
-const axios = require('axios');
+const axios = require('axios').default;
 const WebSocket = require('ws');
 
 // variables
@@ -1446,7 +1446,6 @@ class Wiserbyfeller extends utils.Adapter {
 		try {
 			// Here you must clear all timeouts or intervals that may still be active
 			this.updateInterval && clearInterval(this.updateInterval);
-			this.autoRestartTimeout && clearTimeout(this.autoRestartTimeout);
 
 			this.heartbeatTimeout && clearTimeout(this.heartbeatTimeout);
 			this.pingTimeout && clearTimeout(this.pingTimeout);
