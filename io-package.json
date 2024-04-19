@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "wiserbyfeller",
-        "version": "0.1.0-beta.11",
+        "version": "0.1.0-beta.12",
         "news": {
             "0.0.1": {
                 "en": "initial release",
@@ -42,18 +42,18 @@
                 "uk": "Підключення WebSocket для отримання значень реалізованих пристроїв\nусі підписані стани пишуться великими літерами\nновий спосіб встановлення значень leveltilt\nreadme",
                 "zh-cn": "WebSocket 连接以获取所实现设备的值\n所有订阅状态都大写\n设置水平倾斜值的新方法\n自述文件"
             },
-            "0.1.0-beta.11": {
-                "en": "BREAKING: js-controller >= v4.0.23, admin >= v6.2.19 and node.js >= v16.0 is required, dependencies updated, ukrainian language added, support for DALI-dimmer added, additional device info added (folder .info.device.[...]), smartbuttons added (folder: .smartbuttons.[...]), watchdog for WebSocket-Connection added, device icons fixed, websocket connection fixed",
-                "de": "BREAKING: js-controller >= v4.0.23, admin >= v6.2.19 und node.js >= v16.0 sind erforderlich, Abhängigkeiten aktualisiert, ukrainische Sprache hinzugefügt, Unterstützung für DALI-Dimmer hinzugefügt, zusätzliche Geräteinformationen hinzugefügt (Ordner . info.device.[...]), Smartbuttons hinzugefügt (Ordner: .smartbuttons.[...]), Watchdog für WebSocket-Verbindung hinzugefügt, Gerätesymbole behoben, WebSocket-Verbindung behoben",
-                "ru": "BREAKING: требуется js-контроллер >= v4.0.23, admin >= v6.2.19 и node.js >= v16.0, обновлены зависимости, добавлен украинский язык, добавлена ​​поддержка DALI-dimmer, добавлена ​​дополнительная информация об устройстве (папка . info.device.[...]), добавлены smartbuttons (папка: .smartbuttons.[...]), добавлен сторожевой таймер для WebSocket-Connection, исправлены значки устройств, исправлено подключение через websocket",
-                "pt": "QUEBRA: js-controller >= v4.0.23, admin >= v6.2.19 e node.js >= v16.0 é necessário, dependências atualizadas, idioma ucraniano adicionado, suporte para DALI-dimmer adicionado, informações adicionais do dispositivo adicionadas (pasta . info.device.[...]), smartbuttons adicionados (pasta: .smartbuttons.[...]), watchdog para WebSocket-Connection adicionado, ícones de dispositivo corrigidos, conexão de websocket corrigida",
-                "nl": "BREAKING: js-controller >= v4.0.23, admin >= v6.2.19 en node.js >= v16.0 is vereist, afhankelijkheden bijgewerkt, oekraïense taal toegevoegd, ondersteuning voor DALI-dimmer toegevoegd, aanvullende apparaatinformatie toegevoegd (map . info.device.[...]), smartbuttons toegevoegd (map: .smartbuttons.[...]), watchdog voor WebSocket-Connection toegevoegd, device iconen gerepareerd, websocket-verbinding opgelost",
-                "fr": "BREAKING : js-controller >= v4.0.23, admin >= v6.2.19 et node.js >= v16.0 est requis, dépendances mises à jour, langue ukrainienne ajoutée, prise en charge du gradateur DALI ajouté, informations supplémentaires sur l'appareil ajoutées (dossier . info.device.[...]), smartbuttons ajoutés (dossier : .smartbuttons.[...]), chien de garde pour WebSocket-Connection ajouté, icônes d'appareil corrigées, connexion websocket corrigée",
-                "it": "ROTTURA: js-controller >= v4.0.23, admin >= v6.2.19 e node.js >= v16.0 è richiesto, dipendenze aggiornate, lingua ucraina aggiunta, supporto per dimmer DALI aggiunto, informazioni aggiuntive sul dispositivo aggiunte (cartella . info.device.[...]), smartbuttons aggiunti (cartella: .smartbuttons.[...]), watchdog per WebSocket-Connection aggiunto, icone dispositivo corrette, connessione websocket corretta",
-                "es": "ÚLTIMA HORA: js-controller >= v4.0.23, admin >= v6.2.19 y node.js >= v16.0 se requiere, dependencias actualizadas, idioma ucraniano agregado, soporte para DALI-dimmer agregado, información adicional del dispositivo agregada (carpeta . info.device.[...]), botones inteligentes agregados (carpeta: .smartbuttons.[...]), vigilancia para WebSocket-Connection agregado, íconos de dispositivos arreglados, conexión websocket arreglada",
-                "pl": "WADY: wymagany jest js-controller >= v4.0.23, admin >= v6.2.19 i node.js >= v16.0, zaktualizowano zależności, dodano język ukraiński, dodano obsługę DALI-dimmer, dodano dodatkowe informacje o urządzeniu (folder . info.device.[...]), dodano smartbuttons (folder: .smartbuttons.[...]), dodano watchdog dla WebSocket-Connection, naprawiono ikony urządzeń, naprawiono połączenie websocket",
-                "uk": "ЗЛАМАЄТЬСЯ: js-controller >= v4.0.23, admin >= v6.2.19 та node.js >= v16.0 потрібні, залежності оновлено, додано українську мову, додано підтримку DALI-dimmer, додано додаткову інформацію про пристрій (папка . info.device.[...]), smartbuttons додано (папка: .smartbuttons.[...]), watchdog для WebSocket-Connection додано, значки пристроїв виправлено, websocket-з'єднання виправлено",
-                "zh-cn": "中断：需要 js-controller >= v4.0.23，admin >= v6.2.19 和 node.js >= v16.0，更新依赖项，添加乌克兰语，添加对 DALI-dimmer 的支持，添加额外的设备信息（文件夹 . info.device.[...])，添加了智能按钮（文件夹：.smartbuttons.[...]），添加了 WebSocket-Connection 看门狗，修复了设备图标，修复了 websocket 连接"
+            "0.1.0-beta.12": {
+                "en": "BREAKING: js-controller >= v5, admin >= v6.3.5 and node.js >= v18 is required, dependencies updated, ukrainian language added, support for DALI-dimmer added, additional device info added (folder .info.device.[...]), smartbuttons added (folder: .smartbuttons.[...]), watchdog for WebSocket-Connection added, device icons fixed, websocket connection fixed",
+                "de": "BREAKING: js-controller >= v5, admin >= v6.3.5 und node.js >= v18 sind erforderlich, Abhängigkeiten aktualisiert, ukrainische Sprache hinzugefügt, Unterstützung für DALI-Dimmer hinzugefügt, zusätzliche Geräteinformationen hinzugefügt (Ordner .info.device. [...]), Smartbuttons hinzugefügt (Ordner: .smartbuttons.[...]), Watchdog für WebSocket-Verbindung hinzugefügt, Gerätesymbole behoben, WebSocket-Verbindung behoben",
+                "ru": "СРОЧНО: требуется js-controller >= v5, admin >= v6.3.5 и node.js >= v18, обновлены зависимости, добавлен украинский язык, добавлена ​​поддержка DALI-dimmer, добавлена ​​дополнительная информация об устройстве (папка .info.device. [...]), добавлены смарт-кнопки (папка: .smartbuttons.[...]), добавлен сторожевой таймер для WebSocket-Connection, исправлены значки устройств, исправлено соединение с веб-сокетом",
+                "pt": "QUEBRANDO: js-controller >= v5, admin >= v6.3.5 e node.js >= v18 são necessários, dependências atualizadas, idioma ucraniano adicionado, suporte para DALI-dimmer adicionado, informações adicionais do dispositivo adicionadas (pasta .info.device. [...]), smartbuttons adicionados (pasta: .smartbuttons.[...]), watchdog para WebSocket-Connection adicionado, ícones de dispositivos corrigidos, conexão websocket corrigida",
+                "nl": "BREAKING: js-controller >= v5, admin >= v6.3.5 en node.js >= v18 is vereist, afhankelijkheden bijgewerkt, Oekraïense taal toegevoegd, ondersteuning voor DALI-dimmer toegevoegd, extra apparaatinformatie toegevoegd (map .info.device. [...]), smartbuttons toegevoegd (map: .smartbuttons.[...]), watchdog voor WebSocket-Connection toegevoegd, apparaatpictogrammen opgelost, websocket-verbinding opgelost",
+                "fr": "RUPTURE : js-controller >= v5, admin >= v6.3.5 et node.js >= v18 sont requis, dépendances mises à jour, langue ukrainienne ajoutée, prise en charge du gradateur DALI ajoutée, informations supplémentaires sur l'appareil ajoutées (dossier .info.device. [...]), ajout de boutons intelligents (dossier : .smartbuttons.[...]), ajout d'un chien de garde pour WebSocket-Connection, icônes d'appareil corrigées, connexion Websocket corrigée",
+                "it": "BREAKING: js-controller >= v5, admin >= v6.3.5 e node.js >= v18 sono richiesti, dipendenze aggiornate, lingua ucraina aggiunta, supporto per dimmer DALI aggiunto, informazioni aggiuntive sul dispositivo aggiunte (cartella .info.device. [...]), aggiunti smartbuttons (cartella: .smartbuttons.[...]), aggiunto watchdog per connessione WebSocket, icone del dispositivo corrette, connessione websocket corretta",
+                "es": "ÚLTIMA HORA: se requiere js-controller >= v5, admin >= v6.3.5 y node.js >= v18, dependencias actualizadas, idioma ucraniano agregado, soporte para atenuador DALI agregado, información adicional del dispositivo agregada (carpeta .info.device. [...]), se agregaron botones inteligentes (carpeta: .smartbuttons.[...]), se agregó el mecanismo de vigilancia para la conexión WebSocket, se corrigieron los íconos del dispositivo, se corrigió la conexión websocket",
+                "pl": "ŁAMANIE: wymagany jest js-controller >= v5, admin >= v6.3.5 i node.js >= v18, zaktualizowano zależności, dodano język ukraiński, dodano obsługę dimmera DALI, dodano dodatkowe informacje o urządzeniu (folder .info.device. [...]), dodano smartbuttons (folder: .smartbuttons.[...]), dodano watchdog dla połączenia WebSocket, poprawiono ikony urządzeń, poprawiono połączenie websocket",
+                "uk": "ПОЛИМАННЯ: потрібні js-controller >= v5, admin >= v6.3.5 та node.js >= v18, оновлено залежності, додано українську мову, додано підтримку DALI-dimmer, додано інформацію про додатковий пристрій (папка .info.device. [...]), додано smartbuttons (папка: .smartbuttons.[...]), додано сторожовий таймер для WebSocket-Connection, виправлено піктограми пристроїв, виправлено з’єднання через websocket",
+                "zh-cn": "重大突破：需要 js-controller >= v5、admin >= v6.3.5 和 node.js >= v18、更新依赖项、添加乌克兰语言、添加对 DALI 调光器的支持、添加附加设备信息（文件夹 .info.device. [...]），添加了 smartbuttons（文件夹：.smartbuttons.[...]），添加了 WebSocket 连接的看门狗，修复了设备图标，修复了 websocket 连接"
             }
         },
         "titleLang": {
@@ -89,7 +89,10 @@
             "wiserbyfeller",
             "wiser by feller"
         ],
-        "license": "MIT",
+        "licenseInformation": {
+            "type": "free",
+            "license": "MIT"
+        },
         "platform": "Javascript/Node.js",
         "main": "main.js",
         "icon": "wiserbyfeller.svg",
@@ -97,6 +100,7 @@
         "extIcon": "https://raw.githubusercontent.com/ice987987/ioBroker.wiserbyfeller/main/admin/wiserbyfeller.svg",
         "readme": "https://github.com/ice987987/ioBroker.wiserbyfeller/blob/main/README.md",
         "loglevel": "info",
+        "tier": 3,
         "mode": "daemon",
         "type": "household",
         "compact": true,
@@ -111,12 +115,12 @@
         },
         "dependencies": [
             {
-                "js-controller": ">=4.0.23"
+                "js-controller": ">= 5"
             }
         ],
         "globalDependencies": [
             {
-                "admin": ">=6.2.19"
+                "admin": ">= 6.3.5"
             }
         ]
     },
