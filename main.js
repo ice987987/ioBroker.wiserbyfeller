@@ -1455,7 +1455,7 @@ class Wiserbyfeller extends utils.Adapter {
 
 			this.log.info('cleaned everything up... (#1)');
 			callback();
-		} catch (e) {
+		} catch {
 			this.log.info('cleaned everything up... (#2)');
 			callback();
 		}
@@ -1486,7 +1486,7 @@ class Wiserbyfeller extends utils.Adapter {
 
 				switch (deviceType) {
 					case 'onoff':
-						if (state.val > 0) {
+						if (Number(state.val) > 0) {
 							sendData = { bri: 10000 };
 						} else {
 							sendData = { bri: 0 };
