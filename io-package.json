@@ -94,7 +94,6 @@
             "license": "MIT"
         },
         "platform": "Javascript/Node.js",
-        "main": "main.js",
         "icon": "wiserbyfeller.svg",
         "enabled": true,
         "extIcon": "https://raw.githubusercontent.com/ice987987/ioBroker.wiserbyfeller/main/admin/wiserbyfeller.svg",
@@ -115,12 +114,12 @@
         },
         "dependencies": [
             {
-                "js-controller": ">= 5"
+                "js-controller": ">=5.0.19"
             }
         ],
         "globalDependencies": [
             {
-                "admin": ">= 6.3.5"
+                "admin": ">=6.3.5"
             }
         ]
     },

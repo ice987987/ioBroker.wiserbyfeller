@@ -27,7 +27,7 @@ All product and company names or logos are trademarks™ or registered® tradema
 ## Installation requirements
 
 -   node.js >= v18 is required
--   js-controller >= v5 is required
+-   js-controller >= v5.0.19 is required
 -   admin >= v6.3.5 is required
 -   Installed Wiser by Feller devices are required. More information can be found here: [Wiser by Feller](https://wiser.feller.ch/de/professionals).
 
@@ -248,7 +248,7 @@ Create a job on the μGateway and connect them to a smartbuttons with `true` res
 
 ### 0.1.0-beta.12
 
--   (ice987987) BREAKING: js-controller >= v5, admin >= v6.3.5 and node.js >= v18 is required
+-   (ice987987) BREAKING: js-controller >= v5.0.19, admin >= v6.3.5 and node.js >= v18 is required
 -   (ice987987) dependencies updated
 -   (ice987987) section "disclaimer" in readme added
 -   (ice987987) ukrainian language added
