@@ -1,5 +1,4 @@
 'use strict';
-
 /*
  * Created with @iobroker/create-adapter v2.3.0
  */
@@ -21,7 +20,6 @@ let allLoads = [];
 let firstStart = true;
 
 class Wiserbyfeller extends utils.Adapter {
-
 	/**
 	 * @param {Partial<utils.AdapterOptions>} [options={}]
 	 */
@@ -79,23 +77,26 @@ class Wiserbyfeller extends utils.Adapter {
 				await this.connectToWS();
 
 				// update regurarly device info
-				this.updateInterval = await setInterval(async () => {
-					try {
-						// get device Info
-						await this.getDeviceInfo();
+				this.updateInterval = await setInterval(
+					async () => {
+						try {
+							// get device Info
+							await this.getDeviceInfo();
 
-						// get all devices
-						await this.getAllDevices();
+							// get all devices
+							await this.getAllDevices();
 
-						// get all loads
-						await this.getAllLoads();
+							// get all loads
+							await this.getAllLoads();
 
-						// get RSSI
-						await this.getRssi();
-					} catch (error) {
-						this.log.error(`${error} (ERR_#001)`);
-					}
-				}, 6 * 60 * 60 * 1000); // 6 * 60 * 60 * 1000ms = 6h
+							// get RSSI
+							await this.getRssi();
+						} catch (error) {
+							this.log.error(`${error} (ERR_#001)`);
+						}
+					},
+					6 * 60 * 60 * 1000,
+				); // 6 * 60 * 60 * 1000ms = 6h
 			} catch (error) {
 				this.log.error(`${error} (ERR_#002)`);
 			}
@@ -112,7 +113,7 @@ class Wiserbyfeller extends utils.Adapter {
 				Authorization: `Bearer ${this.config.authToken}`,
 			},
 		})
-			.then(async (response) => {
+			.then(async response => {
 				this.log.debug(`[getDeviceInfo()]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
 
 				if (firstStart) {
@@ -120,7 +121,7 @@ class Wiserbyfeller extends utils.Adapter {
 				}
 				await this.fillDeviceInfo(response.data.data);
 			})
-			.catch((error) => {
+			.catch(error => {
 				if (error.response) {
 					// The request was made and the server responded with a status code that falls out of the range of 2xx
 					this.log.debug(`[getDeviceInfo()]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
@@ -145,16 +146,15 @@ class Wiserbyfeller extends utils.Adapter {
 				Authorization: `Bearer ${this.config.authToken}`,
 			},
 		})
-			.then(async (response) => {
+			.then(async response => {
 				this.log.debug(`[getAllDevices]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
 
 				if (firstStart) {
 					await this.createDevices(response.data.data);
 				}
 				await this.fillAllDevices(response.data.data);
-
 			})
-			.catch((error) => {
+			.catch(error => {
 				if (error.response) {
 					// The request was made and the server responded with a status code that falls out of the range of 2xx
 					this.log.debug(`[getAllDevices()]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
@@ -178,7 +178,7 @@ class Wiserbyfeller extends utils.Adapter {
 				Authorization: `Bearer ${this.config.authToken}`,
 			},
 		})
-			.then(async (response) => {
+			.then(async response => {
 				this.log.debug(`[getAllLoads]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
 
 				allLoads = response.data.data;
@@ -188,7 +188,7 @@ class Wiserbyfeller extends utils.Adapter {
 				}
 				await this.fillAllLoads(response.data.data);
 			})
-			.catch((error) => {
+			.catch(error => {
 				if (error.response) {
 					// The request was made and the server responded with a status code that falls out of the range of 2xx
 					this.log.debug(`[getAllLoads()]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
@@ -212,7 +212,7 @@ class Wiserbyfeller extends utils.Adapter {
 				Authorization: `Bearer ${this.config.authToken}`,
 			},
 		})
-			.then(async (response) => {
+			.then(async response => {
 				this.log.debug(`[getRssi()]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
 
 				if (firstStart) {
@@ -220,9 +220,8 @@ class Wiserbyfeller extends utils.Adapter {
 					firstStart = false;
 				}
 				await this.fillRssi(response.data.data);
-
 			})
-			.catch((error) => {
+			.catch(error => {
 				if (error.response) {
 					// The request was made and the server responded with a status code that falls out of the range of 2xx
 					this.log.debug(`[getRssi()]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
@@ -246,15 +245,14 @@ class Wiserbyfeller extends utils.Adapter {
 				Authorization: `Bearer ${this.config.authToken}`,
 			},
 		})
-			.then(async (response) => {
+			.then(async response => {
 				this.log.debug(`[getSmartbuttons()]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
 
 				if (response.data.data.length !== 0) {
 					await this.createSmartbuttons(response.data.data);
 				}
-
 			})
-			.catch((error) => {
+			.catch(error => {
 				if (error.response) {
 					// The request was made and the server responded with a status code that falls out of the range of 2xx
 					this.log.debug(`[getSmartbuttons()]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
@@ -446,7 +444,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.a`, {
 				type: 'channel',
 				common: {
-					name: 'A-Block information'
+					name: 'A-Block information',
 				},
 				native: {},
 			});
@@ -542,7 +540,7 @@ class Wiserbyfeller extends utils.Adapter {
 			await this.setObjectNotExistsAsync(`${devices[i].id}.c`, {
 				type: 'channel',
 				common: {
-					name: 'C-Block information'
+					name: 'C-Block information',
 				},
 				native: {},
 			});
@@ -640,7 +638,7 @@ class Wiserbyfeller extends utils.Adapter {
 				await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}`, {
 					type: 'channel',
 					common: {
-						name: `${devices[i].a.comm_name} - Load ID: ${devices[i].outputs[j].load}`
+						name: `${devices[i].a.comm_name} - Load ID: ${devices[i].outputs[j].load}`,
 					},
 					native: {},
 				});
@@ -678,7 +676,8 @@ class Wiserbyfeller extends utils.Adapter {
 					native: {},
 				});
 
-				if (devices[i].outputs[j].type === 'onoff') { // main-type 'onoff'
+				if (devices[i].outputs[j].type === 'onoff') {
+					// main-type 'onoff'
 					await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS`, {
 						type: 'channel',
 						common: {
@@ -686,7 +685,8 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {},
 					});
-					if (devices[i].outputs[j].sub_type === '') { // sub-type ''
+					if (devices[i].outputs[j].sub_type === '') {
+						// sub-type ''
 						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
 							type: 'state',
 							common: {
@@ -703,7 +703,8 @@ class Wiserbyfeller extends utils.Adapter {
 							native: {},
 						});
 						this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`);
-					} else if (devices[i].outputs[j].sub_type === 'dto') { // sub-type 'dto'
+					} else if (devices[i].outputs[j].sub_type === 'dto') {
+						// sub-type 'dto'
 						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
 							type: 'state',
 							common: {
@@ -711,7 +712,7 @@ class Wiserbyfeller extends utils.Adapter {
 								type: 'boolean',
 								role: 'button',
 								read: true,
-								write: true
+								write: true,
 							},
 							native: {},
 						});
@@ -719,7 +720,8 @@ class Wiserbyfeller extends utils.Adapter {
 					} else {
 						this.log.warn(`createDevices(): Sub-Type "${devices[i].outputs[j].sub_type}" unknown. Device not created.`);
 					}
-				} else if (devices[i].outputs[j].type === 'dim') { // main-type "dim"
+				} else if (devices[i].outputs[j].type === 'dim') {
+					// main-type "dim"
 					await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS`, {
 						type: 'channel',
 						common: {
@@ -793,7 +795,8 @@ class Wiserbyfeller extends utils.Adapter {
 						},
 						native: {},
 					});
-				} else if (devices[i].outputs[j].type === 'dali') { // main-type 'dali'
+				} else if (devices[i].outputs[j].type === 'dali') {
+					// main-type 'dali'
 					if (['', 'tw', 'rgb'].includes(devices[i].outputs[j].sub_type)) {
 						await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS`, {
 							type: 'channel',
@@ -802,7 +805,8 @@ class Wiserbyfeller extends utils.Adapter {
 							},
 							native: {},
 						});
-						if (devices[i].outputs[j].sub_type === '') { // sub-type ''
+						if (devices[i].outputs[j].sub_type === '') {
+							// sub-type ''
 							await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
 								type: 'state',
 								common: {
@@ -817,7 +821,8 @@ class Wiserbyfeller extends utils.Adapter {
 								native: {},
 							});
 							this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`);
-						} else if (devices[i].outputs[j].sub_type === 'tw') { // sub-type 'tw'
+						} else if (devices[i].outputs[j].sub_type === 'tw') {
+							// sub-type 'tw'
 							await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
 								type: 'state',
 								common: {
@@ -846,7 +851,8 @@ class Wiserbyfeller extends utils.Adapter {
 							});
 							this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`);
 							this.subscribeStates(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.CT`);
-						} else if (devices[i].outputs[j].sub_type === 'rgb') { // sub-type "rgb"
+						} else if (devices[i].outputs[j].sub_type === 'rgb') {
+							// sub-type "rgb"
 							await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS.BRI`, {
 								type: 'state',
 								common: {
@@ -984,7 +990,8 @@ class Wiserbyfeller extends utils.Adapter {
 					} else {
 						this.log.warn(`createDevices(): Sub-Type "${devices[i].outputs[j].sub_type}" unknown. Device not created.`);
 					}
-				} else if (devices[i].outputs[j].type === 'motor') { // main-type "motor"
+				} else if (devices[i].outputs[j].type === 'motor') {
+					// main-type "motor"
 					await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.ACTIONS`, {
 						type: 'channel',
 						common: {
@@ -1073,9 +1080,9 @@ class Wiserbyfeller extends utils.Adapter {
 							type: 'string',
 							role: 'value',
 							read: true,
-							write: false
+							write: false,
 						},
-						native: {}
+						native: {},
 					});
 					// create channel
 					await this.setObjectNotExistsAsync(`${devices[i].id}.${devices[i].id}_${devices[i].outputs[j].load}.flags`, {
@@ -1313,7 +1320,7 @@ class Wiserbyfeller extends utils.Adapter {
 			},
 		});
 
-		this.wss.on('error', (error) => {
+		this.wss.on('error', error => {
 			this.log.warn(`[wss.on - error]: error: ${error}; error.message: ${error.message} (ERR_#010)`);
 		});
 
@@ -1341,9 +1348,12 @@ class Wiserbyfeller extends utils.Adapter {
 			if (data === 1006) {
 				// f. ex. power interruption
 				this.log.warn(`WebSocket connection to "Wiser by Feller Gateway" broken. Trying to reconnect in 5min.`);
-				this.restartTimeout = setTimeout(() => {
-					this.connectToWS();
-				}, 5 * 60 * 1000); // 5min
+				this.restartTimeout = setTimeout(
+					() => {
+						this.connectToWS();
+					},
+					5 * 60 * 1000,
+				); // 5min
 			}
 		});
 
@@ -1353,9 +1363,9 @@ class Wiserbyfeller extends utils.Adapter {
 
 			try {
 				if (message.load !== undefined) {
-					const deviceID = allLoads.find((sID) => sID.id === message.load.id).device;
-					const loadType = allLoads.find((sID) => sID.id === message.load.id).type;
-					const loadSubtype = allLoads.find((sID) => sID.id === message.load.id).sub_type;
+					const deviceID = allLoads.find(sID => sID.id === message.load.id).device;
+					const loadType = allLoads.find(sID => sID.id === message.load.id).type;
+					const loadSubtype = allLoads.find(sID => sID.id === message.load.id).sub_type;
 					this.log.debug(`[wss.on - message]: deviceID: ${deviceID}; loadType: ${loadType}; loadSubtype: ${loadSubtype}`);
 
 					if (loadType === 'onoff') {
@@ -1413,7 +1423,6 @@ class Wiserbyfeller extends utils.Adapter {
 				} else {
 					this.log.info('[wss.on - message]: Unknown message. Nothing Set. (ERR_#012)');
 				}
-
 			} catch (error) {
 				// do nothing
 				this.log.debug(`[wss.on - message]: ${error}`);
@@ -1440,6 +1449,7 @@ class Wiserbyfeller extends utils.Adapter {
 
 	/**
 	 * Is called when adapter shuts down - callback has to be called under any circumstances!
+	 *
 	 * @param {() => void} callback
 	 */
 	onUnload(callback) {
@@ -1463,6 +1473,7 @@ class Wiserbyfeller extends utils.Adapter {
 
 	/**
 	 * Is called if a subscribed state changes
+	 *
 	 * @param {string} id
 	 * @param {ioBroker.State | null | undefined} state
 	 */
@@ -1477,9 +1488,9 @@ class Wiserbyfeller extends utils.Adapter {
 				// this.log.debug(`[onStateChange]: loadID: ${loadID}`);
 				const load = id.split('.')[5];
 				// this.log.debug(`[onStateChange]: load: ${load}`);
-				const deviceType = allLoads.find((sID) => sID.device === deviceID).type;
+				const deviceType = allLoads.find(sID => sID.device === deviceID).type;
 				// this.log.debug(`[onStateChange]: deviceType: ${deviceType}`);
-				const deviceSubtype = allLoads.find((sID) => sID.device === deviceID).sub_type;
+				const deviceSubtype = allLoads.find(sID => sID.device === deviceID).sub_type;
 				// this.log.debug(`[onStateChange]: deviceSubtype: ${deviceSubtype}`);
 
 				let sendData = {};
@@ -1540,10 +1551,10 @@ class Wiserbyfeller extends utils.Adapter {
 					},
 					data: sendData,
 				})
-					.then((response) => {
+					.then(response => {
 						this.log.debug(`[onStateChange()]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
 					})
-					.catch((error) => {
+					.catch(error => {
 						if (error.response) {
 							// The request was made and the server responded with a status code that falls out of the range of 2xx
 							this.log.debug(`[onStateChange()]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
@@ -1600,7 +1611,7 @@ class Wiserbyfeller extends utils.Adapter {
 					data: { user: obj.message.username },
 					timeout: 30000,
 				})
-					.then((response) => {
+					.then(response => {
 						this.log.debug(`[onMessage]: HTTP status response: ${response.status} ${response.statusText}; config: ${JSON.stringify(response.config)}; headers: ${JSON.stringify(response.headers)}; data: ${JSON.stringify(response.data)}`);
 						this.log.info(`Got new authentication token "${response.data.data.secret}" with username "${response.data.data.user}"`);
 
@@ -1613,7 +1624,7 @@ class Wiserbyfeller extends utils.Adapter {
 
 						this.sendTo(obj.from, obj.command, { result: 'authenticationTokenRecived' }, obj.callback);
 					})
-					.catch((error) => {
+					.catch(error => {
 						if (error.response) {
 							// The request was made and the server responded with a status code that falls out of the range of 2xx
 							this.log.debug(`[onMessage]: HTTP status response: ${error.response.status}; headers: ${JSON.stringify(error.response.headers)}; data: ${JSON.stringify(error.response.data)}`);
@@ -1629,7 +1640,6 @@ class Wiserbyfeller extends utils.Adapter {
 			}
 		}
 	}
-
 }
 
 if (require.main !== module) {
@@ -1637,7 +1647,7 @@ if (require.main !== module) {
 	/**
 	 * @param {Partial<utils.AdapterOptions>} [options={}]
 	 */
-	module.exports = (options) => new Wiserbyfeller(options);
+	module.exports = options => new Wiserbyfeller(options);
 } else {
 	// otherwise start the instance directly
 	new Wiserbyfeller();
