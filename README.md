@@ -246,7 +246,7 @@ Create a job on the μGateway and connect them to a smartbuttons with `true` res
 
 <!-- ### __WORK IN PROGRESS__ -->
 
-### 0.1.0-beta.12
+### 0.1.0-beta.14
 
 -   (ice987987) BREAKING: js-controller >= v5.0.19, admin >= v6.3.5 and node.js >= v18 is required
 -   (ice987987) dependencies updated
@@ -258,6 +258,7 @@ Create a job on the μGateway and connect them to a smartbuttons with `true` res
 -   (ice987987) watchdog for WebSocket-Connection added
 -   (ice987987) device icons fixed
 -   (ice987987) websocket connection fixed
+-   (ice987987) dependencies updated
 
 ### 0.0.4 (12.03.2022)
 

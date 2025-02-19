@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "wiserbyfeller",
-        "version": "0.1.0-beta.12",
+        "version": "0.1.0-beta.14",
         "news": {
             "0.0.1": {
                 "en": "initial release",
@@ -42,7 +42,7 @@
                 "uk": "Підключення WebSocket для отримання значень реалізованих пристроїв\nусі підписані стани пишуться великими літерами\nновий спосіб встановлення значень leveltilt\nreadme",
                 "zh-cn": "WebSocket 连接以获取所实现设备的值\n所有订阅状态都大写\n设置水平倾斜值的新方法\n自述文件"
             },
-            "0.1.0-beta.12": {
+            "0.1.0-beta.14": {
                 "en": "BREAKING: js-controller >= v5, admin >= v6.3.5 and node.js >= v18 is required, dependencies updated, ukrainian language added, support for DALI-dimmer added, additional device info added (folder .info.device.[...]), smartbuttons added (folder: .smartbuttons.[...]), watchdog for WebSocket-Connection added, device icons fixed, websocket connection fixed",
                 "de": "BREAKING: js-controller >= v5, admin >= v6.3.5 und node.js >= v18 sind erforderlich, Abhängigkeiten aktualisiert, ukrainische Sprache hinzugefügt, Unterstützung für DALI-Dimmer hinzugefügt, zusätzliche Geräteinformationen hinzugefügt (Ordner .info.device. [...]), Smartbuttons hinzugefügt (Ordner: .smartbuttons.[...]), Watchdog für WebSocket-Verbindung hinzugefügt, Gerätesymbole behoben, WebSocket-Verbindung behoben",
                 "ru": "СРОЧНО: требуется js-controller >= v5, admin >= v6.3.5 и node.js >= v18, обновлены зависимости, добавлен украинский язык, добавлена ​​поддержка DALI-dimmer, добавлена ​​дополнительная информация об устройстве (папка .info.device. [...]), добавлены смарт-кнопки (папка: .smartbuttons.[...]), добавлен сторожевой таймер для WebSocket-Connection, исправлены значки устройств, исправлено соединение с веб-сокетом",

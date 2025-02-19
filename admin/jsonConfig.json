@@ -8,7 +8,12 @@
 			"text": "instruction_1",
 			"style": {
 				"font-size": "15px"
-			}
+			},
+			"xs": 12,
+			"sm": 6,
+			"md": 4,
+			"lg": 4,
+			"xl": 4
 		},
 		"gatewayIP": {
 			"newLine": true,
@@ -18,9 +23,11 @@
 			"placeholder": "192.168.1.150",
 			"validator": "/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/.test(data.gatewayIP)",
 			"validatorNoSaveOnError": true,
+			"xs": 12,
 			"sm": 6,
 			"md": 4,
-			"lg": 4
+			"lg": 4,
+			"xl": 4
 		},
 		"username": {
 			"newLine": false,
@@ -30,9 +37,11 @@
 			"placeholder": "admin",
 			"validator": "/[a-zA-Z0-9]{4,}/.test(data.username)",
 			"validatorNoSaveOnError": true,
+			"xs": 12,
 			"sm": 6,
 			"md": 4,
-			"lg": 4
+			"lg": 4,
+			"xl": 4
 		},
 		"_instruction_2": {
 			"newLine": true,
@@ -40,7 +49,12 @@
 			"text": "instruction_2",
 			"style": {
 				"font-size": "15px"
-			}
+			},
+			"xs": 12,
+			"sm": 6,
+			"md": 4,
+			"lg": 4,
+			"xl": 4
 		},
 		"_instruction_3": {
 			"newLine": true,
@@ -48,7 +62,12 @@
 			"text": "instruction_3",
 			"style": {
 				"font-size": "15px"
-			}
+			},
+			"xs": 12,
+			"sm": 6,
+			"md": 4,
+			"lg": 4,
+			"xl": 4
 		},
 		"getAuthToken": {
 			"newLine": true,
@@ -81,7 +100,12 @@
 					"uk": "Перевірити токени для вашогоайзера за допомогою Feller RESTFul API. Після того, як ви починаєте запит на фізичних кнопках Wiser-uGateway, почнуть блимати протягом 30 секунд. Для дійсного запиту, один з фізичних кнопок повинен бути натисканий протягом 30 секунд.",
 					"zh-cn": "Feller RESTFul API 的 Wiser 身份验证令牌. 一旦您开始请求，Wiser-uGateway 的物理按钮将开始闪烁 30 秒。对于有效请求，必须在 30 秒内按下其中一个物理按钮."
 				}
-			}
+			},
+			"xs": 12,
+			"sm": 6,
+			"md": 4,
+			"lg": 4,
+			"xl": 4
 		},
 		"_instruction_4": {
 			"newLine": true,
@@ -89,7 +113,12 @@
 			"text": "instruction_4",
 			"style": {
 				"font-size": "15px"
-			}
+			},
+			"xs": 12,
+			"sm": 6,
+			"md": 4,
+			"lg": 4,
+			"xl": 4
 		},
 		"_helpLink": {
 			"newLine": true,
@@ -99,7 +128,12 @@
 			"variant": "contained",
 			"color": "primary",
 			"button": true,
-			"href": "https://github.com/ice987987/ioBroker.wiserbyfeller/blob/main/README.md"
+			"href": "https://github.com/ice987987/ioBroker.wiserbyfeller/blob/main/README.md",
+			"xs": 12,
+			"sm": 6,
+			"md": 4,
+			"lg": 4,
+			"xl": 4
 		}
 	}
 }
